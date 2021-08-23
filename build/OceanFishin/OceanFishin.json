@@ -1,0 +1,10 @@
+{
+  "Author": "Sl0nderman",
+  "Name": "Ocean Fishin''",
+  "InternalName": "OceanFishin",
+  "AssemblyVersion": "1.0.0.0",
+  "Description": "Suggests bait while ocean fishing.",
+  "ApplicableVersion": "any",
+  "DalamudApiLevel": 4,
+  "LoadPriority": 0
+}
