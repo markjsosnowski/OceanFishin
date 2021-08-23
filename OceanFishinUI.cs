@@ -74,13 +74,14 @@ namespace OceanFishin
                 if (on_boat)
                 {
                     ImGui.Text("You are aboard The Endeavor, sailing in " + location + " " + time_strings[time] + ".");
-                    ImGui.Text("The ideal bait for this area and time is: ");
+                    ImGui.Text("The suggested bait for this area and time is: ");
                     ImGui.Text("Starting Bait → " + bait_strings[bait_list[(int)bait_index.starter]]);
                     ImGui.Text("Fisher's Intution → " + bait_strings[bait_list[(int)bait_index.intuition]]);
                     ImGui.Text("Spectral Current → " + bait_strings[bait_list[(int)bait_index.spectral_offset + time]]);
                 }
                 else
                 {
+                    ImGui.Text("I can only help you when you're part of the Ocean Fishing duty.");
                     ImGui.Text("Board The Endeavor to update the bait list.");
                 }
 
