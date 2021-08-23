@@ -1,6 +1,6 @@
 ﻿{
-	"name" : "Ocean Fishin''",
+	"name": "Ocean Fishin''",
 	"Author": "Sl0nderman",
-	"InternalName": "OceanFishin",
-	"Description" :  "Suggests bait while ocean fishing."
+	"Description": "Suggests bait while ocean fishing.",
+	"RepoUrl": "https://github.com/markjsosnowski/OceanFishin"
 }
