@@ -22,6 +22,7 @@ namespace OceanFishin
             {2, "at Night"}
         };
 
+        //TODO Achievement/Quest Fish (Crabs, Sharks, etc.) Helper
 
         enum bait_index : int
         {
@@ -33,7 +34,7 @@ namespace OceanFishin
             spectral_night = 4
         }
 
-        // this extra bool exists for ImGui, since you can't ref a property
+        // This extra bool exists for ImGui, since you can't ref a property
         private bool visible = false;
         public bool Visible
         {

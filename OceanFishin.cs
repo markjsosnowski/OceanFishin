@@ -35,7 +35,32 @@ namespace OceanFishin
         private DalamudPluginInterface pi;
         private OceanFishinUI ui;
 
-        //Format = Location:[Start, Intuition, Spectral Day, Spectral Sunset, Spectral Night]
+        // This is the TerritoyType for the entire instance and does not
+        // provide any information on fishing spots, routes, etc.
+        private const int endevor_territory_type = 900;
+        private const string default_location = "Unknown Location";
+
+        // These are known via addon inspector.
+        private const int location_textnode_index = 20;
+        private const int night_imagenode_index = 22;
+        private const int sunset_imagenode_index = 23;
+        private const int day_imagenode_index = 24;
+        private const int expected_nodelist_count = 24;
+
+        // Three image nodes make up the time of day indicator.
+        // They all use the same texture, so the part_id determines
+        // which part of the texture is used. Those part_ids are:
+        // Day      Active = 9  Inactive = 4
+        // Sunset   Active = 10 Inactive = 5
+        // Night    Active = 11 Inactive = 6
+        private const int day_icon_lit = 9;
+        private const int sunset_icon_lit = 10;
+        private const int night_icon_lit = 11;
+
+        // Format = Location : [Start, Intuition, Spectral Day, Spectral Sunset, Spectral Night]
+        // If time is known, that's time spectral can be accessed by index (time+2).
+        // This information is based on Zeke's Fishing Guidebook found here:
+        // https://docs.google.com/spreadsheets/d/17A_IIlSO0wWmn8I3-mrH6JRok0ZIxiNFaDH2MhN63cI/
         private Dictionary<string, int[]> bait_dict = new Dictionary<string, int[]>()
         {
             {"Galadion Bay",                    new int[] {(int)bait.PlumpWorm, (int)bait.Krill, (int)bait.Ragworm, (int)bait.PlumpWorm, (int)bait .Krill} },
@@ -45,28 +70,8 @@ namespace OceanFishin
             {"The Cieldalaes",                  new int[] {(int)bait.Ragworm, (int)bait.Krill, (int)bait.Krill, (int)bait.PlumpWorm, (int)bait.Krill} },
             {"The Bloodbrine Sea",              new int[] {(int)bait.Krill, (int)bait.Krill, (int)bait.Ragworm, (int)bait.PlumpWorm, (int)bait.Krill} },
             {"The Rothlyt Sound",               new int[] {(int)bait.PlumpWorm, (int)bait.Ragworm, (int)bait.Krill, (int)bait.Krill, (int)bait.Krill} },
-            {default_location,                new int[] {(int)bait.Unknown, (int)bait.Unknown, (int)bait.Unknown, (int)bait.Unknown, (int)bait.Unknown} },
+            {default_location,                  new int[] {(int)bait.Unknown, (int)bait.Unknown, (int)bait.Unknown, (int)bait.Unknown, (int)bait.Unknown} },
         };
-
-        private const int endevor_territory_type = 900;
-        private const int location_textnode_index = 20;
-        private const int day_imagenode_index = 24;
-        private const int sunset_imagenode_index = 23;
-        private const int night_imagenode_index = 22;
-        private const int expected_nodelist_count = 24;
-        private const string default_location = "Unknown Location";
-
-
-        /* Three image nodes make up the time of day indicator.
-         They all use the same texture, but the part_id determines
-         which part of the texture is used. So the node has one part id if
-         it's lit up (active) and another when it's dim (inactive).
-         Day Active = 9, Day Inactive = 4
-         Sunset Active = 10, Sunset Inactive = 5
-         Night Active = 11, Night Inactive = 6 */
-        private const int day_icon_lit = 9;
-        private const int sunset_icon_lit = 10;
-        private const int night_icon_lit = 11;
 
         public string AssemblyLocation { get => assemblyLocation; set => assemblyLocation = value; }
         private string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -103,7 +108,7 @@ namespace OceanFishin
 
         private void OnCommand(string command, string args)
         {
-            // in response to the slash command, just display our main ui
+            // In response to the slash command, just display our main ui.
             this.ui.Visible = true;
         }
 
@@ -119,6 +124,9 @@ namespace OceanFishin
         {
             string current_location = default_location;
             int current_time = (int)time.Unknown;
+            
+            // IKDFishingLog is the name of the blue window that appears during ocean fishing 
+            // that displays location, time, and what you caught.
             var addon_ptr = pi.Framework.Gui.GetUiObjectByName("IKDFishingLog", 1);
             if(addon_ptr == null || addon_ptr == IntPtr.Zero)
             {
@@ -126,8 +134,8 @@ namespace OceanFishin
             }
             AtkUnitBase* addon = (AtkUnitBase*)addon_ptr;
             
-            ////Without this check, the plugin might try to get a child node before the list was 
-            ///populated and cause a null pointer exception. 
+            // Without this check, the plugin might try to get a child node before the list was 
+            // populated and cause a null pointer exception. 
             if(addon->UldManager.NodeListCount  < expected_nodelist_count)
             {
                 return (current_location, current_time);
@@ -174,7 +182,7 @@ namespace OceanFishin
             {
                 (location, time) = get_data();
             }
-            //This usually isn't a problem but just here for safety.
+            // This usually isn't a problem but just here for safety.
             if(bait_dict.ContainsKey(location))
             {
                 this.ui.Draw(on_boat, location, time, bait_dict[location]);
