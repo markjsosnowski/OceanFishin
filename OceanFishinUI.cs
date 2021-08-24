@@ -96,20 +96,38 @@ namespace OceanFishin
             {
                 if (on_boat)
                 {
-                        ImGui.Text("You are aboard The Endeavor, sailing in " + location + " " + time + ".");
-                        ImGui.Text("The suggested bait for this area and time is: ");
-                        ImGui.Text("Starting Bait → " + bait[location]["starting"]);
-                        ImGui.Text("Fisher's Intuition → " + bait[location]["intuition"]);
-                        ImGui.Text("Spectral Current → " + bait[location][time]);
+                    ImGui.Text("You are aboard The Endeavor, sailing in " + location + " " + time + ".");
+                    ImGui.Text("The suggested bait for this area and time is: ");
+                    ImGui.Text("Starting Bait → " + bait[location]["starting"]);
+                    ImGui.Text("Fisher's Intuition → " + bait[location]["intuition"]);
+                    //This key in the json is formatted as "spectral time".
+                    ImGui.Text("Spectral Current → " + bait[location]["spectral "+time]);
+                    
+                    // Achievement fish are not found in every area, so we don't show them unless it's relevant.
                     if (bait["crabs"].ContainsKey(location))
                         ImGui.Text("Crabs → " + bait["crabs"][location]);
                     if (bait["sharks"].ContainsKey(location))
                         ImGui.Text("Sharks → " + bait["sharks"][location]);
+                    if (bait["mantas"].ContainsKey(location))
+                        ImGui.Text("Mantas → " + bait["mantas"][location]);
+                    if (bait["octopods"].ContainsKey(location))
+                        ImGui.Text("Octopods → " + bait["octopods"][location]);
+                    if (bait["jellyfish"].ContainsKey(location))
+                        ImGui.Text("Jellyfish → " + bait["jellyfish"][location]);
+                    if (bait["balloons"].ContainsKey(location))
+                        ImGui.Text("Balloons → " + bait["balloons"][location]);
+                    if (bait["dragons"].ContainsKey(location))
+                        ImGui.Text("Sea Dragons → " + bait["dragons"][location]);
+
+                    // Super rare fish only found in specific locations and times that use abnormal bait.
+                    // This key in the json is formatted as "location time".
                     if (bait["special"].ContainsKey(location + " " + time))
-                        ImGui.Text("Spectral Intuition → " + bait["special"][location + " " + time);
+                        ImGui.Text("Spectral Intuition → " + bait["special"][location + " " + time]);
                 }
                 else
                 {
+                    // This window appears if the command is issued when not part of the duty.
+                    // Nothing regarding bait will be loaded and the location and time are set to their defaults and not used.
                     ImGui.Text("I can only help you when you're part of the Ocean Fishing duty.");
                     ImGui.Text("Board The Endeavor to update the bait list.");
                 }
