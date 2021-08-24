@@ -38,8 +38,8 @@ namespace OceanFishin
         // This is the TerritoyType for the entire instance and does not
         // provide any information on fishing spots, routes, etc.
         private const int endevor_territory_type = 900;
-        private const string default_location = "The Northern Strait of Merlthor";
-        private const string default_time = "day";
+        private const string default_location = "Unknown Location";
+        private const string default_time = "Unknown Time";
 
         // These are known via addon inspector.
         private const int location_textnode_index = 20;
