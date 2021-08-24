@@ -62,20 +62,26 @@ namespace OceanFishin
                 return;
             }
 
-            ImGui.SetNextWindowSize(new Vector2(250, 150), ImGuiCond.FirstUseEver);
-            ImGui.SetNextWindowSizeConstraints(new Vector2(250, 150), new Vector2(float.MaxValue, float.MaxValue));
+            ImGui.SetNextWindowSize(new Vector2(495, 145), ImGuiCond.FirstUseEver);
+            ImGui.SetNextWindowSizeConstraints(new Vector2(255, 135), new Vector2(float.MaxValue, float.MaxValue));
 
 
             if (ImGui.Begin("Ocean Fishin'", ref this.visible, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
             {
                 if (on_boat)
                 {
-                    ImGui.Text("You are aboard The Endeavor, sailing in " + location + " " + time + ".");
+                    if(time == "day")
+                        ImGui.Text("You are aboard The Endeavor, sailing in " + location + " during the " + time + ".");
+                    else
+                        ImGui.Text("You are aboard The Endeavor, sailing in " + location + " at " + time + ".");
                     ImGui.Text("The suggested bait for this area and time is: ");
+                    
                     ImGui.Text("Starting Bait → " + bait[location]["starting"]);
                     ImGui.Text("Fisher's Intuition → " + bait[location]["intuition"]);
+                    
                     //This key in the json is formatted as "spectral time".
-                    ImGui.Text("Spectral Current → " + bait[location]["spectral "+time]);
+                    if(time != "Unknown Time")
+                        ImGui.Text("Spectral Current → " + bait[location]["spectral "+time]);
                     
                     // Achievement fish are not found in every area, so we don't show them unless it's relevant.
                     if (bait["crabs"].ContainsKey(location))

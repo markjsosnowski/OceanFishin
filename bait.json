@@ -5,7 +5,6 @@
     "spectral day": "Unknown Bait",
     "spectral sunset": "Unknown Bait",
     "spectral night": "Unknown Bait",
-    "Unknown Time": "Unknown Bait"
   },
 
   "Galadion Bay": {
@@ -14,7 +13,6 @@
     "spectral day": "Ragworm",
     "spectral sunset": "Plump Worm",
     "spectral night": "Krill",
-    "Unknown Time": "Unknown Bait"
   },
 
   "The Southern Strait of Merlthor": {
@@ -23,7 +21,6 @@
     "spectral day": "Krill",
     "spectral sunset": "Ragworm",
     "spectral night": "Plumpworm",
-    "Unknown Time": "Unknown Bait"
   },
 
   "The Northern Strait of Merlthor": {
@@ -32,7 +29,6 @@
     "spectral day": "Plump Worm",
     "spectral sunset": "Ragworm",
     "spectral night": "Krill",
-    "Unknown Time": "Unknown Bait"
   },
 
   "Rhotano Sea": {
@@ -41,7 +37,6 @@
     "spectral day": "Plump Worm",
     "spectral sunset": "Ragworm",
     "spectral night": "Krill",
-    "Unknown Time": "Unknown Bait"
   },
 
   "The Cieldalaes": {
@@ -50,7 +45,6 @@
     "spectral day": "Krill",
     "spectral sunset": "Plump Worm",
     "spectral night": "Krill",
-    "Unknown Time": "Unknown Bait"
   },
 
   "The Bloodbrine Sea": {
@@ -59,7 +53,6 @@
     "spectral day": "Ragworm",
     "spectral sunset": "Plump Worm",
     "spectral night": "Krill",
-    "Unknown Time": "Unknown Bait"
   },
 
   "The Rothlyt Sound": {
@@ -68,10 +61,10 @@
     "spectral day": "Krill",
     "spectral sunset": "Krill",
     "spectral night": "Krill",
-    "Unknown Time": "Unknown Bait"
   },
 
   "crabs": {
+    "Unknown Location": "This line should be slightly cut off."
   },
 
   "sharks": {
