@@ -108,7 +108,7 @@ namespace OceanFishin
             if ((int)pi.ClientState.TerritoryType == endevor_territory_type)
                 return true;
             else
-                return true;
+                return false;
         }
 
         private unsafe (string, string) get_data()
