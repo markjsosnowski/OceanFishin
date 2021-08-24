@@ -47,7 +47,7 @@ namespace OceanFishin
         {
         }
 
-        public void Draw(bool on_boat, string location, int time, int[] bait_list)
+        public void Draw(bool on_boat, string location, string time)
         {
             // This is our only draw handler attached to UIBuilder, so it needs to be
             // able to draw any windows we might have open.
@@ -59,8 +59,7 @@ namespace OceanFishin
             dynamic bait = null;
             if (on_boat)
                 bait = LoadJsonToDictionary("bait.json");
-            
-            DrawMainWindow(on_boat, location, time, bait_list);
+            DrawMainWindow(on_boat, location, time, bait);
         }
 
         private dynamic LoadJsonToDictionary(string filename)
@@ -81,7 +80,7 @@ namespace OceanFishin
             }
         }
 
-        public void DrawMainWindow(bool on_boat, string location, int time, int[] bait_list)
+        public void DrawMainWindow(bool on_boat, string location, string time, dynamic bait)
         {
             if (!Visible)
             {
@@ -96,11 +95,11 @@ namespace OceanFishin
             {
                 if (on_boat)
                 {
-                    ImGui.Text("You are aboard The Endeavor, sailing in " + location + " " + time_strings[time] + ".");
+                    ImGui.Text("You are aboard The Endeavor, sailing in " + location + " " + time + ".");
                     ImGui.Text("The suggested bait for this area and time is: ");
-                    ImGui.Text("Starting Bait → " + bait_strings[bait_list[(int)bait_index.starter]]);
-                    ImGui.Text("Fisher's Intution → " + bait_strings[bait_list[(int)bait_index.intuition]]);
-                    ImGui.Text("Spectral Current → " + bait_strings[bait_list[(int)bait_index.spectral_offset + time]]);
+                    ImGui.Text("Starting Bait → " + bait[location]["starter"]);
+                    ImGui.Text("Fisher's Intution → " + bait[location]["intuition"]);
+                    ImGui.Text("Spectral Current → " + bait[location][time]);
                 }
                 else
                 {

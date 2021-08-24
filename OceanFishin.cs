@@ -39,6 +39,7 @@ namespace OceanFishin
         // provide any information on fishing spots, routes, etc.
         private const int endevor_territory_type = 900;
         private const string default_location = "Unknown Location";
+        private const string default_time = "Unknown Time";
 
         // These are known via addon inspector.
         private const int location_textnode_index = 20;
@@ -120,10 +121,10 @@ namespace OceanFishin
                 return false;
         }
 
-        private unsafe (string, int) get_data()
+        private unsafe (string, string) get_data()
         {
             string current_location = default_location;
-            int current_time = (int)time.Unknown;
+            string current_time = default_time;
             
             // IKDFishingLog is the name of the blue window that appears during ocean fishing 
             // that displays location, time, and what you caught.
@@ -154,29 +155,29 @@ namespace OceanFishin
             return Marshal.PtrToStringAnsi(new IntPtr(text_node->NodeText.StringPtr));
         }
 
-        private unsafe int get_time(AtkUnitBase* ptr)
+        private unsafe string get_time(AtkUnitBase* ptr)
         {
             if (ptr == null)
-                return (int)time.Unknown;
+                return default_time;
             AtkResNode* res_node = ptr->UldManager.NodeList[day_imagenode_index];
             AtkImageNode* image_node = (AtkImageNode*)res_node;
             if (image_node->PartId == day_icon_lit)
-                return (int)time.Day;
+                return "day";
             res_node = ptr->UldManager.NodeList[sunset_imagenode_index];
             image_node = (AtkImageNode*)res_node;
             if (image_node->PartId == sunset_icon_lit)
-                return (int)time.Sunset;
+                return "sunset";
             res_node = ptr->UldManager.NodeList[night_imagenode_index];
             image_node = (AtkImageNode*)res_node;
             if (image_node->PartId == night_icon_lit)
-                return (int)time.Night;
-            return (int)time.Unknown;
+                return "night";
+            return default_time;
         }
 
         private void DrawUI()
         {
             string location = default_location;
-            int time = (int)OceanFishin.time.Unknown;
+            string time = default_time;
             on_boat = check_location();
             if (on_boat)
             {
@@ -185,7 +186,7 @@ namespace OceanFishin
             // This usually isn't a problem but just here for safety.
             if(bait_dict.ContainsKey(location))
             {
-                this.ui.Draw(on_boat, location, time, bait_dict[location]);
+                this.ui.Draw(on_boat, location, time);
             }
         }
     }

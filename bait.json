@@ -2,72 +2,72 @@
   "Unknown Location": {
     "starting": "Unknown Bait",
     "intuition": "Unknown Bait",
-    "Day": "Unknown Bait",
-    "Sunset": "Unknown Bait",
-    "Night": "Unknown Bait",
+    "day": "Unknown Bait",
+    "sunset": "Unknown Bait",
+    "night": "Unknown Bait",
     "Unknown Time": "Unknown Bait"
   },
 
   "Galadion Bay": {
     "starting": "Plump Worm",
     "intuition": "Krill",
-    "Day": "Ragworm",
-    "Sunset": "Plump Worm",
-    "Night": "Krill",
+    "day": "Ragworm",
+    "sunset": "Plump Worm",
+    "night": "Krill",
     "Unknown Time": "Unknown Bait"
   },
 
   "The Southern Strait of Merlthor": {
     "starting": "Krill",
     "intuition": "Plumpworm",
-    "Day": "Krill",
-    "Sunset": "Ragworm",
-    "Night": "Plumpworm",
+    "day": "Krill",
+    "sunset": "Ragworm",
+    "night": "Plumpworm",
     "Unknown Time": "Unknown Bait"
   },
 
   "The Northern Strait of Merlthor": {
     "starting": "Ragworm",
     "intuition": "Ragworm",
-    "Day": "Plump Worm",
-    "Sunset": "Ragworm",
-    "Night": "Krill",
+    "day": "Plump Worm",
+    "sunset": "Ragworm",
+    "night": "Krill",
     "Unknown Time": "Unknown Bait"
   },
 
   "Rhotano Sea": {
     "starting": "Plump Worm",
     "intuition": "Krill",
-    "Day": "Plump Worm",
-    "Sunset": "Ragworm",
-    "Night": "Krill",
+    "day": "Plump Worm",
+    "sunset": "Ragworm",
+    "night": "Krill",
     "Unknown Time": "Unknown Bait"
   },
 
   "The Cieldalaes": {
     "starting": "Ragworm",
     "intuition": "Krill",
-    "Day": "Krill",
-    "Sunset": "Plump Worm",
-    "Night": "Krill",
+    "day": "Krill",
+    "sunset": "Plump Worm",
+    "night": "Krill",
     "Unknown Time": "Unknown Bait"
   },
 
   "The Bloodbrine Sea": {
     "starting": "Krill",
     "intuition": "Krill",
-    "Day": "Ragworm",
-    "Sunset": "Plump Worm",
-    "Night": "Krill",
+    "day": "Ragworm",
+    "sunset": "Plump Worm",
+    "night": "Krill",
     "Unknown Time": "Unknown Bait"
   },
 
   "The Rothlyt Sound": {
     "starting": "Plump Worm",
     "intuition": "Ragworm",
-    "Day": "Krill",
-    "Sunset": "Krill",
-    "Night": "Krill",
+    "day": "Krill",
+    "sunset": "Krill",
+    "night": "Krill",
     "Unknown Time": "Unknown Bait"
   },
 
