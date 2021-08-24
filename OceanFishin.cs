@@ -58,29 +58,12 @@ namespace OceanFishin
         private const int sunset_icon_lit = 10;
         private const int night_icon_lit = 11;
 
-        // Format = Location : [Start, Intuition, Spectral Day, Spectral Sunset, Spectral Night]
-        // If time is known, that's time spectral can be accessed by index (time+2).
-        // This information is based on Zeke's Fishing Guidebook found here:
-        // https://docs.google.com/spreadsheets/d/17A_IIlSO0wWmn8I3-mrH6JRok0ZIxiNFaDH2MhN63cI/
-        private Dictionary<string, int[]> bait_dict = new Dictionary<string, int[]>()
-        {
-            {"Galadion Bay",                    new int[] {(int)bait.PlumpWorm, (int)bait.Krill, (int)bait.Ragworm, (int)bait.PlumpWorm, (int)bait .Krill} },
-            {"The Southern Strait of Merlthor", new int[] {(int)bait.Krill, (int)bait.PlumpWorm, (int)bait.Krill, (int)bait.Ragworm, (int)bait.PlumpWorm} },
-            {"The Northern Strait of Merlthor", new int[] {(int)bait.Ragworm, (int)bait.Ragworm, (int)bait.PlumpWorm, (int)bait.Ragworm, (int)bait.Krill} },
-            {"Rhotano Sea",                     new int[] {(int)bait.PlumpWorm, (int)bait.Krill, (int)bait.PlumpWorm, (int)bait.Ragworm, (int)bait.Krill} },
-            {"The Cieldalaes",                  new int[] {(int)bait.Ragworm, (int)bait.Krill, (int)bait.Krill, (int)bait.PlumpWorm, (int)bait.Krill} },
-            {"The Bloodbrine Sea",              new int[] {(int)bait.Krill, (int)bait.Krill, (int)bait.Ragworm, (int)bait.PlumpWorm, (int)bait.Krill} },
-            {"The Rothlyt Sound",               new int[] {(int)bait.PlumpWorm, (int)bait.Ragworm, (int)bait.Krill, (int)bait.Krill, (int)bait.Krill} },
-            {default_location,                  new int[] {(int)bait.Unknown, (int)bait.Unknown, (int)bait.Unknown, (int)bait.Unknown, (int)bait.Unknown} },
-        };
-
         static string codebase = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
         static UriBuilder uri = new UriBuilder(codebase);
         static string path = Uri.UnescapeDataString(uri.Path);
         string plugin_dir = System.IO.Path.GetDirectoryName(path);
-        
-        
-        
+
+
         public string AssemblyLocation { get => assemblyLocation; set => assemblyLocation = value; }
         private string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
 
@@ -187,14 +170,8 @@ namespace OceanFishin
             string time = default_time;
             on_boat = check_location();
             if (on_boat)
-            {
                 (location, time) = get_data();
-            }
-            // This usually isn't a problem but just here for safety.
-            if(bait_dict.ContainsKey(location))
-            {
-                this.ui.Draw(on_boat, location, time, plugin_dir);
-            }
+            this.ui.Draw(on_boat, location, time, plugin_dir);
         }
     }
 }

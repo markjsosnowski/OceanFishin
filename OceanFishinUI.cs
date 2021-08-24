@@ -9,32 +9,6 @@ namespace OceanFishin
 {
     internal class OceanFishinUI : IDisposable
     {
-        private Dictionary<int, string> bait_strings = new Dictionary<int, string>()
-        {
-            {-1, "Unknown Bait"},
-            {1, "Ragworm"},
-            {2, "Krill"},
-            {0, "Plump Worm"},
-        };
-        private Dictionary<int, string> time_strings = new Dictionary<int, string>()
-        {
-            {-1, "Unknown Time" },
-            {0, "during the Day" },
-            {1, "at Sunset" },
-            {2, "at Night"}
-        };
-
-        //TODO Achievement/Quest Fish (Crabs, Sharks, etc.) Helper
-
-        enum bait_index : int
-        {
-            starter = 0,
-            intuition = 1,
-            spectral_day = 2,
-            spectral_offset = 2,
-            spectral_sunset = 3,
-            spectral_night = 4
-        }
 
         // This extra bool exists for ImGui, since you can't ref a property
         private bool visible = false;
