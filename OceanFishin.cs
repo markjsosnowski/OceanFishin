@@ -74,6 +74,13 @@ namespace OceanFishin
             {default_location,                  new int[] {(int)bait.Unknown, (int)bait.Unknown, (int)bait.Unknown, (int)bait.Unknown, (int)bait.Unknown} },
         };
 
+        static string codebase = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
+        static UriBuilder uri = new UriBuilder(codebase);
+        static string path = Uri.UnescapeDataString(uri.Path);
+        string plugin_dir = System.IO.Path.GetDirectoryName(path);
+        
+        
+        
         public string AssemblyLocation { get => assemblyLocation; set => assemblyLocation = value; }
         private string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
 
@@ -118,7 +125,7 @@ namespace OceanFishin
             if ((int)pi.ClientState.TerritoryType == endevor_territory_type)
                 return true;
             else
-                return false;
+                return true;
         }
 
         private unsafe (string, string) get_data()
@@ -186,7 +193,7 @@ namespace OceanFishin
             // This usually isn't a problem but just here for safety.
             if(bait_dict.ContainsKey(location))
             {
-                this.ui.Draw(on_boat, location, time);
+                this.ui.Draw(on_boat, location, time, plugin_dir);
             }
         }
     }

@@ -71,30 +71,38 @@
     "Unknown Time": "Unknown Bait"
   },
 
+  "crabs": {
+    "Unknown Location": "Unknown Bait"
+  },
+
   "sharks": {
-    "Galadion Bay": {
-      "day": "Plump Worm",
-      "sunset": "Plump Worm",
-      "night": "Plump Worm"
-    }
+    "The Rothlyt Sound": "Unknown Bait"
+  },
+
+  "balloons": {
+
+  },
+
+  "mantas": {
+
   },
 
   "octopods": {
-    "Galadion Bay": {
-      "day": "Krill",
-      "sunset": "Krill",
-      "night": "Krill"
-    },
-    "The Northern Strait of Merlthor": {
-      "night": "Krill (Spectral Current Only)"
-    }
+
   },
 
-  "crabs": {
-    "The Northern Strait of Merlthor": {
-      "day": "Krill",
-      "sunset": "Krill",
-      "night": "Krill"
-    }
+  "dragons": {
+
+  },
+
+  "jellyfish": {
+
+  },
+
+  "special": {
+    "Galadion Bay Night": "Glowworm",
+    "Rhotano Sea Sunset": "Rat Tail",
+    "The Northern Strait of Merlthor Day": "Heavy Steel Jig",
+    "The Southern Strait of Merlthor Night": "Shrimp Cage Feeder"
   }
 }

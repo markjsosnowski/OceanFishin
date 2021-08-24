@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.IO;
 
 namespace OceanFishin
 {
@@ -47,7 +48,7 @@ namespace OceanFishin
         {
         }
 
-        public void Draw(bool on_boat, string location, string time)
+        public void Draw(bool on_boat, string location, string time, string path)
         {
             // This is our only draw handler attached to UIBuilder, so it needs to be
             // able to draw any windows we might have open.
@@ -58,15 +59,15 @@ namespace OceanFishin
 
             Dictionary<string, Dictionary<string, string>> bait = null;
             if (on_boat)
-                bait = LoadJsonToDictionary("bait.json");
+                bait = LoadJsonToDictionary("bait.json", path);
             DrawMainWindow(on_boat, location, time, bait);
         }
 
-        private Dictionary<string, Dictionary<string, string>> LoadJsonToDictionary(string filename)
+        private Dictionary<string, Dictionary<string, string>> LoadJsonToDictionary(string filename, string path)
         {
             try
             {
-                using (System.IO.StreamReader r = new System.IO.StreamReader(filename))
+                using (System.IO.StreamReader r = new System.IO.StreamReader(path+"\\"+filename))
                 {
                     string json = r.ReadToEnd();
                     Dictionary<string, Dictionary<string, string>> dict = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string,string>>>(json);
@@ -75,7 +76,7 @@ namespace OceanFishin
             }
             catch(System.IO.FileNotFoundException e)
             {
-                Dalamud.Plugin.PluginLog.Error("bait.json not found!", e);
+                Dalamud.Plugin.PluginLog.Error("bait.json not found in " + path, e);
                 return null;
             }
         }
@@ -95,11 +96,17 @@ namespace OceanFishin
             {
                 if (on_boat)
                 {
-                    ImGui.Text("You are aboard The Endeavor, sailing in " + location + " " + time + ".");
-                    ImGui.Text("The suggested bait for this area and time is: ");
-                    ImGui.Text("Starting Bait → " + bait[location]["starter"]);
-                    ImGui.Text("Fisher's Intution → " + bait[location]["intuition"]);
-                    ImGui.Text("Spectral Current → " + bait[location][time]);
+                        ImGui.Text("You are aboard The Endeavor, sailing in " + location + " " + time + ".");
+                        ImGui.Text("The suggested bait for this area and time is: ");
+                        ImGui.Text("Starting Bait → " + bait[location]["starting"]);
+                        ImGui.Text("Fisher's Intuition → " + bait[location]["intuition"]);
+                        ImGui.Text("Spectral Current → " + bait[location][time]);
+                    if (bait["crabs"].ContainsKey(location))
+                        ImGui.Text("Crabs → " + bait["crabs"][location]);
+                    if (bait["sharks"].ContainsKey(location))
+                        ImGui.Text("Sharks → " + bait["sharks"][location]);
+                    if (bait["special"].ContainsKey(location + " " + time))
+                        ImGui.Text("Spectral Intuition → " + bait["special"][location + " " + time);
                 }
                 else
                 {
