@@ -56,20 +56,20 @@ namespace OceanFishin
             // There are other ways to do this, but it is generally best to keep the number of
             // draw delegates as low as possible.
 
-            dynamic bait = null;
+            Dictionary<string, Dictionary<string, string>> bait = null;
             if (on_boat)
                 bait = LoadJsonToDictionary("bait.json");
             DrawMainWindow(on_boat, location, time, bait);
         }
 
-        private dynamic LoadJsonToDictionary(string filename)
+        private Dictionary<string, Dictionary<string, string>> LoadJsonToDictionary(string filename)
         {
             try
             {
                 using (System.IO.StreamReader r = new System.IO.StreamReader(filename))
                 {
                     string json = r.ReadToEnd();
-                    dynamic dict = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string,string>>>(json);
+                    Dictionary<string, Dictionary<string, string>> dict = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string,string>>>(json);
                     return dict;
                 }
             }
@@ -80,7 +80,7 @@ namespace OceanFishin
             }
         }
 
-        public void DrawMainWindow(bool on_boat, string location, string time, dynamic bait)
+        public void DrawMainWindow(bool on_boat, string location, string time, Dictionary<string, Dictionary<string, string>> bait)
         {
             if (!Visible)
             {
