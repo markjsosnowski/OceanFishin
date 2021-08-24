@@ -1,4 +1,5 @@
 ﻿using ImGuiNET;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -55,7 +56,29 @@ namespace OceanFishin
             // There are other ways to do this, but it is generally best to keep the number of
             // draw delegates as low as possible.
 
+            dynamic bait = null;
+            if (on_boat)
+                bait = LoadJsonToDictionary("bait.json");
+            
             DrawMainWindow(on_boat, location, time, bait_list);
+        }
+
+        private dynamic LoadJsonToDictionary(string filename)
+        {
+            try
+            {
+                using (System.IO.StreamReader r = new System.IO.StreamReader(filename))
+                {
+                    string json = r.ReadToEnd();
+                    dynamic dict = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string,string>>>(json);
+                    return dict;
+                }
+            }
+            catch(System.IO.FileNotFoundException e)
+            {
+                Dalamud.Plugin.PluginLog.Error("bait.json not found!", e);
+                return null;
+            }
         }
 
         public void DrawMainWindow(bool on_boat, string location, int time, int[] bait_list)
