@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Collections.Generic;
 
 namespace OceanFishin
-{
+{  
     public class OceanFishin : IDalamudPlugin
     {
         // When true, the location will always be set to The Northern Strait of Merlthor
@@ -51,10 +51,11 @@ namespace OceanFishin
         static string path = Uri.UnescapeDataString(uri.Path);
         string plugin_dir = System.IO.Path.GetDirectoryName(path);
 
-
+        
         public string AssemblyLocation { get => assemblyLocation; set => assemblyLocation = value; }
         private string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
 
+        
         public void Dispose()
         {
             this.ui.Dispose();
