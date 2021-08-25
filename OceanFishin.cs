@@ -6,31 +6,17 @@ using System.Runtime.InteropServices;
 using System.Collections.Generic;
 
 namespace OceanFishin
-{
+{  
     public class OceanFishin : IDalamudPlugin
     {
-        
-        enum time : int
-        {
-            Unknown  = -1,
-            Day = 0,
-            Sunset = 1,
-            Night = 2
-        }
-        enum bait : int
-        {
-            Unknown = -1,
-            PlumpWorm = 0,
-            Ragworm = 1,
-            Krill = 2
-        }
+        // When true, the location will always be set to The Northern Strait of Merlthor
+        // time will always be set to Day and it will always assume you are on the boat.
+        private bool debug_mode = false;
         public string Name => "Ocean Fishin'";
-       
+
         private const string command_name = "/oceanfishin";
         private const string alt_command_1 = "/oceanfishing";
         private const string alt_command_2 = "/bait";
-
-        private bool on_boat = false;
 
         private DalamudPluginInterface pi;
         private OceanFishinUI ui;
@@ -38,7 +24,10 @@ namespace OceanFishin
         // This is the TerritoyType for the entire instance and does not
         // provide any information on fishing spots, routes, etc.
         private const int endevor_territory_type = 900;
+        private bool on_boat = false;
+        
         private const string default_location = "Unknown Location";
+        public const string default_time = "Unknown Time";        
 
         // These are known via addon inspector.
         private const int location_textnode_index = 20;
@@ -57,25 +46,16 @@ namespace OceanFishin
         private const int sunset_icon_lit = 10;
         private const int night_icon_lit = 11;
 
-        // Format = Location : [Start, Intuition, Spectral Day, Spectral Sunset, Spectral Night]
-        // If time is known, that's time spectral can be accessed by index (time+2).
-        // This information is based on Zeke's Fishing Guidebook found here:
-        // https://docs.google.com/spreadsheets/d/17A_IIlSO0wWmn8I3-mrH6JRok0ZIxiNFaDH2MhN63cI/
-        private Dictionary<string, int[]> bait_dict = new Dictionary<string, int[]>()
-        {
-            {"Galadion Bay",                    new int[] {(int)bait.PlumpWorm, (int)bait.Krill, (int)bait.Ragworm, (int)bait.PlumpWorm, (int)bait .Krill} },
-            {"The Southern Strait of Merlthor", new int[] {(int)bait.Krill, (int)bait.PlumpWorm, (int)bait.Krill, (int)bait.Ragworm, (int)bait.PlumpWorm} },
-            {"The Northern Strait of Merlthor", new int[] {(int)bait.Ragworm, (int)bait.Ragworm, (int)bait.PlumpWorm, (int)bait.Ragworm, (int)bait.Krill} },
-            {"Rhotano Sea",                     new int[] {(int)bait.PlumpWorm, (int)bait.Krill, (int)bait.PlumpWorm, (int)bait.Ragworm, (int)bait.Krill} },
-            {"The Cieldalaes",                  new int[] {(int)bait.Ragworm, (int)bait.Krill, (int)bait.Krill, (int)bait.PlumpWorm, (int)bait.Krill} },
-            {"The Bloodbrine Sea",              new int[] {(int)bait.Krill, (int)bait.Krill, (int)bait.Ragworm, (int)bait.PlumpWorm, (int)bait.Krill} },
-            {"The Rothlyt Sound",               new int[] {(int)bait.PlumpWorm, (int)bait.Ragworm, (int)bait.Krill, (int)bait.Krill, (int)bait.Krill} },
-            {default_location,                  new int[] {(int)bait.Unknown, (int)bait.Unknown, (int)bait.Unknown, (int)bait.Unknown, (int)bait.Unknown} },
-        };
+        static string codebase = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
+        static UriBuilder uri = new UriBuilder(codebase);
+        static string path = Uri.UnescapeDataString(uri.Path);
+        string plugin_dir = System.IO.Path.GetDirectoryName(path);
 
+        
         public string AssemblyLocation { get => assemblyLocation; set => assemblyLocation = value; }
         private string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
 
+        
         public void Dispose()
         {
             this.ui.Dispose();
@@ -120,10 +100,10 @@ namespace OceanFishin
                 return false;
         }
 
-        private unsafe (string, int) get_data()
+        private unsafe (string, string) get_data()
         {
             string current_location = default_location;
-            int current_time = (int)time.Unknown;
+            string current_time = default_time;
             
             // IKDFishingLog is the name of the blue window that appears during ocean fishing 
             // that displays location, time, and what you caught.
@@ -154,39 +134,39 @@ namespace OceanFishin
             return Marshal.PtrToStringAnsi(new IntPtr(text_node->NodeText.StringPtr));
         }
 
-        private unsafe int get_time(AtkUnitBase* ptr)
+        private unsafe string get_time(AtkUnitBase* ptr)
         {
             if (ptr == null)
-                return (int)time.Unknown;
+                return default_time;
             AtkResNode* res_node = ptr->UldManager.NodeList[day_imagenode_index];
             AtkImageNode* image_node = (AtkImageNode*)res_node;
             if (image_node->PartId == day_icon_lit)
-                return (int)time.Day;
+                return "Day";
             res_node = ptr->UldManager.NodeList[sunset_imagenode_index];
             image_node = (AtkImageNode*)res_node;
             if (image_node->PartId == sunset_icon_lit)
-                return (int)time.Sunset;
+                return "Sunset";
             res_node = ptr->UldManager.NodeList[night_imagenode_index];
             image_node = (AtkImageNode*)res_node;
             if (image_node->PartId == night_icon_lit)
-                return (int)time.Night;
-            return (int)time.Unknown;
+                return "Night";
+            return default_time;
         }
 
         private void DrawUI()
         {
             string location = default_location;
-            int time = (int)OceanFishin.time.Unknown;
+            string time = default_time;
             on_boat = check_location();
             if (on_boat)
-            {
                 (location, time) = get_data();
-            }
-            // This usually isn't a problem but just here for safety.
-            if(bait_dict.ContainsKey(location))
+            if (debug_mode)
             {
-                this.ui.Draw(on_boat, location, time, bait_dict[location]);
+                on_boat = true;
+                location = "The Southern Strait of Merlthor";
+                time = "Night";
             }
+            this.ui.Draw(on_boat, location, time, plugin_dir);
         }
     }
 }

@@ -1,0 +1,198 @@
+﻿{
+  "Unknown Location": {
+    "normal": {
+      "starting": "Unknown Bait",
+      "intuition": "Unknown Bait"
+    },
+    "spectral": {
+      "Day": "Unknown Bait",
+      "Sunset": "Unknown Bait",
+      "Night": "Unknown Bait",
+      "Unknown Time": "Unknown Bait"
+    },
+    "crabs": {
+      "Day": "Unknown Bait",
+      "Night": "Unknown Bait"
+    }
+  },
+
+  "Galadion Bay": {
+    "normal": {
+      "starting": "Plump Worm",
+      "intuition": "Krill"
+    },
+    "spectral": {
+      "Day": "Ragworm",
+      "Sunset": "Plump Worm",
+      "Night": "Krill",
+      "Unknown Time": "Unknown Bait"
+    },
+    "special": {
+      "Night": "Glowworm"
+    },
+    "octopodes": {
+      "Day": "Krill",
+      "Sunset": "Krill",
+      "Night": "Krill"
+    },
+    "sharks": {
+      "Day": "Plump Worm",
+      "Sunset": "Plump Worm",
+      "Night": "Plump Worm"
+    }
+  },
+
+  "The Southern Strait of Merlthor": {
+    "normal": {
+      "starting": "Krill",
+      "intuition": "Plumpworm"
+    },
+    "spectral": {
+      "Day": "Krill",
+      "Sunset": "Ragworm",
+      "Night": "Plumpworm",
+      "Unknown Time": "Unknown Bait"
+    },
+    "jellyfish": {
+      "Day": "Ragworm",
+      "Sunset": "Ragworm (Normal and Spectral Current)",
+      "Night": "Ragworm"
+    },
+    "dragons": {
+      "Day": "Ragworm",
+      "Sunset": "Ragworm",
+      "Night": "Ragworm (Normal) / Mooch (Spectral Current)"
+    },
+    "special": {
+      "Night": "Shrimp Cage Feeder"
+    }
+  },
+
+  "The Northern Strait of Merlthor": {
+    "normal": {
+      "starting": "Ragworm",
+      "intuition": "Ragworm"
+    },
+    "spectral": {
+      "Day": "Plump Worm",
+      "Sunset": "Ragworm",
+      "Night": "Krill",
+      "Unknown Time": "Unknown Bait"
+    },
+    "octopodes": {
+      "Day": "Krill (Spectral Current Only)",
+      "Sunset": "Krill (Spectral Current Only)",
+      "Night": "Krill (Spectral Current Only)"
+    },
+    "dragons": {
+      "Sunset": "Ragworm (Spectral Current Only)"
+    },
+    "crabs": {
+      "Day": "Krill",
+      "Sunset": "Krill",
+      "Night": "Krill (Normal) / Ragworm (Spectral Current)"
+    },
+    "special": {
+      "Day": "Heavy Steel Jig"
+    }
+  },
+
+  "Rhotano Sea": {
+    "normal": {
+      "starting": "Plump Worm",
+      "intuition": "Krill"
+    },
+    "spectral": {
+      "Day": "Plump Worm",
+      "Sunset": "Ragworm",
+      "Night": "Krill",
+      "Unknown Time": "Unknown Bait"
+    },
+    "sharks": {
+      "Day": "Plump Worm (Normal) / Plump Worm (Spectral Current)",
+      "Sunset": "Plump Worm",
+      "Night": "Plump Worm"
+    },
+    "jellyfish": {
+      "Night": "Krill (Spectral Current Only)"
+    },
+    "balloons": {
+      "Day": "Ragworm",
+      "Sunset": "Ragworm",
+      "Night": "Ragworm"
+    },
+    "special": {
+      "Day": "Rat Tail"
+    }
+  },
+
+  "The Cieldalaes": {
+    "normal": {
+      "starting": "Ragworm",
+      "intuition": "Krill"
+    },
+    "spectral": {
+      "Day": "Krill",
+      "Sunset": "Plump Worm",
+      "Night": "Krill",
+      "Unknown Time": "Unknown Bait"
+    },
+    "balloons": {
+      "Day": "Ragworm",
+      "Sunset": "Ragworm",
+      "Night": "Ragworm"
+    },
+    "crabs": {
+      "Day": "Krill (Normal and Spectral Current)",
+      "Sunset": "Krill (Normal and Spectral Current)",
+      "Night": "Krill (Normal and Spectral Current)"
+    },
+    "mantas": {
+      "Day": "Plump Worm (Normal and Spectral Current)",
+      "Sunset": "Plump Worm (Normal and Spectral Current)",
+      "Night": "Plump Worm (Normal and Spectral Current)"
+    }
+  },
+
+  "The Bloodbrine Sea": {
+    "normal": {
+      "starting": "Krill",
+      "intuition": "Krill"
+    },
+    "spectral": {
+      "Day": "Ragworm",
+      "Sunset": "Plump Worm",
+      "Night": "Krill",
+      "Unknown Time": "Unknown Bait"
+    },
+    "crabs": {
+      "Day": "Ragworm (Normal and Spectral Current)",
+      "Sunset": "Ragworm",
+      "Night": "Ragworm"
+    },
+    "mantas": {
+      "Night": "Krill (Spectral Current Only)"
+    }
+  },
+
+  "The Rothlyt Sound": {
+    "normal": {
+      "starting": "Plump Worm",
+      "intuition": "Ragworm"
+    },
+    "spectral": {
+      "Day": "Krill",
+      "Sunset": "Krill",
+      "Night": "Krill",
+      "Unknown Time": "Unknown Bait"
+    },
+    "balloons": {
+      "Day": "Ragworm / Ragworm or Krill (Spectral Current)",
+      "Sunset": "Ragworm",
+      "Night": "Ragworm (Normal) / Ragworm or Krill (Spectral Current)"
+    },
+    "mantas": {
+      "Day": "Plump Worm (Spectral Current Only)"
+    }
+  }
+}
