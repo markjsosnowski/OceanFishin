@@ -11,7 +11,7 @@ namespace OceanFishin
     {
         public string Name => "Ocean Fishin'";
 
-        private bool debug_mode = false;
+        private bool debug_mode = true;
 
         private const string command_name = "/oceanfishin";
         private const string alt_command_1 = "/oceanfishing";

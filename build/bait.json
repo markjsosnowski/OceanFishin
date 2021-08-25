@@ -1,120 +1,165 @@
 ﻿{
   "Unknown Location": {
-    "starting": "Unknown Bait",
-    "intuition": "Unknown Bait",
-    "spectral day": "Unknown Bait",
-    "spectral sunset": "Unknown Bait",
-    "spectral night": "Unknown Bait",
-    "Unknown Time": "Unknown Bait"
+    "normal": {
+      "starting": "Unknown Bait",
+      "intuition": "Unknown Bait"
+    },
+    "spectral": {
+      "day": "Unknown Bait",
+      "sunset": "Unknown Bait",
+      "night": "Unknown Bait",
+      "Unknown Time": "Unknown Bait"
+    },
+    "crabs": {
+      "day": "Unknown Bait",
+      "night": "Unknown Bait"
+    }
   },
 
   "Galadion Bay": {
-    "starting": "Plump Worm",
-    "intuition": "Krill",
-    "spectral day": "Ragworm",
-    "spectral sunset": "Plump Worm",
-    "spectral night": "Krill",
-    "Unknown Time": "Unknown Bait"
+    "normal": {
+      "starting": "Plump Worm",
+      "intuition": "Krill"
+    },
+    "spectral": {
+      "day": "Ragworm",
+      "sunset": "Plump Worm",
+      "night": "Krill",
+      "Unknown Time": "Unknown Bait"
+    },
+    "special": {
+      "night": "Glowworm"
+    },
+    "octopods": {
+      "day": "Krill",
+      "sunset": "Krill",
+      "night": "Krill"
+    },
+    "sharks": {
+      "day": "Plump Worm",
+      "sunset": "Plump Worm",
+      "night": "Plump Worm"
+    }
   },
 
   "The Southern Strait of Merlthor": {
-    "starting": "Krill",
-    "intuition": "Plumpworm",
-    "spectral day": "Krill",
-    "spectral sunset": "Ragworm",
-    "spectral night": "Plumpworm",
-    "Unknown Time": "Unknown Bait"
+    "normal": {
+      "starting": "Krill",
+      "intuition": "Plumpworm"
+    },
+    "spectral": {
+      "day": "Krill",
+      "sunset": "Ragworm",
+      "night": "Plumpworm",
+      "Unknown Time": "Unknown Bait"
+    },
+    "jellyfish": {
+      "day": "Ragworm",
+      "sunset": "Ragworm",
+      "night": "Ragworm"
+    },
+    "special": {
+      "night": "Shrimp Cage Feeder"
+    }
   },
 
   "The Northern Strait of Merlthor": {
-    "starting": "Ragworm",
-    "intuition": "Ragworm",
-    "spectral day": "Plump Worm",
-    "spectral sunset": "Ragworm",
-    "spectral night": "Krill",
-    "Unknown Time": "Unknown Bait"
+    "normal": {
+      "starting": "Ragworm",
+      "intuition": "Ragworm"
+    },
+    "spectral": {
+      "day": "Plump Worm",
+      "sunset": "Ragworm",
+      "night": "Krill",
+      "Unknown Time": "Unknown Bait"
+    },
+
+    "octopods": {
+      "day": "Krill (Spectral Current Only)",
+      "sunset": "Krill (Spectral Current Only)",
+      "night": "Krill (Spectral Current Only)"
+    },
+    "crabs": {
+      "day": "Krill / Ragworm (Spectral Current Only)",
+      "sunset": "Krill / Ragworm (Spectral Current Only)",
+      "night": "Krill / Ragworm (Spectral Current Only)"
+    },
+    "special": {
+      "day": "Heavy Steel Jig"
+    }
   },
 
   "Rhotano Sea": {
-    "starting": "Plump Worm",
-    "intuition": "Krill",
-    "spectral day": "Plump Worm",
-    "spectral sunset": "Ragworm",
-    "spectral night": "Krill",
-    "Unknown Time": "Unknown Bait"
+    "normal": {
+      "starting": "Plump Worm",
+      "intuition": "Krill"
+    },
+    "spectral": {
+      "day": "Plump Worm",
+      "sunset": "Ragworm",
+      "night": "Krill",
+      "Unknown Time": "Unknown Bait"
+    },
+    "sharks": {
+      "day": "Plump Worm",
+      "sunset": "Plump Worm",
+      "night": "Plump Worm"
+    },
+    "jellyfish": {
+      "night": "Krill (Spectral Current Only)"
+    },
+    "special": {
+      "day": "Rat Tail"
+    }
   },
 
   "The Cieldalaes": {
-    "starting": "Ragworm",
-    "intuition": "Krill",
-    "spectral day": "Krill",
-    "spectral sunset": "Plump Worm",
-    "spectral night": "Krill",
-    "Unknown Time": "Unknown Bait"
+    "normal": {
+      "starting": "Ragworm",
+      "intuition": "Krill"
+    },
+    "spectral": {
+      "day": "Krill",
+      "sunset": "Plump Worm",
+      "night": "Krill",
+      "Unknown Time": "Unknown Bait"
+    },
+    "crabs": {
+      "day": "Krill",
+      "sunset": "Krill",
+      "night": "Krill"
+    }
   },
 
   "The Bloodbrine Sea": {
-    "starting": "Krill",
-    "intuition": "Krill",
-    "spectral day": "Ragworm",
-    "spectral sunset": "Plump Worm",
-    "spectral night": "Krill",
-    "Unknown Time": "Unknown Bait"
+    "normal": {
+      "starting": "Krill",
+      "intuition": "Krill"
+    },
+    "spectral": {
+      "day": "Ragworm",
+      "sunset": "Plump Worm",
+      "night": "Krill",
+      "Unknown Time": "Unknown Bait"
+    },
+    "crabs": {
+      "day": "Ragworm",
+      "sunset": "Ragworm",
+      "night": "Ragworm"
+    }
   },
 
   "The Rothlyt Sound": {
-    "starting": "Plump Worm",
-    "intuition": "Ragworm",
-    "spectral day": "Krill",
-    "spectral sunset": "Krill",
-    "spectral night": "Krill",
-    "Unknown Time": "Unknown Bait"
-  },
-
-  "octopods": {
-    "Galadion Bay": "Krill",
-    "The Northern Strait of Merlthor": "Krill (Spectral Current Only)"
-  },
-
-  "sharks": {
-    "Galadion Bay": "Plump Worm",
-    "Rhotano Sea": "Plump Worm"
-  },
-
-  "jellyfish": {
-    "The Southern Strait of Merlthor": "Ragworm",
-    "Rhotano Sea night": "Krill (Spectral Current Only)"
-  },
-
-  "dragons": {
-
-  },
-
-  "balloons": {
-
-  },
-
-
-  "crabs": {
-    "The Cieladales": "Krill",
-    "The Northern Strait of Merlthor": "Krill / Ragworm (Spectral Current Only)",
-    "The Bloodbrine Sea": "Ragworm"
-  },
-
-
-  "mantas": {
-
-  },
-
-
-
-
-
-
-  "special": {
-    "Galadion Bay night": "Glowworm",
-    "Rhotano Sea day": "Rat Tail",
-    "The Northern Strait of Merlthor day": "Heavy Steel Jig",
-    "The Southern Strait of Merlthor night": "Shrimp Cage Feeder"
+    "normal": {
+      "starting": "Plump Worm",
+      "intuition": "Ragworm"
+    },
+    "spectral": {
+      "day": "Krill",
+      "sunset": "Krill",
+      "night": "Krill",
+      "Unknown Time": "Unknown Bait"
+    }
   }
 }
