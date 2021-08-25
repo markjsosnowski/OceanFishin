@@ -65,6 +65,14 @@ namespace OceanFishin
                 return null;
             }
         }
+
+        private bool nested_key_exists(Dictionary<string, Dictionary<string, Dictionary<string, string>>> dictionary, string key1, string key2, string key3)
+        {
+            if (dictionary[key1].ContainsKey(key2))
+                if (dictionary[key1][key2].ContainsKey(key3))
+                    return true;
+            return false;
+        }
         
         public void DrawMainWindow(bool on_boat, string location, string time, Dictionary<string, Dictionary<string, Dictionary<string, string>>> bait)
         {
@@ -100,24 +108,30 @@ namespace OceanFishin
                         
                         // Achievement fish are not found in every area, so we don't show them unless it's relevant.
                         // TODO make if_nested_key_exists(dict, location, key1, key2)
-                        if (bait[location].ContainsKey(octopods) && bait[location][octopods].ContainsKey(time))
+                        if (nested_key_exists(bait, location, octopods, time))
                             ImGui.Text("Octopods → " + bait[location][octopods][time]);
-                        if (bait[location].ContainsKey(sharks) && bait[location][sharks].ContainsKey(time))
+                        
+                        if (nested_key_exists(bait, location, sharks, time))
                             ImGui.Text("Sharks → " + bait[location][sharks][time]);
-                        if (bait[location].ContainsKey(jellyfish) && bait[location][jellyfish].ContainsKey(time))
+                        
+                        if (nested_key_exists(bait, location, jellyfish, time))
                             ImGui.Text("Jellyfish → " + bait[location][jellyfish][time]);
-                        if (bait[location].ContainsKey(dragons) && bait[location][dragons].ContainsKey(time))
+                        
+                        if (nested_key_exists(bait, location, dragons, time))
                             ImGui.Text("Sea Dragons → " + bait[location][dragons][time]);
-                        if (bait[location].ContainsKey(balloons) && bait[location][balloons].ContainsKey(time))
-                            ImGui.Text("Sea Dragons → " + bait[location][balloons][time]);
-                        if (bait[location].ContainsKey(crabs) && bait[location][crabs].ContainsKey(time))
+                        
+                        if (nested_key_exists(bait, location, balloons, time))
+                            ImGui.Text("Balloons → " + bait[location][balloons][time]);
+                        
+                        if (nested_key_exists(bait, location, crabs, time))
                             ImGui.Text("Crabs → " + bait[location][crabs][time]);
-                        if (bait[location].ContainsKey(mantas) && bait[location][mantas].ContainsKey(time))
-                            ImGui.Text("Crabs → " + bait[location][mantas][time]);
+                        
+                        if (nested_key_exists(bait, location, mantas, time))
+                            ImGui.Text("Mantas → " + bait[location][mantas][time]);
                         
                         // Super rare fish only found in specific locations and times that use abnormal bait.
-                        if (bait[location].ContainsKey(special) && bait[location][special].ContainsKey(time))
-                            ImGui.Text("Crabs → " + bait[location][special][time]);
+                        if (nested_key_exists(bait, location, special, time))
+                            ImGui.Text("Spectral Intuition → " + bait[location][special][time]);
                     }
                     catch(KeyNotFoundException e)
                     {
