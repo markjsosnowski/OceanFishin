@@ -14,7 +14,7 @@ namespace OceanFishin
         private bool visible = false;
         private string default_time = "Unknown Time";
 
-        private const string octopods = "octopods";
+        private const string octopodes = "octopodes";
         private const string sharks = "sharks";
         private const string jellyfish = "jellyfish";
         private const string dragons = "dragons";
@@ -93,7 +93,7 @@ namespace OceanFishin
                     {
                         string location_and_time = location + " " + time;
                         
-                        if (time == "day")
+                        if (time == "Day")
                             ImGui.Text("You are aboard The Endeavor, sailing in " + location + " during the " + time + ".");
                         else
                             ImGui.Text("You are aboard The Endeavor, sailing in " + location + " at " + time + ".");
@@ -108,8 +108,8 @@ namespace OceanFishin
                         
                         // Achievement fish are not found in every area, so we don't show them unless it's relevant.
                         // TODO make if_nested_key_exists(dict, location, key1, key2)
-                        if (nested_key_exists(bait, location, octopods, time))
-                            ImGui.Text("Octopods → " + bait[location][octopods][time]);
+                        if (nested_key_exists(bait, location, octopodes, time))
+                            ImGui.Text("Octopods → " + bait[location][octopodes][time]);
                         
                         if (nested_key_exists(bait, location, sharks, time))
                             ImGui.Text("Sharks → " + bait[location][sharks][time]);
@@ -135,9 +135,11 @@ namespace OceanFishin
                     }
                     catch(KeyNotFoundException e)
                     {
+                        // Usually this pops on a loading screen but with this catch it won't crash and probably fix itself.
                         Dalamud.Plugin.PluginLog.Warning("A dictionary key was not found. This will probably correct itself.", e);
                         ImGui.Text("Please wait, I'm having trouble getting your information.");
                         ImGui.Text("If this window does not change soon, something broke.");
+                        ImGui.Text("Please screenshot this information if you submit a bug report:");
                         ImGui.Text("Location: " + location);
                         ImGui.Text("Time: " + time);
                     }  

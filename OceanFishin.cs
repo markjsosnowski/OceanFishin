@@ -9,15 +9,16 @@ namespace OceanFishin
 {
     public class OceanFishin : IDalamudPlugin
     {
-        public string Name => "Ocean Fishin'";
-
+        // When true, the location will always be set to The Northern Strait of Merlthor
+        // time will always be set to Day and it will always assume you are on the boat.
         private bool debug_mode = true;
+        public string Name => "Ocean Fishin'";
 
         private const string command_name = "/oceanfishin";
         private const string alt_command_1 = "/oceanfishing";
         private const string alt_command_2 = "/bait";
 
-        private bool on_boat = false;
+        
 
         private DalamudPluginInterface pi;
         private OceanFishinUI ui;
@@ -25,6 +26,9 @@ namespace OceanFishin
         // This is the TerritoyType for the entire instance and does not
         // provide any information on fishing spots, routes, etc.
         private const int endevor_territory_type = 900;
+        private bool on_boat = false;
+        
+        
         private const string default_location = "Unknown Location";
         private const string default_time = "Unknown Time";        
 
@@ -139,15 +143,15 @@ namespace OceanFishin
             AtkResNode* res_node = ptr->UldManager.NodeList[day_imagenode_index];
             AtkImageNode* image_node = (AtkImageNode*)res_node;
             if (image_node->PartId == day_icon_lit)
-                return "day";
+                return "Day";
             res_node = ptr->UldManager.NodeList[sunset_imagenode_index];
             image_node = (AtkImageNode*)res_node;
             if (image_node->PartId == sunset_icon_lit)
-                return "sunset";
+                return "Sunset";
             res_node = ptr->UldManager.NodeList[night_imagenode_index];
             image_node = (AtkImageNode*)res_node;
             if (image_node->PartId == night_icon_lit)
-                return "night";
+                return "Night";
             return default_time;
         }
 
@@ -162,7 +166,7 @@ namespace OceanFishin
             {
                 on_boat = true;
                 location = "The Northern Strait of Merlthor";
-                time = "day";
+                time = "Day";
             }
             this.ui.Draw(on_boat, location, time, plugin_dir);
         }

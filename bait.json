@@ -5,14 +5,14 @@
       "intuition": "Unknown Bait"
     },
     "spectral": {
-      "day": "Unknown Bait",
-      "sunset": "Unknown Bait",
-      "night": "Unknown Bait",
+      "Day": "Unknown Bait",
+      "Sunset": "Unknown Bait",
+      "Night": "Unknown Bait",
       "Unknown Time": "Unknown Bait"
     },
     "crabs": {
-      "day": "Unknown Bait",
-      "night": "Unknown Bait"
+      "Day": "Unknown Bait",
+      "Night": "Unknown Bait"
     }
   },
 
@@ -22,23 +22,23 @@
       "intuition": "Krill"
     },
     "spectral": {
-      "day": "Ragworm",
-      "sunset": "Plump Worm",
-      "night": "Krill",
+      "Day": "Ragworm",
+      "Sunset": "Plump Worm",
+      "Night": "Krill",
       "Unknown Time": "Unknown Bait"
     },
     "special": {
-      "night": "Glowworm"
+      "Night": "Glowworm"
     },
-    "octopods": {
-      "day": "Krill",
-      "sunset": "Krill",
-      "night": "Krill"
+    "octopodes": {
+      "Day": "Krill",
+      "Sunset": "Krill",
+      "Night": "Krill"
     },
     "sharks": {
-      "day": "Plump Worm",
-      "sunset": "Plump Worm",
-      "night": "Plump Worm"
+      "Day": "Plump Worm",
+      "Sunset": "Plump Worm",
+      "Night": "Plump Worm"
     }
   },
 
@@ -48,18 +48,18 @@
       "intuition": "Plumpworm"
     },
     "spectral": {
-      "day": "Krill",
-      "sunset": "Ragworm",
-      "night": "Plumpworm",
+      "Day": "Krill",
+      "Sunset": "Ragworm",
+      "Night": "Plumpworm",
       "Unknown Time": "Unknown Bait"
     },
     "jellyfish": {
-      "day": "Ragworm",
-      "sunset": "Ragworm",
-      "night": "Ragworm"
+      "Day": "Ragworm",
+      "Sunset": "Ragworm",
+      "Night": "Ragworm"
     },
     "special": {
-      "night": "Shrimp Cage Feeder"
+      "Night": "Shrimp Cage Feeder"
     }
   },
 
@@ -69,24 +69,24 @@
       "intuition": "Ragworm"
     },
     "spectral": {
-      "day": "Plump Worm",
-      "sunset": "Ragworm",
-      "night": "Krill",
+      "Day": "Plump Worm",
+      "Sunset": "Ragworm",
+      "Night": "Krill",
       "Unknown Time": "Unknown Bait"
     },
 
-    "octopods": {
-      "day": "Krill (Spectral Current Only)",
-      "sunset": "Krill (Spectral Current Only)",
-      "night": "Krill (Spectral Current Only)"
+    "octopodes": {
+      "Day": "Krill (Spectral Current Only)",
+      "Sunset": "Krill (Spectral Current Only)",
+      "Night": "Krill (Spectral Current Only)"
     },
     "crabs": {
-      "day": "Krill / Ragworm (Spectral Current Only)",
-      "sunset": "Krill / Ragworm (Spectral Current Only)",
-      "night": "Krill / Ragworm (Spectral Current Only)"
+      "Day": "Krill / Ragworm (Spectral Current Only)",
+      "Sunset": "Krill / Ragworm (Spectral Current Only)",
+      "Night": "Krill / Ragworm (Spectral Current Only)"
     },
     "special": {
-      "day": "Heavy Steel Jig"
+      "Day": "Heavy Steel Jig"
     }
   },
 
@@ -96,21 +96,21 @@
       "intuition": "Krill"
     },
     "spectral": {
-      "day": "Plump Worm",
-      "sunset": "Ragworm",
-      "night": "Krill",
+      "Day": "Plump Worm",
+      "Sunset": "Ragworm",
+      "Night": "Krill",
       "Unknown Time": "Unknown Bait"
     },
     "sharks": {
-      "day": "Plump Worm",
-      "sunset": "Plump Worm",
-      "night": "Plump Worm"
+      "Day": "Plump Worm",
+      "Sunset": "Plump Worm",
+      "Night": "Plump Worm"
     },
     "jellyfish": {
-      "night": "Krill (Spectral Current Only)"
+      "Night": "Krill (Spectral Current Only)"
     },
     "special": {
-      "day": "Rat Tail"
+      "Day": "Rat Tail"
     }
   },
 
@@ -120,15 +120,15 @@
       "intuition": "Krill"
     },
     "spectral": {
-      "day": "Krill",
-      "sunset": "Plump Worm",
-      "night": "Krill",
+      "Day": "Krill",
+      "Sunset": "Plump Worm",
+      "Night": "Krill",
       "Unknown Time": "Unknown Bait"
     },
     "crabs": {
-      "day": "Krill",
-      "sunset": "Krill",
-      "night": "Krill"
+      "Day": "Krill",
+      "Sunset": "Krill",
+      "Night": "Krill"
     }
   },
 
@@ -138,15 +138,15 @@
       "intuition": "Krill"
     },
     "spectral": {
-      "day": "Ragworm",
-      "sunset": "Plump Worm",
-      "night": "Krill",
+      "Day": "Ragworm",
+      "Sunset": "Plump Worm",
+      "Night": "Krill",
       "Unknown Time": "Unknown Bait"
     },
     "crabs": {
-      "day": "Ragworm",
-      "sunset": "Ragworm",
-      "night": "Ragworm"
+      "Day": "Ragworm",
+      "Sunset": "Ragworm",
+      "Night": "Ragworm"
     }
   },
 
@@ -156,9 +156,9 @@
       "intuition": "Ragworm"
     },
     "spectral": {
-      "day": "Krill",
-      "sunset": "Krill",
-      "night": "Krill",
+      "Day": "Krill",
+      "Sunset": "Krill",
+      "Night": "Krill",
       "Unknown Time": "Unknown Bait"
     }
   }
