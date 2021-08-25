@@ -9,23 +9,10 @@ namespace OceanFishin
 {
     public class OceanFishin : IDalamudPlugin
     {
-        
-        enum time : int
-        {
-            Unknown  = -1,
-            Day = 0,
-            Sunset = 1,
-            Night = 2
-        }
-        enum bait : int
-        {
-            Unknown = -1,
-            PlumpWorm = 0,
-            Ragworm = 1,
-            Krill = 2
-        }
         public string Name => "Ocean Fishin'";
-       
+
+        private bool debug_mode = false;
+
         private const string command_name = "/oceanfishin";
         private const string alt_command_1 = "/oceanfishing";
         private const string alt_command_2 = "/bait";
@@ -39,7 +26,7 @@ namespace OceanFishin
         // provide any information on fishing spots, routes, etc.
         private const int endevor_territory_type = 900;
         private const string default_location = "Unknown Location";
-        private const string default_time = "Unknown Time";
+        private const string default_time = "Unknown Time";        
 
         // These are known via addon inspector.
         private const int location_textnode_index = 20;
@@ -171,6 +158,12 @@ namespace OceanFishin
             on_boat = check_location();
             if (on_boat)
                 (location, time) = get_data();
+            if (debug_mode)
+            {
+                on_boat = true;
+                location = "The Northern Strait of Merlthor";
+                time = "day";
+            }
             this.ui.Draw(on_boat, location, time, plugin_dir);
         }
     }
