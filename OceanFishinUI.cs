@@ -70,39 +70,50 @@ namespace OceanFishin
             {
                 if (on_boat)
                 {
-                    if(time == "day")
-                        ImGui.Text("You are aboard The Endeavor, sailing in " + location + " during the " + time + ".");
-                    else
-                        ImGui.Text("You are aboard The Endeavor, sailing in " + location + " at " + time + ".");
-                    ImGui.Text("The suggested bait for this area and time is: ");
-                    
-                    ImGui.Text("Starting Bait → " + bait[location]["starting"]);
-                    ImGui.Text("Fisher's Intuition → " + bait[location]["intuition"]);
-                    
-                    //This key in the json is formatted as "spectral time".
-                    if(time != "Unknown Time")
-                        ImGui.Text("Spectral Current → " + bait[location]["spectral "+time]);
-                    
-                    // Achievement fish are not found in every area, so we don't show them unless it's relevant.
-                    if (bait["crabs"].ContainsKey(location))
-                        ImGui.Text("Crabs → " + bait["crabs"][location]);
-                    if (bait["sharks"].ContainsKey(location))
-                        ImGui.Text("Sharks → " + bait["sharks"][location]);
-                    if (bait["mantas"].ContainsKey(location))
-                        ImGui.Text("Mantas → " + bait["mantas"][location]);
-                    if (bait["octopods"].ContainsKey(location))
-                        ImGui.Text("Octopods → " + bait["octopods"][location]);
-                    if (bait["jellyfish"].ContainsKey(location))
-                        ImGui.Text("Jellyfish → " + bait["jellyfish"][location]);
-                    if (bait["balloons"].ContainsKey(location))
-                        ImGui.Text("Balloons → " + bait["balloons"][location]);
-                    if (bait["dragons"].ContainsKey(location))
-                        ImGui.Text("Sea Dragons → " + bait["dragons"][location]);
+                    try
+                    {
+                        if (time == "day")
+                            ImGui.Text("You are aboard The Endeavor, sailing in " + location + " during the " + time + ".");
+                        else
+                            ImGui.Text("You are aboard The Endeavor, sailing in " + location + " at " + time + ".");
+                        ImGui.Text("The suggested bait for this area and time is: ");
 
-                    // Super rare fish only found in specific locations and times that use abnormal bait.
-                    // This key in the json is formatted as "location time".
-                    if (bait["special"].ContainsKey(location + " " + time))
-                        ImGui.Text("Spectral Intuition → " + bait["special"][location + " " + time]);
+                        ImGui.Text("Starting Bait → " + bait[location]["starting"]);
+                        ImGui.Text("Fisher's Intuition → " + bait[location]["intuition"]);
+
+                        //This key in the json is formatted as "spectral time".
+                        if (time != "Unknown Time")
+                            ImGui.Text("Spectral Current → " + bait[location]["spectral " + time]);
+
+                        // Achievement fish are not found in every area, so we don't show them unless it's relevant.
+                        if (bait["crabs"].ContainsKey(location))
+                            ImGui.Text("Crabs → " + bait["crabs"][location]);
+                        if (bait["sharks"].ContainsKey(location))
+                            ImGui.Text("Sharks → " + bait["sharks"][location]);
+                        if (bait["mantas"].ContainsKey(location))
+                            ImGui.Text("Mantas → " + bait["mantas"][location]);
+                        if (bait["octopods"].ContainsKey(location))
+                            ImGui.Text("Octopods → " + bait["octopods"][location]);
+                        if (bait["jellyfish"].ContainsKey(location))
+                            ImGui.Text("Jellyfish → " + bait["jellyfish"][location]);
+                        if (bait["balloons"].ContainsKey(location))
+                            ImGui.Text("Balloons → " + bait["balloons"][location]);
+                        if (bait["dragons"].ContainsKey(location))
+                            ImGui.Text("Sea Dragons → " + bait["dragons"][location]);
+
+                        // Super rare fish only found in specific locations and times that use abnormal bait.
+                        // This key in the json is formatted as "location time".
+                        if (bait["special"].ContainsKey(location + " " + time))
+                            ImGui.Text("Spectral Intuition → " + bait["special"][location + " " + time]);
+                    }
+                    catch(KeyNotFoundException e)
+                    {
+                        Dalamud.Plugin.PluginLog.Warning("A dictionary key was not found. This will probably correct itself.", e);
+                        ImGui.Text("Please wait, I'm trying to get your information.");
+                        ImGui.Text("If this window does not change soon, something broke.");
+                        ImGui.Text("Location: " + location);
+                        ImGui.Text("Time: " + time);
+                    }  
                 }
                 else
                 {
