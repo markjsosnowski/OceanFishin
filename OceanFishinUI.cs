@@ -12,6 +12,17 @@ namespace OceanFishin
 
         // This extra bool exists for ImGui, since you can't ref a property
         private bool visible = false;
+        private string default_time = "Unknown Time";
+
+        private const string octopods = "octopods";
+        private const string sharks = "sharks";
+        private const string jellyfish = "jellyfish";
+        private const string dragons = "dragons";
+        private const string balloons = "balloons";
+        private const string crabs = "crabs";
+        private const string mantas = "mantas";
+        private const string special = "special";
+
         public bool Visible
         {
             get { return this.visible; }
@@ -31,20 +42,20 @@ namespace OceanFishin
             // There are other ways to do this, but it is generally best to keep the number of
             // draw delegates as low as possible.
 
-            Dictionary<string, Dictionary<string, string>> bait = null;
+            Dictionary<string, Dictionary<string, Dictionary<string, string>>> bait = null;
             if (on_boat)
                 bait = LoadJsonToDictionary("bait.json", path);
             DrawMainWindow(on_boat, location, time, bait);
         }
 
-        private Dictionary<string, Dictionary<string, string>> LoadJsonToDictionary(string filename, string path)
+        private Dictionary<string, Dictionary<string, Dictionary<string, string>>> LoadJsonToDictionary(string filename, string path)
         {
             try
             {
                 using (System.IO.StreamReader r = new System.IO.StreamReader(path+"\\"+filename))
                 {
                     string json = r.ReadToEnd();
-                    Dictionary<string, Dictionary<string, string>> dict = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string,string>>>(json);
+                    Dictionary<string, Dictionary<string, Dictionary<string, string>>> dict = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, Dictionary<string, string>>>>(json);
                     return dict;
                 }
             }
@@ -54,8 +65,8 @@ namespace OceanFishin
                 return null;
             }
         }
-
-        public void DrawMainWindow(bool on_boat, string location, string time, Dictionary<string, Dictionary<string, string>> bait)
+        
+        public void DrawMainWindow(bool on_boat, string location, string time, Dictionary<string, Dictionary<string, Dictionary<string, string>>> bait)
         {
             if (!Visible)
             {
@@ -72,44 +83,45 @@ namespace OceanFishin
                 {
                     try
                     {
+                        string location_and_time = location + " " + time;
+                        
                         if (time == "day")
                             ImGui.Text("You are aboard The Endeavor, sailing in " + location + " during the " + time + ".");
                         else
                             ImGui.Text("You are aboard The Endeavor, sailing in " + location + " at " + time + ".");
+                        
                         ImGui.Text("The suggested bait for this area and time is: ");
 
-                        ImGui.Text("Starting Bait → " + bait[location]["starting"]);
-                        ImGui.Text("Fisher's Intuition → " + bait[location]["intuition"]);
-
-                        //This key in the json is formatted as "spectral time".
-                        if (time != "Unknown Time")
-                            ImGui.Text("Spectral Current → " + bait[location]["spectral " + time]);
-
+                        ImGui.Text("Starting Bait → " + bait[location]["normal"]["starting"]);
+                        ImGui.Text("Fisher's Intuition → " + bait[location]["normal"]["intuition"]);
+                        
+                        if (time != default_time) // This won't currently cause a KeyNotFoundException but just for safety.
+                            ImGui.Text("Spectral Current → " + bait[location]["spectral"][time]);
+                        
                         // Achievement fish are not found in every area, so we don't show them unless it's relevant.
-                        if (bait["crabs"].ContainsKey(location))
-                            ImGui.Text("Crabs → " + bait["crabs"][location]);
-                        if (bait["sharks"].ContainsKey(location))
-                            ImGui.Text("Sharks → " + bait["sharks"][location]);
-                        if (bait["mantas"].ContainsKey(location))
-                            ImGui.Text("Mantas → " + bait["mantas"][location]);
-                        if (bait["octopods"].ContainsKey(location))
-                            ImGui.Text("Octopods → " + bait["octopods"][location]);
-                        if (bait["jellyfish"].ContainsKey(location))
-                            ImGui.Text("Jellyfish → " + bait["jellyfish"][location]);
-                        if (bait["balloons"].ContainsKey(location))
-                            ImGui.Text("Balloons → " + bait["balloons"][location]);
-                        if (bait["dragons"].ContainsKey(location))
-                            ImGui.Text("Sea Dragons → " + bait["dragons"][location]);
-
+                        if (bait[location].ContainsKey(octopods) && bait[location][octopods].ContainsKey(time))
+                            ImGui.Text("Octopods → " + bait[location][octopods][time]);
+                        if (bait[location].ContainsKey(sharks) && bait[location][sharks].ContainsKey(time))
+                            ImGui.Text("Sharks → " + bait[location][sharks][time]);
+                        if (bait[location].ContainsKey(jellyfish) && bait[location][jellyfish].ContainsKey(time))
+                            ImGui.Text("Jellyfish → " + bait[location][jellyfish][time]);
+                        if (bait[location].ContainsKey(dragons) && bait[location][dragons].ContainsKey(time))
+                            ImGui.Text("Sea Dragons → " + bait[location][dragons][time]);
+                        if (bait[location].ContainsKey(balloons) && bait[location][balloons].ContainsKey(time))
+                            ImGui.Text("Sea Dragons → " + bait[location][balloons][time]);
+                        if (bait[location].ContainsKey(crabs) && bait[location][crabs].ContainsKey(time))
+                            ImGui.Text("Crabs → " + bait[location][crabs][time]);
+                        if (bait[location].ContainsKey(mantas) && bait[location][mantas].ContainsKey(time))
+                            ImGui.Text("Crabs → " + bait[location][mantas][time]);
+                        
                         // Super rare fish only found in specific locations and times that use abnormal bait.
-                        // This key in the json is formatted as "location time".
-                        if (bait["special"].ContainsKey(location + " " + time))
-                            ImGui.Text("Spectral Intuition → " + bait["special"][location + " " + time]);
+                        if (bait[location].ContainsKey(special) && bait[location][special].ContainsKey(time))
+                            ImGui.Text("Crabs → " + bait[location][special][time]);
                     }
                     catch(KeyNotFoundException e)
                     {
                         Dalamud.Plugin.PluginLog.Warning("A dictionary key was not found. This will probably correct itself.", e);
-                        ImGui.Text("Please wait, I'm trying to get your information.");
+                        ImGui.Text("Please wait, I'm having trouble getting your information.");
                         ImGui.Text("If this window does not change soon, something broke.");
                         ImGui.Text("Location: " + location);
                         ImGui.Text("Time: " + time);
