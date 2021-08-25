@@ -4,12 +4,10 @@ A Dalamud plugin for FFXIV
 
 `/oceanfishin` opens a window to suggest baits while ocean fishing. 
 
-You also can use `/oceanfishing` and `/bait`.
+You also can use `/oceanfishing` or `/bait`.
 
-Currently Suggests
--Starting bait for spectral chance, based on the area.
--Bait to use with the Fisherman's Intuition buff, based on the area.
--Recommended bait for the spectral current, based on the area and time. 
-
-Planned Features
--Suggested bait to use to catch achievement fish (Sharks, Crabs, etc.) based on the area and time. 
+Suggests bait to use while in the ocean fishing duty:
+* Bait to use to catch fish that may trigger the spectral current
+* Bait to use when you have the Fisher's Intuition buff
+* Bait to use to catch certain types of achievement and mission fish
+* Bait to use to catch the exceptionally rare spectral intuition fish
