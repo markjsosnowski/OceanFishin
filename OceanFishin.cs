@@ -165,8 +165,8 @@ namespace OceanFishin
             if (debug_mode)
             {
                 on_boat = true;
-                location = "The Northern Strait of Merlthor";
-                time = "Day";
+                location = "The Southern Strait of Merlthor";
+                time = "Night";
             }
             this.ui.Draw(on_boat, location, time, plugin_dir);
         }
