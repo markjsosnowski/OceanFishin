@@ -99,6 +99,7 @@ namespace OceanFishin
                             ImGui.Text("Spectral Current → " + bait[location]["spectral"][time]);
                         
                         // Achievement fish are not found in every area, so we don't show them unless it's relevant.
+                        // TODO make if_nested_key_exists(dict, location, key1, key2)
                         if (bait[location].ContainsKey(octopods) && bait[location][octopods].ContainsKey(time))
                             ImGui.Text("Octopods → " + bait[location][octopods][time]);
                         if (bait[location].ContainsKey(sharks) && bait[location][sharks].ContainsKey(time))
