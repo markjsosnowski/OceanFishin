@@ -138,7 +138,7 @@ namespace OceanFishin
                         // Usually this pops on a loading screen but with this catch it won't crash and will usually fix itself.
                         Dalamud.Plugin.PluginLog.Warning("A dictionary key was not found. This will probably correct itself.", e);
                         ImGui.Text("Please wait, I'm having trouble getting your information.");
-                        ImGui.Text("If this window does not in a few seconds, something broke.");
+                        ImGui.Text("If this window does not update in a few seconds, something broke.");
                         ImGui.Text("Please screenshot this information if you submit a bug report:");
                         ImGui.Text("Location: " + location);
                         ImGui.Text("Time: " + time);
