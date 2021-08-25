@@ -12,7 +12,7 @@ namespace OceanFishin
 
         // This extra bool exists for ImGui, since you can't ref a property
         private bool visible = false;
-        private string default_time = "Unknown Time";
+        private string default_time = OceanFishin.default_time;
 
         // Dictionary keys
         private const string octopodes = "octopodes";
@@ -108,7 +108,6 @@ namespace OceanFishin
                             ImGui.Text("Spectral Current → " + bait[location]["spectral"][time]);
                         
                         // Achievement fish are not found in every area, so we don't show them unless it's relevant.
-                        // TODO make if_nested_key_exists(dict, location, key1, key2)
                         if (nested_key_exists(bait, location, octopodes, time))
                             ImGui.Text("Octopods → " + bait[location][octopodes][time]);
                         
@@ -136,10 +135,10 @@ namespace OceanFishin
                     }
                     catch(KeyNotFoundException e)
                     {
-                        // Usually this pops on a loading screen but with this catch it won't crash and probably fix itself.
+                        // Usually this pops on a loading screen but with this catch it won't crash and will usually fix itself.
                         Dalamud.Plugin.PluginLog.Warning("A dictionary key was not found. This will probably correct itself.", e);
                         ImGui.Text("Please wait, I'm having trouble getting your information.");
-                        ImGui.Text("If this window does not change soon, something broke.");
+                        ImGui.Text("If this window does not in a few seconds, something broke.");
                         ImGui.Text("Please screenshot this information if you submit a bug report:");
                         ImGui.Text("Location: " + location);
                         ImGui.Text("Time: " + time);

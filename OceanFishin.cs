@@ -18,8 +18,6 @@ namespace OceanFishin
         private const string alt_command_1 = "/oceanfishing";
         private const string alt_command_2 = "/bait";
 
-        
-
         private DalamudPluginInterface pi;
         private OceanFishinUI ui;
 
@@ -28,9 +26,8 @@ namespace OceanFishin
         private const int endevor_territory_type = 900;
         private bool on_boat = false;
         
-        
         private const string default_location = "Unknown Location";
-        private const string default_time = "Unknown Time";        
+        public const string default_time = "Unknown Time";        
 
         // These are known via addon inspector.
         private const int location_textnode_index = 20;
