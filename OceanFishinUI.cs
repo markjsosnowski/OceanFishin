@@ -14,6 +14,7 @@ namespace OceanFishin
         private bool visible = false;
         private string default_time = "Unknown Time";
 
+        // Dictionary keys
         private const string octopodes = "octopodes";
         private const string sharks = "sharks";
         private const string jellyfish = "jellyfish";
