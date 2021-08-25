@@ -11,3 +11,5 @@ Suggests bait to use while in the ocean fishing duty:
 * Bait to use when you have the Fisher's Intuition buff
 * Bait to use to catch certain types of achievement and mission fish
 * Bait to use to catch the exceptionally rare spectral intuition fish
+
+Bait suggestion data based on [Zeke's Ocean Fishing Guidebook](https://docs.google.com/spreadsheets/d/17A_IIlSO0wWmn8I3-mrH6JRok0ZIxiNFaDH2MhN63cI/ "Google Sheets")
