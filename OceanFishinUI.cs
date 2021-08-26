@@ -69,9 +69,10 @@ namespace OceanFishin
 
         private bool nested_key_exists(Dictionary<string, Dictionary<string, Dictionary<string, string>>> dictionary, string key1, string key2, string key3)
         {
-            if (dictionary[key1].ContainsKey(key2))
-                if (dictionary[key1][key2].ContainsKey(key3))
-                    return true;
+            if(dictionary.ContainsKey(key1))
+                if (dictionary[key1].ContainsKey(key2))
+                    if (dictionary[key1][key2].ContainsKey(key3))
+                        return true;
             return false;
         }
         
@@ -101,10 +102,17 @@ namespace OceanFishin
                         
                         ImGui.Text("The suggested bait for this area and time is: ");
 
-                        ImGui.Text("Starting Bait → " + bait[location]["normal"]["starting"]);
-                        ImGui.Text("Fisher's Intuition → " + bait[location]["normal"]["intuition"]);
-                        
-                        if (time != default_time) // This won't currently cause a KeyNotFoundException but just for safety.
+                        if (bait.ContainsKey(location))
+                        {
+                            ImGui.Text("Starting Bait → " + bait[location]["normal"]["starting"]);
+                            ImGui.Text("Fisher's Intuition → " + bait[location]["normal"]["intuition"]);
+                        }
+                        else
+                        {
+                            ImGui.Text("Just a second, I'm still getting your location.");
+                        }
+                       
+                        if(nested_key_exists(bait, location, "spectral", time))
                             ImGui.Text("Spectral Current → " + bait[location]["spectral"][time]);
                         
                         // Achievement fish are not found in every area, so we don't show them unless it's relevant.
