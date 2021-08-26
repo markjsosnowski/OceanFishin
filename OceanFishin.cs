@@ -160,7 +160,7 @@ namespace OceanFishin
             on_boat = check_location();
             if (on_boat)
                 (location, time) = get_data();
-            if (debug_mode)
+            if (!on_boat && debug_mode)
             {
                 on_boat = true;
                 location = "The Southern Strait of Merlthor";
