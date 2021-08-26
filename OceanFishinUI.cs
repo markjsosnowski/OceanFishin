@@ -93,23 +93,21 @@ namespace OceanFishin
                 {
                     try
                     {
-                        string location_and_time = location + " " + time;
-                        
-                        if (time == "Day")
-                            ImGui.Text("You are aboard The Endeavor, sailing in " + location + " during the " + time + ".");
-                        else
-                            ImGui.Text("You are aboard The Endeavor, sailing in " + location + " at " + time + ".");
-                        
-                        ImGui.Text("The suggested bait for this area and time is: ");
 
                         if (bait.ContainsKey(location))
                         {
+                            if (time == "Day")
+                                ImGui.Text("You are aboard The Endeavor, sailing in " + location + " during the " + time + ".");
+                            else
+                                ImGui.Text("You are aboard The Endeavor, sailing in " + location + " at " + time + ".");
+                        
+                            ImGui.Text("The suggested bait for this area and time is: ");
                             ImGui.Text("Starting Bait → " + bait[location]["normal"]["starting"]);
                             ImGui.Text("Fisher's Intuition → " + bait[location]["normal"]["intuition"]);
                         }
                         else
                         {
-                            ImGui.Text("Just a second, I'm still getting your location.");
+                            ImGui.Text("Just a second, I'm still getting your location!");
                         }
                        
                         if(nested_key_exists(bait, location, "spectral", time))
