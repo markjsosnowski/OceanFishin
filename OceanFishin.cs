@@ -51,11 +51,10 @@ namespace OceanFishin
         static string path = Uri.UnescapeDataString(uri.Path);
         string plugin_dir = System.IO.Path.GetDirectoryName(path);
 
-        
+
         public string AssemblyLocation { get => assemblyLocation; set => assemblyLocation = value; }
         private string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
 
-        
         public void Dispose()
         {
             this.ui.Dispose();
@@ -106,7 +105,7 @@ namespace OceanFishin
             string current_time = default_time;
             
             // IKDFishingLog is the name of the blue window that appears during ocean fishing 
-            // that displays location, time, and what you caught.
+            // that displays location, time, and what you caught. This is known via Addon Inspector.
             var addon_ptr = pi.Framework.Gui.GetUiObjectByName("IKDFishingLog", 1);
             if(addon_ptr == null || addon_ptr == IntPtr.Zero)
             {
@@ -116,7 +115,7 @@ namespace OceanFishin
             
             // Without this check, the plugin might try to get a child node before the list was 
             // populated and cause a null pointer exception. 
-            if(addon->UldManager.NodeListCount  < expected_nodelist_count)
+            if(addon->UldManager.NodeListCount < expected_nodelist_count)
             {
                 return (current_location, current_time);
             }
@@ -159,10 +158,13 @@ namespace OceanFishin
             string time = default_time;
             on_boat = check_location();
             if (on_boat)
+            {
                 (location, time) = get_data();
-            if (!on_boat && debug_mode)
+            }
+            else if (debug_mode)
             {
                 on_boat = true;
+                // These can be changed to make sure the json is being read correctly.
                 location = "The Southern Strait of Merlthor";
                 time = "Night";
             }
