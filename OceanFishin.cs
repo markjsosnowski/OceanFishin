@@ -11,7 +11,7 @@ namespace OceanFishin
     {
         // When true, the location will always be set to The Northern Strait of Merlthor
         // time will always be set to Day and it will always assume you are on the boat.
-        private bool debug_mode = false;
+        private bool debug_mode = true;
         public string Name => "Ocean Fishin'";
 
         private const string command_name = "/oceanfishin";
@@ -165,8 +165,8 @@ namespace OceanFishin
             {
                 on_boat = true;
                 // These can be changed to make sure the json is being read correctly.
-                location = "The Southern Strait of Merlthor";
-                time = "Night";
+                location = "Does not exist";
+                time = "Nor this";
             }
             this.ui.Draw(on_boat, location, time, plugin_dir);
         }
