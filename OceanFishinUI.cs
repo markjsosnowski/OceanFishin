@@ -114,6 +114,9 @@ namespace OceanFishin
                             ImGui.Text("Just a second, I'm still getting your location!");
                         }
                        
+                        // location:"spectral":"Unknown Time" is still an existing key in the json for safety
+                        // but could probably be removed now that this check exists.
+                        // Will test this and remove it if this works.
                         if(nested_key_exists(bait, location, "spectral", time))
                             ImGui.Text("Spectral Current → " + bait[location]["spectral"][time]);
                         
