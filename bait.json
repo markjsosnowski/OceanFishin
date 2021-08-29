@@ -27,18 +27,18 @@
       "Night": "Krill",
       "Unknown Time": "Unknown Bait"
     },
-    "special": {
-      "Night": "Glowworm"
-    },
     "octopodes": {
-      "Day": "Krill",
-      "Sunset": "Krill",
-      "Night": "Krill"
+      "Day": "Krill (Normal and Spectral Current)",
+      "Sunset": "Krill (Normal and Spectral Current)",
+      "Night": "Krill (Normal and Spectral Current)"
     },
     "sharks": {
-      "Day": "Plump Worm",
-      "Sunset": "Plump Worm",
-      "Night": "Plump Worm"
+      "Day": "Plump Worm (Normal and Spectral Current)",
+      "Sunset": "Plump Worm (Normal and Spectral Current)",
+      "Night": "Plump Worm (Normal and Spectral Current)"
+    },
+    "special": {
+      "Night": "Glowworm"
     }
   },
 
@@ -54,13 +54,13 @@
       "Unknown Time": "Unknown Bait"
     },
     "jellyfish": {
-      "Day": "Ragworm",
+      "Day": "Ragworm (Normal Current Only)",
       "Sunset": "Ragworm (Normal and Spectral Current)",
-      "Night": "Ragworm"
+      "Night": "Ragworm (Normal Current Only)"
     },
     "dragons": {
-      "Day": "Ragworm",
-      "Sunset": "Ragworm",
+      "Day": "Ragworm (Normal Current Only)",
+      "Sunset": "Ragworm (Normal Current Only)",
       "Night": "Ragworm (Normal) / Mooch (Spectral Current)"
     },
     "special": {
@@ -88,8 +88,8 @@
       "Sunset": "Ragworm (Spectral Current Only)"
     },
     "crabs": {
-      "Day": "Krill",
-      "Sunset": "Krill",
+      "Day": "Krill (Normal Current Only)",
+      "Sunset": "Krill (Normal Current Only)",
       "Night": "Krill (Normal) / Ragworm (Spectral Current)"
     },
     "special": {
@@ -109,20 +109,20 @@
       "Unknown Time": "Unknown Bait"
     },
     "sharks": {
-      "Day": "Plump Worm (Normal) / Plump Worm (Spectral Current)",
-      "Sunset": "Plump Worm",
-      "Night": "Plump Worm"
+      "Day": "Plump Worm (Normal and Spectral Current)",
+      "Sunset": "Plump Worm (Normal Current Only)",
+      "Night": "Plump Worm (Normal Current Only)"
     },
     "jellyfish": {
       "Night": "Krill (Spectral Current Only)"
     },
     "balloons": {
-      "Day": "Ragworm",
-      "Sunset": "Ragworm",
-      "Night": "Ragworm"
+      "Day": "Ragworm (Normal and Spectral Current)",
+      "Sunset": "Ragworm (Normal and Spectral Current)",
+      "Night": "Ragworm (Normal and Spectral Current)"
     },
     "special": {
-      "Day": "Rat Tail"
+      "Sunset": "Rat Tail"
     }
   },
 
@@ -138,9 +138,9 @@
       "Unknown Time": "Unknown Bait"
     },
     "balloons": {
-      "Day": "Ragworm",
-      "Sunset": "Ragworm",
-      "Night": "Ragworm"
+      "Day": "Ragworm (Normal and Spectral Current)",
+      "Sunset": "Ragworm (Normal and Spectral Current)",
+      "Night": "Ragworm (Normal and Spectral Current)"
     },
     "crabs": {
       "Day": "Krill (Normal and Spectral Current)",
@@ -151,6 +151,9 @@
       "Day": "Plump Worm (Normal and Spectral Current)",
       "Sunset": "Plump Worm (Normal and Spectral Current)",
       "Night": "Plump Worm (Normal and Spectral Current)"
+    },
+    "special": {
+      "Night": "Squid Strip"
     }
   },
 
@@ -167,11 +170,19 @@
     },
     "crabs": {
       "Day": "Ragworm (Normal and Spectral Current)",
-      "Sunset": "Ragworm",
-      "Night": "Ragworm"
+      "Sunset": "Ragworm (Normal Current Only)",
+      "Night": "Ragworm (Normal Current Only)"
     },
     "mantas": {
       "Night": "Krill (Spectral Current Only)"
+    },
+    "sharks": {
+      "Day": "Plump Worm (Spectral Current Only)",
+      "Sunset": "Plump Worm (Spectral Current Only)",
+      "Night": "Plump Worm (Spectral Current Only)"
+    },
+    "special": {
+      "Day": "Pill Bug"
     }
   },
 
@@ -187,12 +198,15 @@
       "Unknown Time": "Unknown Bait"
     },
     "balloons": {
-      "Day": "Ragworm / Ragworm or Krill (Spectral Current)",
-      "Sunset": "Ragworm",
+      "Day": "Ragworm (Normal) / Ragworm or Krill (Spectral Current)",
+      "Sunset": "Ragworm (Normal Current Only)",
       "Night": "Ragworm (Normal) / Ragworm or Krill (Spectral Current)"
     },
     "mantas": {
       "Day": "Plump Worm (Spectral Current Only)"
+    },
+    "special": {
+      "Sunset": "Ragworm into Mooch Rothlyt Mussel"
     }
   }
 }
