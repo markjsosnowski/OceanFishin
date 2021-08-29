@@ -24,6 +24,8 @@ namespace OceanFishin
         private const string mantas = "mantas";
         private const string special = "special";
 
+        private const string json_filename = "bait.json";
+
         public bool Visible
         {
             get { return this.visible; }
@@ -45,7 +47,7 @@ namespace OceanFishin
 
             Dictionary<string, Dictionary<string, Dictionary<string, string>>> bait = null;
             if (on_boat)
-                bait = LoadJsonToDictionary("bait.json", path);
+                bait = LoadJsonToDictionary(json_filename, path);
             DrawMainWindow(on_boat, location, time, bait);
         }
 
@@ -62,8 +64,8 @@ namespace OceanFishin
             }
             catch(System.IO.FileNotFoundException e)
             {
-                Dalamud.Plugin.PluginLog.Error("bait.json not found in " + path, e);
-                return null;
+                Dalamud.Plugin.PluginLog.Error("Required file " + json_filename +" not found in " + path, e);
+                throw e;
             }
         }
 
@@ -107,6 +109,8 @@ namespace OceanFishin
                         }
                         else
                         {
+                            // This will sometimes show for a second when the window is open before loading into the duty
+                            // and will automatically update once the location is correctly set.
                             ImGui.Text("Just a second, I'm still getting your location!");
                         }
                        
@@ -141,13 +145,11 @@ namespace OceanFishin
                     }
                     catch(KeyNotFoundException e)
                     {
-                        // Usually this pops on a loading screen but with this catch it won't crash and will usually fix itself.
-                        Dalamud.Plugin.PluginLog.Warning("A dictionary key was not found. This will probably correct itself.", e);
+                        // Now that we check if location is a key immediately, this shouldn't pop unless the json is messed up.
+                        Dalamud.Plugin.PluginLog.Warning("A dictionary key was not found.", e);
                         ImGui.Text("Please wait, I'm having trouble getting your information.");
-                        ImGui.Text("If this window does not update in a few seconds, something broke.");
-                        ImGui.Text("Please screenshot this information if you submit a bug report:");
-                        ImGui.Text("Location: " + location);
-                        ImGui.Text("Time: " + time);
+                        ImGui.Text("If this window does not update in a few seconds, something is broken, and you should");
+                        ImGui.Text("reinstall the plugin.");
                     }  
                 }
                 else
@@ -156,6 +158,7 @@ namespace OceanFishin
                     // Nothing regarding bait will be loaded and the location and time are set to their defaults and not used.
                     ImGui.Text("I can only help you when you're part of the Ocean Fishing duty.");
                     ImGui.Text("Board The Endeavor to update the bait list.");
+                    // ImGui.Text("Did this plugin help you get a great score? Consider saying thank you with a donation:");
                 }
 
             }
