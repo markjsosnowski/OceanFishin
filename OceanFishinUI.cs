@@ -127,7 +127,7 @@ namespace OceanFishin
                             ImGui.Text("Sea Dragons → " + bait[location][dragons][time]);
                         
                         if (nested_key_exists(bait, location, balloons, time))
-                            ImGui.Text("Balloons → " + bait[location][balloons][time]);
+                            ImGui.Text("Balloons (Fugu) → " + bait[location][balloons][time]);
                         
                         if (nested_key_exists(bait, location, crabs, time))
                             ImGui.Text("Crabs → " + bait[location][crabs][time]);
