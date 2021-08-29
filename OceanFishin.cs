@@ -164,8 +164,8 @@ namespace OceanFishin
             {
                 on_boat = true;
                 // These can be changed to make sure the json is being read correctly.
-                location = "Does not exist";
-                time = "Nor this";
+                location = "The Cieldalaes";
+                time = "Unknown Time";
             }
             this.ui.Draw(on_boat, location, time, plugin_dir);
         }
