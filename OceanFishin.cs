@@ -10,7 +10,7 @@ namespace OceanFishin
     public class OceanFishin : IDalamudPlugin
     {
         // When true, the location will always be set to whatever is defined in the DrawUI() block.
-        private bool debug_mode = false;
+        //private bool debug_mode = false;
         public string Name => "Ocean Fishin'";
 
         private const string command_name = "/oceanfishin";
@@ -160,13 +160,13 @@ namespace OceanFishin
             {
                 (location, time) = get_data();
             }
-            else if (debug_mode)
+            /*else if (debug_mode)
             {
                 on_boat = true;
                 // These can be changed to make sure the json is being read correctly.
                 location = "Galadion Bay";
                 time = default_time;
-            }
+            }*/
             this.ui.Draw(on_boat, location, time, plugin_dir);
         }
     }
