@@ -25,8 +25,8 @@ namespace OceanFishin
         private const int endevor_territory_type = 900;
         private bool on_boat = false;
         
-        private const string default_location = "Unknown Location";
-        public const string default_time = "Unknown Time";        
+        private const string default_location = "location unknown";
+        public const string default_time = "time unknown";        
 
         // These are known via addon inspector.
         private const int location_textnode_index = 20;
@@ -164,8 +164,8 @@ namespace OceanFishin
             {
                 on_boat = true;
                 // These can be changed to make sure the json is being read correctly.
-                location = "The Cieldalaes";
-                time = "Unknown Time";
+                location = "Galadion Bay";
+                time = default_time;
             }
             this.ui.Draw(on_boat, location, time, plugin_dir);
         }

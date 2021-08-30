@@ -156,7 +156,7 @@ namespace OceanFishin
                     // This window appears if the command is issued when not part of the duty.
                     // Nothing regarding bait will be loaded and the location and time are set to their defaults and not used.
                     ImGui.Text("I can only help you when you're part of the Ocean Fishing duty.");
-                    ImGui.Text("Board The Endeavor to update the bait list.");
+                    ImGui.Text("Once you're aboard The Endeavor, the bait list will update.");
                     // ImGui.Text("Did this plugin help you get a great score? Consider saying thank you with a donation:");
                 }
 
