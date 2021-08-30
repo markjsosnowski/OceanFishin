@@ -12,7 +12,6 @@ namespace OceanFishin
 
         // This extra bool exists for ImGui, since you can't ref a property
         private bool visible = false;
-        private string default_time = OceanFishin.default_time;
 
         // Dictionary keys
         private const string octopodes = "octopodes";
@@ -109,14 +108,11 @@ namespace OceanFishin
                         }
                         else
                         {
-                            // This will sometimes show for a second when the window is open before loading into the duty
-                            // and will automatically update once the location is correctly set.
+                            // This will show for a second when the window is open when loading into the duty
+                            // and will automatically update once the location is set.
                             ImGui.Text("Just a second, I'm still getting your location!");
                         }
                        
-                        // location:"spectral":"Unknown Time" is still an existing key in the json for safety
-                        // but could probably be removed now that this check exists.
-                        // Will test this and remove it if this works.
                         if(nested_key_exists(bait, location, "spectral", time))
                             ImGui.Text("Spectral Current → " + bait[location]["spectral"][time]);
                         
@@ -149,8 +145,8 @@ namespace OceanFishin
                     catch(KeyNotFoundException e)
                     {
                         // Now that we check if location is a key immediately, this shouldn't pop unless the json is messed up.
-                        Dalamud.Plugin.PluginLog.Warning("A dictionary key was not found.", e);
-                        ImGui.Text("Please wait, I'm having trouble getting your information.");
+                        Dalamud.Plugin.PluginLog.Warning("A dictionary key was not found. Location was "+location+" and time was "+time, e);
+                        ImGui.Text("I'm having trouble getting your information.");
                         ImGui.Text("If this window does not update in a few seconds, something is broken, and you should");
                         ImGui.Text("reinstall the plugin.");
                     }  

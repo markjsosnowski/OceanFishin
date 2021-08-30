@@ -1,21 +1,4 @@
 ﻿{
-  "Unknown Location": {
-    "normal": {
-      "starting": "Unknown Bait",
-      "intuition": "Unknown Bait"
-    },
-    "spectral": {
-      "Day": "Unknown Bait",
-      "Sunset": "Unknown Bait",
-      "Night": "Unknown Bait",
-      "Unknown Time": "Unknown Bait"
-    },
-    "crabs": {
-      "Day": "Unknown Bait",
-      "Night": "Unknown Bait"
-    }
-  },
-
   "Galadion Bay": {
     "normal": {
       "starting": "Plump Worm",
@@ -54,14 +37,14 @@
       "Unknown Time": "Unknown Bait"
     },
     "jellyfish": {
-      "Day": "Ragworm (Normal Current Only)",
+      "Day": "Ragworm (Normal Waters Only)",
       "Sunset": "Ragworm (Normal and Spectral Current)",
-      "Night": "Ragworm (Normal Current Only)"
+      "Night": "Ragworm (Normal Waters Only)"
     },
     "dragons": {
-      "Day": "Ragworm (Normal Current Only)",
-      "Sunset": "Ragworm (Normal Current Only)",
-      "Night": "Ragworm (Normal) / Mooch (Spectral Current)"
+      "Day": "Ragworm (Normal Waters Only)",
+      "Sunset": "Ragworm (Normal Waters Only)",
+      "Night": "Ragworm (Normal Waters) / Mooch (Spectral Current)"
     },
     "special": {
       "Night": "Shrimp Cage Feeder"
@@ -88,9 +71,9 @@
       "Sunset": "Ragworm (Spectral Current Only)"
     },
     "crabs": {
-      "Day": "Krill (Normal Current Only)",
-      "Sunset": "Krill (Normal Current Only)",
-      "Night": "Krill (Normal) / Ragworm (Spectral Current)"
+      "Day": "Krill (Normal Waters Only)",
+      "Sunset": "Krill (Normal Waters Only)",
+      "Night": "Krill (Normal Waters) / Ragworm (Spectral Current)"
     },
     "special": {
       "Day": "Heavy Steel Jig"
@@ -110,8 +93,8 @@
     },
     "sharks": {
       "Day": "Plump Worm (Normal and Spectral Current)",
-      "Sunset": "Plump Worm (Normal Current Only)",
-      "Night": "Plump Worm (Normal Current Only)"
+      "Sunset": "Plump Worm (Normal Waters Only)",
+      "Night": "Plump Worm (Normal Waters Only)"
     },
     "jellyfish": {
       "Night": "Krill (Spectral Current Only)"
@@ -169,8 +152,8 @@
     },
     "crabs": {
       "Day": "Ragworm (Normal and Spectral Current)",
-      "Sunset": "Ragworm (Normal Current Only)",
-      "Night": "Ragworm (Normal Current Only)"
+      "Sunset": "Ragworm (Normal Waters Only)",
+      "Night": "Ragworm (Normal Waters Only)"
     },
     "mantas": {
       "Night": "Krill (Spectral Current Only)"
@@ -197,9 +180,9 @@
       "Unknown Time": "Unknown Bait"
     },
     "balloons": {
-      "Day": "Ragworm (Normal) / Ragworm or Krill (Spectral Current)",
-      "Sunset": "Ragworm (Normal Current Only)",
-      "Night": "Ragworm (Normal) / Ragworm or Krill (Spectral Current)"
+      "Day": "Ragworm (Normal Waters) / Ragworm or Krill (Spectral Current)",
+      "Sunset": "Ragworm (Normal Waters Only)",
+      "Night": "Ragworm (Normal Waters) / Ragworm or Krill (Spectral Current)"
     },
     "mantas": {
       "Day": "Plump Worm (Spectral Current Only)"
