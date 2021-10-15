@@ -7,7 +7,7 @@ using System.IO;
 
 namespace OceanFishin
 {
-    internal class OceanFishinUI : IDisposable
+    internal class OceanFishinUI: IDisposable
     {
 
         // This extra bool exists for ImGui, since you can't ref a property

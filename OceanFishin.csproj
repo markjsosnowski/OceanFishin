@@ -25,7 +25,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="OceanFishin - Copy.cs" />
+	  <Compile Remove="OceanFishinUI - Copy.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="DalamudPackager" Version="1.2.2" />
+		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
 		<Reference Include="Dalamud">
 			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\Dalamud.dll</HintPath>
 			<Private>false</Private>
