@@ -120,8 +120,8 @@ namespace OceanFishin
             {
                 (location, time) = get_data();
             }
-            //this.PluginUI.Draw(on_boat, location, time);
-            this.PluginUI.Draw(true, "The Southern Strait of Merlthor", "Day");
+            this.PluginUI.Draw(on_boat, location, time);
+            //this.PluginUI.Draw(true, "The Southern Strait of Merlthor", "Day");
         }
 
         private void DrawConfigUI()
