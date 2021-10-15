@@ -9,6 +9,7 @@ using System.Reflection;
 using Dalamud.Game.ClientState;
 using Dalamud.Game;
 using Dalamud.Game.Gui;
+using System.IO;
 
 namespace OceanFishin
 {  
@@ -16,9 +17,9 @@ namespace OceanFishin
     {
         public string Name => "Ocean Fishin'";
 
-        public const string commandName = "oceanfishin";
-        public const string altCommandName1 = "oceanfishing";
-        public const string altCommandName2 = "bait";
+        public const string commandName = "/oceanfishin";
+        public const string altCommandName1 = "/oceanfishing";
+        public const string altCommandName2 = "/bait";
              
         private DalamudPluginInterface PluginInterface { get; init; }
         private CommandManager CommandManager { get; init; }
@@ -53,24 +54,31 @@ namespace OceanFishin
         private const int sunset_icon_lit = 10;
         private const int night_icon_lit = 11;
 
-        static string codebase = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
-        static UriBuilder uri = new UriBuilder(codebase);
-        static string path = Uri.UnescapeDataString(uri.Path);
-        string plugin_dir = System.IO.Path.GetDirectoryName(path);
+        //static string codebase = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
+        //static UriBuilder uri = new UriBuilder(codebase);
+        //static string path = Uri.UnescapeDataString(uri.Path);
+        //string plugin_dir = System.IO.Path.GetDirectoryName(path);
 
         public OceanFishin(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
-            [RequiredVersion("1.0")] CommandManager commandManager)
+            [RequiredVersion("1.0")] CommandManager commandManager,            
+            [RequiredVersion("1.0")] ClientState clientState,
+            [RequiredVersion("1.0")] Framework framework,
+            [RequiredVersion("1.0")] GameGui gameGui)
         {
             this.PluginInterface = pluginInterface;
             this.CommandManager = commandManager;
+            this.ClientState = clientState;
+            this.Framework = framework;
+            this.GameGui = gameGui;
 
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             this.Configuration.Initialize(this.PluginInterface);
 
             var assemblyLocation = Assembly.GetExecutingAssembly().Location;
-            
-            this.PluginUI = new PluginUI(this.Configuration);
+            var json_path = Path.Combine(Path.GetDirectoryName(assemblyLocation)!, "bait.json");
+
+            this.PluginUI = new PluginUI(this.Configuration, json_path);
 
             this.CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
             {
@@ -112,7 +120,7 @@ namespace OceanFishin
             {
                 (location, time) = get_data();
             }
-            this.PluginUI.Draw(on_boat, location, time, plugin_dir);
+            this.PluginUI.Draw(on_boat, location, time);
         }
 
         private void DrawConfigUI()

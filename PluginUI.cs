@@ -11,6 +11,7 @@ namespace OceanFishin
     internal class PluginUI : IDisposable
     {
         private Configuration configuration;
+        private string json_path;
 
         // Dictionary keys
         private const string octopodes = "octopodes";
@@ -22,7 +23,7 @@ namespace OceanFishin
         private const string mantas = "mantas";
         private const string special = "special";
 
-        private const string json_filename = "bait.json";
+        //private const string json_filename = "bait.json";
 
         // This extra bool exists for ImGui, since you can't ref a property
         private bool visible = false;
@@ -44,12 +45,13 @@ namespace OceanFishin
         }
 
 
-        public PluginUI(Configuration configuration)
+        public PluginUI(Configuration configuration, string json_path)
         {
             this.configuration = configuration;
+            this.json_path = json_path;
         }
 
-        public void Draw(bool on_boat, string location, string time, string path)
+        public void Draw(bool on_boat, string location, string time)
         {
             // This is our only draw handler attached to UIBuilder, so it needs to be
             // able to draw any windows we might have open.
@@ -60,16 +62,16 @@ namespace OceanFishin
 
             Dictionary<string, Dictionary<string, Dictionary<string, string>>> bait = null;
             if (on_boat)
-                bait = LoadJsonToDictionary(json_filename, path);
+                bait = LoadJsonToDictionary();
             DrawMainWindow(on_boat, location, time, bait);
             DrawSettingsWindow();
         }
 
-        private Dictionary<string, Dictionary<string, Dictionary<string, string>>> LoadJsonToDictionary(string filename, string path)
+        private Dictionary<string, Dictionary<string, Dictionary<string, string>>> LoadJsonToDictionary()
         {
             try
             {
-                using (System.IO.StreamReader r = new System.IO.StreamReader(path+"\\"+filename))
+                using (System.IO.StreamReader r = new System.IO.StreamReader(this.json_path))
                 {
                     string json = r.ReadToEnd();
                     Dictionary<string, Dictionary<string, Dictionary<string, string>>> dict = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, Dictionary<string, string>>>>(json);
