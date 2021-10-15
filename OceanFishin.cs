@@ -76,9 +76,9 @@ namespace OceanFishin
             this.Configuration.Initialize(this.PluginInterface);
 
             var assemblyLocation = Assembly.GetExecutingAssembly().Location;
-            var json_path = Path.Combine(Path.GetDirectoryName(assemblyLocation)!, "bait.json");
+            //var json_path = Path.Combine(Path.GetDirectoryName(assemblyLocation)!, "bait.json");
 
-            this.PluginUI = new PluginUI(this.Configuration, json_path);
+            this.PluginUI = new PluginUI(this.Configuration);
 
             this.CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
             {
@@ -120,8 +120,8 @@ namespace OceanFishin
             {
                 (location, time) = get_data();
             }
-            this.PluginUI.Draw(on_boat, location, time);
-            //this.PluginUI.Draw(true, "Galadion Bay", "Night");
+            //this.PluginUI.Draw(on_boat, location, time);
+            this.PluginUI.Draw(true, "The Southern Strait of Merlthor", "Day");
         }
 
         private void DrawConfigUI()

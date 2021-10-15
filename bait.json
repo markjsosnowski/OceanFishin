@@ -61,8 +61,8 @@
     },
     "spectral": {
       "Day": "Plump Worm",
-      "Sunset": "Krill > Ragworm",
-      "Night": "Krill > Ragworm"
+      "Sunset": "Krill preferred over Ragworm",
+      "Night": "Krill preferred over Ragworm"
     },
     "octopodes": {
       "Night": "Krill (Spectral Current Only)"

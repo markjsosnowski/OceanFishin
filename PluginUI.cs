@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.IO;
 using Dalamud.Logging;
+using System.Net;
 
 namespace OceanFishin
 {
@@ -45,10 +46,9 @@ namespace OceanFishin
         }
 
 
-        public PluginUI(Configuration configuration, string json_path)
+        public PluginUI(Configuration configuration)
         {
             this.configuration = configuration;
-            this.json_path = json_path;
         }
 
         public void Draw(bool on_boat, string location, string time)
@@ -69,20 +69,20 @@ namespace OceanFishin
 
         private Dictionary<string, Dictionary<string, Dictionary<string, string>>> LoadJsonToDictionary()
         {
-            try
-            {
-                using (System.IO.StreamReader r = new System.IO.StreamReader(this.json_path))
+            //try
+           // {
+                using (WebClient wc = new WebClient())
                 {
-                    string json = r.ReadToEnd();
+                    var json = wc.DownloadString("https://markjsosnowski.github.io/FFXIV/bait.json");
                     Dictionary<string, Dictionary<string, Dictionary<string, string>>> dict = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, Dictionary<string, string>>>>(json);
                     return dict;
                 }
-            }
-            catch(System.IO.FileNotFoundException e)
-            {
-                PluginLog.Error("Required file " + json_path + " was not found.", e);
-                throw e;
-            }
+           // }
+           // catch(System.IO.FileNotFoundException e)
+           // {
+           //     PluginLog.Error("Required file " + json_path + " was not found.", e);
+                //throw e;
+            //}
         }
 
         private bool nested_key_exists(Dictionary<string, Dictionary<string, Dictionary<string, string>>> dictionary, string key1, string key2, string key3)

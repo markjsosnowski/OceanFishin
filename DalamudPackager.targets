@@ -5,6 +5,9 @@
                 ProjectDir="$(ProjectDir)"
                 OutputPath="$(OutputPath)"
                 AssemblyName="$(AssemblyName)"
-                MakeZip="true"/>
+                MakeZip="true"
+				Exclude="OceanFishin.deps.json;OceanFishin.pdb;"
+				/>
+		        
     </Target>
 </Project>
