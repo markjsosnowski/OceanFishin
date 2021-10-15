@@ -131,29 +131,32 @@ namespace OceanFishin
                        
                         if(nested_key_exists(bait, location, "spectral", time))
                             ImGui.Text("Spectral Current → " + bait[location]["spectral"][time]);
-                        
+
                         // Achievement fish are not found in every area, so we don't show them unless it's relevant.
-                        if (nested_key_exists(bait, location, octopodes, time))
-                            ImGui.Text("Octopods → " + bait[location][octopodes][time]);
-                        
-                        if (nested_key_exists(bait, location, sharks, time))
-                            ImGui.Text("Sharks → " + bait[location][sharks][time]);
-                        
-                        if (nested_key_exists(bait, location, jellyfish, time))
-                            ImGui.Text("Jellyfish → " + bait[location][jellyfish][time]);
-                        
-                        if (nested_key_exists(bait, location, dragons, time))
-                            ImGui.Text("Sea Dragons → " + bait[location][dragons][time]);
-                        
-                        if (nested_key_exists(bait, location, balloons, time))
-                            ImGui.Text("Balloons (Fugu) → " + bait[location][balloons][time]);
-                        
-                        if (nested_key_exists(bait, location, crabs, time))
-                            ImGui.Text("Crabs → " + bait[location][crabs][time]);
-                        
-                        if (nested_key_exists(bait, location, mantas, time))
-                            ImGui.Text("Mantas → " + bait[location][mantas][time]);
-                        
+                        if (this.configuration.include_achievement_fish)
+                        {
+                            if (nested_key_exists(bait, location, octopodes, time))
+                                ImGui.Text("Octopods → " + bait[location][octopodes][time]);
+
+                            if (nested_key_exists(bait, location, sharks, time))
+                                ImGui.Text("Sharks → " + bait[location][sharks][time]);
+
+                            if (nested_key_exists(bait, location, jellyfish, time))
+                                ImGui.Text("Jellyfish → " + bait[location][jellyfish][time]);
+
+                            if (nested_key_exists(bait, location, dragons, time))
+                                ImGui.Text("Sea Dragons → " + bait[location][dragons][time]);
+
+                            if (nested_key_exists(bait, location, balloons, time))
+                                ImGui.Text("Balloons (Fugu) → " + bait[location][balloons][time]);
+
+                            if (nested_key_exists(bait, location, crabs, time))
+                                ImGui.Text("Crabs → " + bait[location][crabs][time]);
+
+                            if (nested_key_exists(bait, location, mantas, time))
+                                ImGui.Text("Mantas → " + bait[location][mantas][time]);
+                        }
+
                         // Super rare fish only found in specific locations and times that use abnormal bait.
                         if (nested_key_exists(bait, location, special, time))
                             ImGui.Text("Spectral Intuition → " + bait[location][special][time]);
@@ -186,7 +189,26 @@ namespace OceanFishin
                 return;
             }
 
-            //TODO
+            ImGui.SetNextWindowSize(new Vector2(400, 100), ImGuiCond.Always);
+            if (ImGui.Begin("Ocean Fishin' Configuration", ref this.settingsVisible,
+                ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
+            {
+                var include_achievement_fish = this.configuration.include_achievement_fish;
+                if (ImGui.Checkbox("Recommend bait for mission/achievement fish.", ref include_achievement_fish))
+                {
+                    this.configuration.include_achievement_fish = include_achievement_fish;
+                    this.configuration.Save();
+                }
+
+               //var highlight_recommended_bait = this.configuration.highlight_recommended_bait;
+               /*if (ImGui.Checkbox("Highlight recommended bait in your tackle box.", ref highlight_recommended_bait))
+                {
+                    this.configuration.highlight_recommended_bait = highlight_recommended_bait;
+                    this.configuration.Save();
+                }*/
+            }
+            ImGui.End();
+
         }
     }
 }

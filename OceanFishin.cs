@@ -121,6 +121,7 @@ namespace OceanFishin
                 (location, time) = get_data();
             }
             this.PluginUI.Draw(on_boat, location, time);
+            //this.PluginUI.Draw(true, "Galadion Bay", "Night");
         }
 
         private void DrawConfigUI()
