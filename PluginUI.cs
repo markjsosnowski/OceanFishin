@@ -80,7 +80,7 @@ namespace OceanFishin
             }
             catch(System.IO.FileNotFoundException e)
             {
-                //Dalamud.Logging.Error("Required file " + json_filename +" not found in " + path, e);
+                PluginLog.Error("Required file " + json_path + " was not found.", e);
                 throw e;
             }
         }
@@ -119,22 +119,22 @@ namespace OceanFishin
                                 ImGui.Text("You are aboard The Endeavor, sailing in " + location + " at " + time + ".");
                         
                             ImGui.Text("The suggested bait for this area and time is: ");
-                            ImGui.Text("Starting Bait → " + bait[location]["normal"]["starting"]);
+                            ImGui.Text("Start with → " + bait[location]["normal"]["starting"]);
                             ImGui.Text("Fisher's Intuition → " + bait[location]["normal"]["intuition"]);
                         }
                         else
                         {
                             // This will show for a second when the window is open when loading into the duty
-                            // and will automatically update once the location is set.
+                            // and will automatically update once the location can actually be read.
                             ImGui.Text("Just a second, I'm still getting your location!");
                         }
                        
                         if(nested_key_exists(bait, location, "spectral", time))
                             ImGui.Text("Spectral Current → " + bait[location]["spectral"][time]);
-
-                        // Achievement fish are not found in every area, so we don't show them unless it's relevant.
+                                                
                         if (this.configuration.include_achievement_fish)
                         {
+                            // Achievement fish are not found in every area, so we don't show them unless it's relevant.
                             if (nested_key_exists(bait, location, octopodes, time))
                                 ImGui.Text("Octopods → " + bait[location][octopodes][time]);
 
@@ -163,11 +163,10 @@ namespace OceanFishin
                     }
                     catch(KeyNotFoundException e)
                     {
-                        // Now that we check if location is a key immediately, this shouldn't pop unless the json is messed up.
-                        //Dalamud.Plugin.PluginLog.Warning("A dictionary key was not found. Location was "+location+" and time was "+time, e);
-                        ImGui.Text("I'm having trouble getting your information.");
-                        ImGui.Text("If this window does not update in a few seconds, something is broken, and you should");
-                        ImGui.Text("reinstall the plugin.");
+                        // Now that we check if location is a key immediately, this shouldn't pop unless the json got messed up.
+                        PluginLog.Warning("A dictionary key was not found. Location was " + location + " and time was " + time, e);
+                        ImGui.Text("If this window does not update in a few seconds, something is broken.");
+                        ImGui.Text("Please contact the developer with your dalamund.log file.");
                     }  
                 }
                 else
