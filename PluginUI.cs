@@ -110,6 +110,28 @@ namespace OceanFishin
                         return true;
             return false;
         }
+
+        private string time_until_next_voyage()
+        {
+            DateTime now = DateTime.UtcNow;
+            int hour = now.Hour;
+            int minutes = now.Minute;
+            if(hour % 2 == 0)
+            {
+                if(minutes > 15)
+                {
+                    return "started " + minutes + "minutes ago.";
+                }
+                else
+                {
+                    return "will start in " + (120 - minutes) + "minutes.";
+                }
+            }
+            else
+            {
+                return "will start in " + (60 - minutes) + "minutes.";
+            }
+        }
         
         public void DrawMainWindow(bool on_boat, string location, string time, Dictionary<string, Dictionary<string, Dictionary<string, string>>> bait)
         {
@@ -192,6 +214,7 @@ namespace OceanFishin
                     // Nothing regarding bait will be loaded and the location and time are set to their defaults and not used.
                     ImGui.Text("This plugin is meant to be used during the Ocean Fishing duty.");
                     ImGui.Text("Once you're aboard The Endeavor, the bait list will automatically update.");
+                    ImGui.Text("The next voyage " + time_until_next_voyage());
                     ImGui.Separator();
                     ImGui.Text(donation_lines[this.random_index]);
                     ImGui.SameLine();
