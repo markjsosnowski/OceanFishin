@@ -28,7 +28,7 @@ namespace OceanFishin
         //private string json_path;
         //private const string json_filename = "bait.json";
 
-        private string[] donation_lines = new string[] {   "Rack up a good score on your last voyage?",
+        private string[] donation_lines = new string[] {    "Rack up a good score on your last voyage?",
                                                             "Finally get that shark mount?",
                                                             "Do women want you and fish fear you?",
                                                             "Land a big one on your last trip?",
@@ -62,6 +62,9 @@ namespace OceanFishin
         {
             Random random = new Random();
             this.configuration = configuration;
+            
+            // Since the window is constantly updated, we just pick one 
+            // random line and stick with it until the plugin is reloaded.
             this.random_index = random.Next(0, donation_lines.Length);
         }
 
@@ -223,7 +226,7 @@ namespace OceanFishin
                     this.configuration.Save();
                 }
 
-                // TODO
+                // TODO upcoming features
                //var highlight_recommended_bait = this.configuration.highlight_recommended_bait;
                /*if (ImGui.Checkbox("Highlight recommended bait in your tackle box.", ref highlight_recommended_bait))
                 {

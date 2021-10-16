@@ -1,7 +1,7 @@
 ﻿{
   "Galadion Bay": {
     "normal": {
-      "starting": "Krill > Plump Worm",
+      "starting": "Krill preferred over Plump Worm",
       "intuition": "Krill"
     },
     "spectral": {

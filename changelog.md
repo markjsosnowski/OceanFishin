@@ -1,6 +1,6 @@
 # Version 2.0-beta2
 * Bait list is now sourced from github pages [here](https://markjsosnowski.github.io/FFXIV/bait.json) 
-* Further updates to the bait list no longer require downloading an update
+* Further updates to the bait list will not require downloading an update
 
 # Version 2.0-beta1
 * Now compatible with Dalamud 6.0
