@@ -2,8 +2,8 @@
 	"name": "Ocean Fishin'",
 	"Author": "Sl0nderman",
 	"Punchline": "Suggests bait while ocean fishing.",
-	"Description": "Automatically recommends bait to use based on your ocean fishing route. \n Includes an option to recommend bait for mission fish.",
+	"Description": "Automatically recommends bait to use based on your ocean fishing route. \n You'll get suggestions for spectral fish, fisher's intuition buff, and missions.",
 	"RepoUrl": "https://github.com/markjsosnowski/OceanFishin",
 	"DalamudApiLevel": 4,
-	"Tags": ["fishing", "bait"]
+	"Tags": ["fishing", "bait", "duty"]
 }

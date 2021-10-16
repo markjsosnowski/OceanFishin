@@ -30,7 +30,7 @@ namespace OceanFishin
 
         private string[] donation_lines = new string[] {    "Rack up a good score on your last voyage?",
                                                             "Finally get that shark mount?",
-                                                            "Do women want you and fish fear you?",
+                                                            "Do women want you and fish fear you now?",
                                                             "Land a big one on your last trip?",
                                                             "Get the highest score on the whole ship?",
                                                             "A bad day fishing is better than a good day programming.",
@@ -118,18 +118,34 @@ namespace OceanFishin
             int minutes = now.Minute;
             if(hour % 2 == 0)
             {
+                if(minutes < 1)
+                {
+                    return "started less than a minute ago.";
+                }
+                if(minutes == 1)
+                {
+                    return "started 1 minute ago.";
+                }
+                // The duty registration is open for 15 minutes.
                 if(minutes < 15)
                 {
                     return "started " + minutes + " minutes ago.";
                 }
                 else
                 {
-                    return "will start in 1 hour, " + (60 - minutes) + " minutes.";
+                    return "will start in 1 hour, " + (60 - minutes) + " minute(s).";
                 }
             }
             else
             {
-                return "will start in " + (60 - minutes) + " minutes.";
+                if (minutes == 59)
+                {
+                    return "will start in 1 minute.";
+                }
+                else 
+                {
+                    return "will start in " + (60 - minutes) + " minutes.";
+                }
             }
         }
         
