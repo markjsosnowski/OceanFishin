@@ -118,9 +118,9 @@ namespace OceanFishin
             int minutes = now.Minute;
             if(hour % 2 == 0)
             {
-                if(minutes > 15)
+                if(minutes < 15)
                 {
-                    return "started " + minutes + "minutes ago.";
+                    return "started " + minutes + " minutes ago.";
                 }
                 else
                 {
