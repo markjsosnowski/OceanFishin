@@ -6,13 +6,14 @@ using System.Numerics;
 using System.IO;
 using Dalamud.Logging;
 using System.Net;
+using System.Diagnostics;
 
 namespace OceanFishin
 {
     internal class PluginUI : IDisposable
     {
         private Configuration configuration;
-        private string json_path;
+        private string bait_file_url = "https://markjsosnowski.github.io/FFXIV/bait.json";
 
         // Dictionary keys
         private const string octopodes = "octopodes";
@@ -24,7 +25,18 @@ namespace OceanFishin
         private const string mantas = "mantas";
         private const string special = "special";
 
+        //private string json_path;
         //private const string json_filename = "bait.json";
+
+        private string[] donation_lines = new string[] {   "Rack up a good score on your last voyage?",
+                                                            "Finally get that shark mount?",
+                                                            "Do women want you and fish fear you?",
+                                                            "Land a big one on your last trip?",
+                                                            "Get the highest score on the whole ship?",
+                                                            "A bad day fishing is better than a good day programming.",
+                                                            "Spare some krill?"};
+
+        private int random_index;
 
         // This extra bool exists for ImGui, since you can't ref a property
         private bool visible = false;
@@ -35,6 +47,7 @@ namespace OceanFishin
         }
 
         private bool settingsVisible = false;
+        
         public bool SettingsVisible
         {
             get { return this.settingsVisible; }
@@ -45,10 +58,11 @@ namespace OceanFishin
         {
         }
 
-
         public PluginUI(Configuration configuration)
         {
+            Random random = new Random();
             this.configuration = configuration;
+            this.random_index = random.Next(0, donation_lines.Length);
         }
 
         public void Draw(bool on_boat, string location, string time)
@@ -69,21 +83,21 @@ namespace OceanFishin
 
         private Dictionary<string, Dictionary<string, Dictionary<string, string>>> LoadJsonToDictionary()
         {
-            //try
-           // {
+            try
+            {
                 using (WebClient wc = new WebClient())
                 {
-                    var json = wc.DownloadString("https://markjsosnowski.github.io/FFXIV/bait.json");
+                    var json = wc.DownloadString(bait_file_url);
                     Dictionary<string, Dictionary<string, Dictionary<string, string>>> dict = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, Dictionary<string, string>>>>(json);
                     return dict;
                 }
-           // }
-           // catch(System.IO.FileNotFoundException e)
-           // {
-           //     PluginLog.Error("Required file " + json_path + " was not found.", e);
-                //throw e;
-            //}
-        }
+            }
+            catch (WebException e)
+            {
+                PluginLog.Error("There was a problem accessing the bait list. Is GitHub down?", e);
+                return null;
+            }
+    }
 
         private bool nested_key_exists(Dictionary<string, Dictionary<string, Dictionary<string, string>>> dictionary, string key1, string key2, string key3)
         {
@@ -173,9 +187,19 @@ namespace OceanFishin
                 {
                     // This window appears if the command is issued when not part of the duty.
                     // Nothing regarding bait will be loaded and the location and time are set to their defaults and not used.
-                    ImGui.Text("I can only help you when you're part of the Ocean Fishing duty.");
-                    ImGui.Text("Once you're aboard The Endeavor, the bait list will update.");
-                    // ImGui.Text("Did this plugin help you get a great score? Consider saying thank you with a donation:");
+                    ImGui.Text("This plugin is meant to be used during the Ocean Fishing duty.");
+                    ImGui.Text("Once you're aboard The Endeavor, the bait list will automatically update.");
+                    ImGui.Separator();
+                    ImGui.Text(donation_lines[this.random_index]);
+                    ImGui.SameLine();
+                    if (ImGui.Button("Donate"))
+                    {
+                        System.Diagnostics.Process.Start(new ProcessStartInfo
+                        {
+                            FileName = "https://ko-fi.com/sl0nderman",
+                            UseShellExecute = true
+                        });
+                    }                    
                 }
 
             }
@@ -199,6 +223,7 @@ namespace OceanFishin
                     this.configuration.Save();
                 }
 
+                // TODO
                //var highlight_recommended_bait = this.configuration.highlight_recommended_bait;
                /*if (ImGui.Checkbox("Highlight recommended bait in your tackle box.", ref highlight_recommended_bait))
                 {

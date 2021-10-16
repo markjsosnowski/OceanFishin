@@ -8,6 +8,5 @@
                 MakeZip="true"
 				Exclude="OceanFishin.deps.json;OceanFishin.pdb;"
 				/>
-		        
     </Target>
 </Project>

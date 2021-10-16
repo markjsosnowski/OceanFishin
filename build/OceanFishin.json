@@ -3,9 +3,13 @@
   "Name": "Ocean Fishin'",
   "InternalName": "OceanFishin",
   "AssemblyVersion": "2.0.0.0",
-  "Description": "Suggests bait while ocean fishing.",
+  "Description": "Automatically recommends bait to use based on your ocean fishing route. \n Includes an option to recommend bait for mission fish.",
   "ApplicableVersion": "any",
   "RepoUrl": "https://github.com/markjsosnowski/OceanFishin",
+  "Tags": [
+    "fishing",
+    "bait"
+  ],
   "DalamudApiLevel": 4,
   "LoadPriority": 0
 }
