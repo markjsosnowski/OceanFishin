@@ -124,12 +124,12 @@ namespace OceanFishin
                 }
                 else
                 {
-                    return "will start in " + (120 - minutes) + "minutes.";
+                    return "will start in 1 hour, " + (60 - minutes) + " minutes.";
                 }
             }
             else
             {
-                return "will start in " + (60 - minutes) + "minutes.";
+                return "will start in " + (60 - minutes) + " minutes.";
             }
         }
         
