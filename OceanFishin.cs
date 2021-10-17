@@ -146,7 +146,7 @@ namespace OceanFishin
             // IKDFishingLog is the name of the blue window that appears during ocean fishing 
             // that displays location, time, and what you caught. This is known via Addon Inspector.
             var addon_ptr = GameGui.GetAddonByName("IKDFishingLog", 1);
-            if (addon_ptr == null || addon_ptr == IntPtr.Zero)
+            if (addon_ptr == IntPtr.Zero)
             {
                 return (current_location, current_time);
             }

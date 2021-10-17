@@ -118,7 +118,9 @@ namespace OceanFishin
             int minutes = now.Minute;
             if(hour % 2 == 0)
             {
-                if(minutes < 1)
+
+                // The duty registration is open for 15 minutes.
+                if (minutes < 1)
                 {
                     return "started less than a minute ago.";
                 }
@@ -126,7 +128,6 @@ namespace OceanFishin
                 {
                     return "started 1 minute ago.";
                 }
-                // The duty registration is open for 15 minutes.
                 if(minutes < 15)
                 {
                     return "started " + minutes + " minutes ago.";
@@ -189,6 +190,8 @@ namespace OceanFishin
                                                 
                         if (this.configuration.include_achievement_fish)
                         {
+                            ImGui.Separator();
+
                             // Achievement fish are not found in every area, so we don't show them unless it's relevant.
                             if (nested_key_exists(bait, location, octopodes, time))
                                 ImGui.Text("Octopods → " + bait[location][octopodes][time]);
