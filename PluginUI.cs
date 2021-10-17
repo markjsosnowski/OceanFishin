@@ -28,6 +28,8 @@ namespace OceanFishin
         //private string json_path;
         //private const string json_filename = "bait.json";
 
+        Dictionary<string, Dictionary<string, Dictionary<string, string>>> bait_dictionary;
+
         private string[] donation_lines = new string[] {    "Rack up a good score on your last voyage?",
                                                             "Finally get that shark mount?",
                                                             "Do women want you and fish fear you now?",
@@ -66,6 +68,21 @@ namespace OceanFishin
             // Since the window is constantly updated, we just pick one 
             // random line and stick with it until the plugin is reloaded.
             this.random_index = random.Next(0, donation_lines.Length);
+
+            try
+            {
+                using (WebClient wc = new WebClient())
+                {
+                    var json = wc.DownloadString(bait_file_url);
+                    this.bait_dictionary = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, Dictionary<string, string>>>>(json);
+                }
+            }
+            catch (WebException e)
+            {
+                PluginLog.Error("There was a problem accessing the bait list. Is GitHub down?", e);
+                this.bait_dictionary = null;
+            }
+
         }
 
         public void Draw(bool on_boat, string location, string time)
@@ -77,14 +94,14 @@ namespace OceanFishin
             // There are other ways to do this, but it is generally best to keep the number of
             // draw delegates as low as possible.
 
-            Dictionary<string, Dictionary<string, Dictionary<string, string>>> bait = null;
-            if (on_boat)
-                bait = LoadJsonToDictionary();
-            DrawMainWindow(on_boat, location, time, bait);
+            //Dictionary<string, Dictionary<string, Dictionary<string, string>>> bait = null;
+            //if (on_boat)
+            //    bait = LoadJsonToDictionary();
+            DrawMainWindow(on_boat, location, time, this.bait_dictionary);
             DrawSettingsWindow();
         }
 
-        private Dictionary<string, Dictionary<string, Dictionary<string, string>>> LoadJsonToDictionary()
+        /*private Dictionary<string, Dictionary<string, Dictionary<string, string>>> LoadJsonToDictionary()
         {
             try
             {
@@ -100,7 +117,7 @@ namespace OceanFishin
                 PluginLog.Error("There was a problem accessing the bait list. Is GitHub down?", e);
                 return null;
             }
-    }
+    }*/
 
         private bool nested_key_exists(Dictionary<string, Dictionary<string, Dictionary<string, string>>> dictionary, string key1, string key2, string key3)
         {
