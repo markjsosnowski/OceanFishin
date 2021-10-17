@@ -227,10 +227,10 @@ namespace OceanFishin
                         ImGui.Text("Please contact the developer with your dalamund.log file.");
                     }  
                 }
+                
                 else
                 {
                     // This window appears if the command is issued when not part of the duty.
-                    // Nothing regarding bait will be loaded and the location and time are set to their defaults and not used.
                     ImGui.Text("This plugin is meant to be used during the Ocean Fishing duty.");
                     ImGui.Text("Once you're aboard The Endeavor, the bait list will automatically update.");
                     ImGui.Text("The next voyage " + time_until_next_voyage());
@@ -246,7 +246,6 @@ namespace OceanFishin
                         });
                     }                    
                 }
-
             }
         }
     

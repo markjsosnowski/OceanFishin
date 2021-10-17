@@ -54,10 +54,11 @@ namespace OceanFishin
         private const int sunset_icon_lit = 10;
         private const int night_icon_lit = 11;
 
-        //static string codebase = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
-        //static UriBuilder uri = new UriBuilder(codebase);
-        //static string path = Uri.UnescapeDataString(uri.Path);
-        //string plugin_dir = System.IO.Path.GetDirectoryName(path);
+        // This is not used anymore since the JSON is now pulled from GitHub pages.
+        /*static string codebase = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
+          static UriBuilder uri = new UriBuilder(codebase);
+          static string path = Uri.UnescapeDataString(uri.Path);
+          string plugin_dir = System.IO.Path.GetDirectoryName(path);*/
 
         public OceanFishin(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
