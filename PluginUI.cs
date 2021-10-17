@@ -174,7 +174,7 @@ namespace OceanFishin
                 return;
             }
 
-            ImGui.SetNextWindowSize(new Vector2(495, 145), ImGuiCond.FirstUseEver);
+            ImGui.SetNextWindowSize(new Vector2(505, 150), ImGuiCond.FirstUseEver);
             ImGui.SetNextWindowSizeConstraints(new Vector2(255, 135), new Vector2(float.MaxValue, float.MaxValue));
 
             if (ImGui.Begin("Ocean Fishin'", ref this.visible, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
