@@ -5,5 +5,7 @@
 	"Description": "Automatically recommends bait to use based on your ocean fishing route. \n You'll get suggestions for spectral fish, fisher's intuition buff, and missions.",
 	"RepoUrl": "https://github.com/markjsosnowski/OceanFishin",
 	"DalamudApiLevel": 4,
-	"Tags": ["fishing", "bait", "duty"]
+	"Tags": [ "fishing", "bait", "duty" ],
+	"IconUrl": "https://raw.githubusercontent.com/markjsosnowski/OceanFishin/master/icon.png",
+	"ImageUrls": ["https://raw.githubusercontent.com/markjsosnowski/OceanFishin/master/preview1.png"]
 }
