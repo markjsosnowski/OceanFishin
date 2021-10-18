@@ -1,32 +1,41 @@
 ﻿using Dalamud.Game.Command;
 using Dalamud.Plugin;
+using Dalamud.IoC;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using System;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
+using System.Reflection;
+using Dalamud.Game.ClientState;
+using Dalamud.Game;
+using Dalamud.Game.Gui;
+using System.IO;
 
 namespace OceanFishin
 {  
-    public class OceanFishin : IDalamudPlugin
+    public sealed class OceanFishin : IDalamudPlugin
     {
-        // When true, the location will always be set to whatever is defined in the DrawUI() block.
-        //private bool debug_mode = false;
         public string Name => "Ocean Fishin'";
 
-        private const string command_name = "/oceanfishin";
-        private const string alt_command_1 = "/oceanfishing";
-        private const string alt_command_2 = "/bait";
+        public const string commandName = "/oceanfishin";
+        public const string altCommandName1 = "/oceanfishing";
+        public const string altCommandName2 = "/bait";
+             
+        private DalamudPluginInterface PluginInterface { get; init; }
+        private CommandManager CommandManager { get; init; }
+        private Configuration Configuration { get; init; }
+        private PluginUI PluginUI { get; init; }
+        private ClientState ClientState { get; init; }
+        private Framework Framework { get; init; }
+        private GameGui GameGui { get; init; }
 
-        private DalamudPluginInterface pi;
-        private OceanFishinUI ui;
-
-        // This is the TerritoyType for the entire instance and does not
+        // This is the TerritoryType for the entire instance and does not
         // provide any information on fishing spots, routes, etc.
         private const int endevor_territory_type = 900;
         private bool on_boat = false;
-        
+
         private const string default_location = "location unknown";
-        public const string default_time = "time unknown";        
+        public const string default_time = "time unknown";
 
         // These are known via addon inspector.
         private const int location_textnode_index = 20;
@@ -45,54 +54,86 @@ namespace OceanFishin
         private const int sunset_icon_lit = 10;
         private const int night_icon_lit = 11;
 
-        static string codebase = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
-        static UriBuilder uri = new UriBuilder(codebase);
-        static string path = Uri.UnescapeDataString(uri.Path);
-        string plugin_dir = System.IO.Path.GetDirectoryName(path);
+        // This is not used anymore since the JSON is now pulled from GitHub pages.
+        /*static string codebase = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
+          static UriBuilder uri = new UriBuilder(codebase);
+          static string path = Uri.UnescapeDataString(uri.Path);
+          string plugin_dir = System.IO.Path.GetDirectoryName(path);*/
 
+        public OceanFishin(
+            [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
+            [RequiredVersion("1.0")] CommandManager commandManager,            
+            [RequiredVersion("1.0")] ClientState clientState,
+            [RequiredVersion("1.0")] Framework framework,
+            [RequiredVersion("1.0")] GameGui gameGui)
+        {
+            this.PluginInterface = pluginInterface;
+            this.CommandManager = commandManager;
+            this.ClientState = clientState;
+            this.Framework = framework;
+            this.GameGui = gameGui;
 
-        public string AssemblyLocation { get => assemblyLocation; set => assemblyLocation = value; }
-        private string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+            this.Configuration.Initialize(this.PluginInterface);
+
+            var assemblyLocation = Assembly.GetExecutingAssembly().Location;
+            //var json_path = Path.Combine(Path.GetDirectoryName(assemblyLocation)!, "bait.json");
+
+            this.PluginUI = new PluginUI(this.Configuration);
+
+            this.CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
+            {
+                HelpMessage = "Opens a window with bait suggestions for the ocean fishing duty."
+            });
+
+            this.CommandManager.AddHandler(altCommandName1, new CommandInfo(OnCommand)
+            {
+                HelpMessage = "Alias for /oceanfishin"
+            });
+
+            this.CommandManager.AddHandler(altCommandName2, new CommandInfo(OnCommand)
+            {
+                HelpMessage = "Alias for /oceanfishin"
+            });
+
+            this.PluginInterface.UiBuilder.Draw += DrawUI;
+            this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;       
+        }
 
         public void Dispose()
         {
-            this.ui.Dispose();
-            this.pi.CommandManager.RemoveHandler(command_name);
-            this.pi.CommandManager.RemoveHandler(alt_command_1);
-            this.pi.CommandManager.RemoveHandler(alt_command_2);
-            this.pi.Dispose();
+            this.PluginUI.Dispose();
+            this.CommandManager.RemoveHandler(commandName);
+            this.CommandManager.RemoveHandler(altCommandName1);
+            this.CommandManager.RemoveHandler(altCommandName2);
         }
-
-        public void Initialize(DalamudPluginInterface pluginInterface)
-        {
-            this.pi = pluginInterface ?? throw new ArgumentNullException(nameof(pluginInterface), "DalamudPluginInterface cannot be null");
-            this.ui = new OceanFishinUI();
-
-            this.pi.CommandManager.AddHandler(command_name, new CommandInfo(OnCommand)
-            {
-                HelpMessage = "Opens the ocean fishing bait chart."
-            }) ;
-            this.pi.CommandManager.AddHandler(alt_command_1, new CommandInfo(OnCommand)
-            {
-                HelpMessage = "Alias for /oceanfishin"
-            });
-            this.pi.CommandManager.AddHandler(alt_command_2, new CommandInfo(OnCommand)
-            {
-                HelpMessage = "Alias for /oceanfishin"
-            });
-
-            this.pi.UiBuilder.OnBuildUi += DrawUI;
-        }
-
         private void OnCommand(string command, string args)
         {
-            // In response to the slash command, just display our main ui.
-            this.ui.Visible = true;
+            this.PluginUI.Visible = true;
         }
+
+        private void DrawUI()
+        {
+            string location = default_location;
+            string time = default_time;
+            on_boat = check_location();
+            if (on_boat)
+            {
+                (location, time) = get_data();
+            }
+            this.PluginUI.Draw(on_boat, location, time);
+            //this.PluginUI.Draw(true, "The Southern Strait of Merlthor", "Day");
+        }
+
+        private void DrawConfigUI()
+        {
+            this.PluginUI.SettingsVisible = true;
+        }
+
 
         private bool check_location()
         {
-            if ((int)pi.ClientState.TerritoryType == endevor_territory_type)
+            if ((int)ClientState.TerritoryType == endevor_territory_type)
                 return true;
             else
                 return false;
@@ -102,19 +143,19 @@ namespace OceanFishin
         {
             string current_location = default_location;
             string current_time = default_time;
-            
+
             // IKDFishingLog is the name of the blue window that appears during ocean fishing 
             // that displays location, time, and what you caught. This is known via Addon Inspector.
-            var addon_ptr = pi.Framework.Gui.GetUiObjectByName("IKDFishingLog", 1);
-            if(addon_ptr == null || addon_ptr == IntPtr.Zero)
+            var addon_ptr = GameGui.GetAddonByName("IKDFishingLog", 1);
+            if (addon_ptr == IntPtr.Zero)
             {
                 return (current_location, current_time);
             }
             AtkUnitBase* addon = (AtkUnitBase*)addon_ptr;
-            
+
             // Without this check, the plugin might try to get a child node before the list was 
             // populated and cause a null pointer exception. 
-            if(addon->UldManager.NodeListCount < expected_nodelist_count)
+            if (addon->UldManager.NodeListCount < expected_nodelist_count)
             {
                 return (current_location, current_time);
             }
@@ -122,7 +163,7 @@ namespace OceanFishin
             current_time = get_time(addon);
             return (current_location, current_time);
         }
-        
+
         private unsafe string get_location(AtkUnitBase* ptr)
         {
             if (ptr == null)
@@ -149,25 +190,6 @@ namespace OceanFishin
             if (image_node->PartId == night_icon_lit)
                 return "Night";
             return default_time;
-        }
-
-        private void DrawUI()
-        {
-            string location = default_location;
-            string time = default_time;
-            on_boat = check_location();
-            if (on_boat)
-            {
-                (location, time) = get_data();
-            }
-            /*else if (debug_mode)
-            {
-                on_boat = true;
-                // These can be changed to make sure the json is being read correctly.
-                location = "Galadion Bay";
-                time = default_time;
-            }*/
-            this.ui.Draw(on_boat, location, time, plugin_dir);
         }
     }
 }

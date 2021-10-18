@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net472</TargetFramework>
-		<LangVersion>9.0</LangVersion>
+		<TargetFramework>net5.0-windows</TargetFramework>
+		<LangVersion>latest</LangVersion>
 		<PackageId>OceanFishin'</PackageId>
 		<Authors>Sl0nderman</Authors>
-		<Version>1.1.1</Version>
+		<Version>2.0</Version>
 	</PropertyGroup>
 	
 	<PropertyGroup>
@@ -25,7 +25,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="OceanFishin - Copy.cs" />
+	  <Compile Remove="OceanFishinUI - Copy.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="DalamudPackager" Version="1.2.2" />
+		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0">
+			<Private>false</Private>
+		</PackageReference>
 		<Reference Include="Dalamud">
 			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\Dalamud.dll</HintPath>
 			<Private>false</Private>
@@ -40,10 +48,6 @@
 		</Reference>
 		<Reference Include="Lumina">
 			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\Lumina.dll</HintPath>
-			<Private>false</Private>
-		</Reference>
-		<Reference Include="Lumina.Generated">
-			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\Lumina.Generated.dll</HintPath>
 			<Private>false</Private>
 		</Reference>
 		<Reference Include="Newtonsoft.Json">
@@ -88,7 +92,7 @@
 
 	<ItemGroup>
 	  <None Update="bait.json">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>
 	
