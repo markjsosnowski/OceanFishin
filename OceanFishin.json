@@ -6,6 +6,7 @@
 	"RepoUrl": "https://github.com/markjsosnowski/OceanFishin",
 	"DalamudApiLevel": 4,
 	"Tags": [ "fishing", "bait", "duty" ],
+	"CategoryTags": ["jobs"],
 	"IconUrl": "https://raw.githubusercontent.com/markjsosnowski/OceanFishin/master/icon.png",
-	"ImageUrls": ["https://raw.githubusercontent.com/markjsosnowski/OceanFishin/master/preview1.png"]
+	"ImageUrls": [ "https://raw.githubusercontent.com/markjsosnowski/OceanFishin/master/preview1.png" ]
 }
