@@ -135,34 +135,32 @@ namespace OceanFishin
             int minutes = now.Minute;
             if(hour % 2 == 0)
             {
-
-                // The duty registration is open for 15 minutes.
                 if (minutes < 1)
                 {
-                    return "started less than a minute ago.";
+                    return "The current voyage set sail less than a minute ago.";
                 }
                 if(minutes == 1)
                 {
-                    return "started 1 minute ago.";
+                    return "The current voyage set sail 1 minute ago.";
                 }
-                if(minutes < 15)
+                if (minutes < 15) // The duty registration is open for 15 minutes.  
                 {
-                    return "started " + minutes + " minutes ago.";
+                    return "The current voyage set sail " + minutes + " minutes ago.";
                 }
                 else
                 {
-                    return "will start in 1 hour, " + (60 - minutes) + " minute(s).";
+                    return "The next voyage will begin in 1 hour, " + (60 - minutes) + " minute(s).";
                 }
             }
             else
             {
                 if (minutes == 59)
                 {
-                    return "will start in 1 minute.";
+                    return "The next voyage will begin in 1 minute!";
                 }
                 else 
                 {
-                    return "will start in " + (60 - minutes) + " minutes.";
+                    return "The next voyage will begin in " + (60 - minutes) + " minutes.";
                 }
             }
         }
@@ -187,11 +185,11 @@ namespace OceanFishin
                         if (bait.ContainsKey(location))
                         {
                             if (time == "Day")
-                                ImGui.Text("You are aboard The Endeavor, sailing in " + location + " during the " + time + ".");
+                                ImGui.Text("The suggested bait for " + location + " during the day is:");
                             else
-                                ImGui.Text("You are aboard The Endeavor, sailing in " + location + " at " + time + ".");
+                                ImGui.Text("The suggested bait for " + location + " at " + time + "is:");
                         
-                            ImGui.Text("The suggested bait for this area and time is: ");
+                            //ImGui.Text("The suggested bait for this area and time is: ");
                             ImGui.Text("Start with → " + bait[location]["normal"]["starting"]);
                             ImGui.Text("Fisher's Intuition → " + bait[location]["normal"]["intuition"]);
                         }
@@ -250,7 +248,7 @@ namespace OceanFishin
                     // This window appears if the command is issued when not part of the duty.
                     ImGui.Text("This plugin is meant to be used during the Ocean Fishing duty.");
                     ImGui.Text("Once you're aboard The Endeavor, the bait list will automatically update.");
-                    ImGui.Text("The next voyage " + time_until_next_voyage());
+                    ImGui.Text(time_until_next_voyage());
                     ImGui.Separator();
                     ImGui.Text(donation_lines[this.random_index]);
                     ImGui.SameLine();
