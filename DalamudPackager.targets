@@ -6,7 +6,7 @@
                 OutputPath="$(OutputPath)"
                 AssemblyName="$(AssemblyName)"
                 MakeZip="true"
-				Exclude="OceanFishin.deps.json;OceanFishin.pdb;"
+				Exclude="OceanFishin.deps.json;OceanFishin.pdb;ref/OceanFishin.dll"
 				/>
     </Target>
 </Project>
