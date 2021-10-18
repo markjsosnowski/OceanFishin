@@ -30,4 +30,5 @@ The starting bait recommendation is the best chance for triggering the spectral 
 The Fisher's Intuition recommendation is the bait you need to catch special fish when you have the buff.
 The spectral current recommendation will provide the highest amount of points during a spectral current. 
 
-*Keep in mind that these are recommendatations based on statistics gathered over many fishing sessions; Nothing is a garunteed catch!*
+*These recommendatations based on statistics gathered over many fishing sessions; Nothing is a guaranteed catch!*
+Icon by [Temina](https://twitter.com/Pinecest "Twitter")
