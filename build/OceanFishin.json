@@ -12,5 +12,10 @@
     "duty"
   ],
   "DalamudApiLevel": 4,
-  "LoadPriority": 0
+  "LoadPriority": 0,
+  "ImageUrls": [
+    "https://raw.githubusercontent.com/markjsosnowski/OceanFishin/master/preview1.png"
+  ],
+  "IconUrl": "https://raw.githubusercontent.com/markjsosnowski/OceanFishin/master/icon.png",
+  "Punchline": "Suggests bait for ocean fishing."
 }
