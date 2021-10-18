@@ -1,4 +1,4 @@
-# Ocean Fishin'
+# ![icon](https://raw.githubusercontent.com/markjsosnowski/OceanFishin/master/icon.png) Ocean Fishin'
 
 A Dalamud plugin for FFXIV
 
@@ -17,7 +17,7 @@ While in the ocean fishing duty, this plugin suggests bait to use...
 * to catch the exceptionally rare spectral intuition fish.
 
 Bait suggestions are based on data from [Zeke's Ocean Fishing Guidebook](https://docs.google.com/spreadsheets/d/17A_IIlSO0wWmn8I3-mrH6JRok0ZIxiNFaDH2MhN63cI/ "Google Sheets"),
-[S’yahn Tia's Ocean Fishing Spreadsheet](https://docs.google.com/spreadsheets/d/1brCfvmSdYl7RcY9lkgm_ds8uaFqq7qaxOOz-5BfHuuk/ "Google Sheets"), and the Fisherman’s Horizon Discord server.
+[Sâ€™yahn Tia's Ocean Fishing Spreadsheet](https://docs.google.com/spreadsheets/d/1brCfvmSdYl7RcY9lkgm_ds8uaFqq7qaxOOz-5BfHuuk/ "Google Sheets"), and the Fishermanâ€™s Horizon Discord server.
 
 ## How to Use This Plugin
 
