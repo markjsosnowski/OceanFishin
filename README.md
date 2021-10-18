@@ -31,4 +31,5 @@ The Fisher's Intuition recommendation is the bait you need to catch special fish
 The spectral current recommendation will provide the highest amount of points during a spectral current. 
 
 *These recommendatations based on statistics gathered over many fishing sessions; Nothing is a guaranteed catch!*
+
 Icon by [Temina](https://twitter.com/Pinecest "Twitter")
