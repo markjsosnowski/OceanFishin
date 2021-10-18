@@ -11,6 +11,9 @@
     "bait",
     "duty"
   ],
+  "CategoryTags": [
+    "jobs"
+  ],
   "DalamudApiLevel": 4,
   "LoadPriority": 0,
   "ImageUrls": [

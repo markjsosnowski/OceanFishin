@@ -187,7 +187,7 @@ namespace OceanFishin
                             if (time == "Day")
                                 ImGui.Text("The suggested bait for " + location + " during the Day is:");
                             else
-                                ImGui.Text("The suggested bait for " + location + " at " + time + "is:");
+                                ImGui.Text("The suggested bait for " + location + " at " + time + " is:");
                         
                             //ImGui.Text("The suggested bait for this area and time is: ");
                             ImGui.Text("Start with → " + bait[location]["normal"]["starting"]);
@@ -202,7 +202,11 @@ namespace OceanFishin
                        
                         if(nested_key_exists(bait, location, "spectral", time))
                             ImGui.Text("Spectral Current → " + bait[location]["spectral"][time]);
-                                                
+                        
+                        // Super rare fish only found in specific locations and times that use abnormal bait.
+                        if (nested_key_exists(bait, location, special, time))
+                            ImGui.Text("Spectral Intuition → " + bait[location][special][time]);
+
                         if (this.configuration.include_achievement_fish)
                         {
                             ImGui.Separator();
@@ -229,10 +233,6 @@ namespace OceanFishin
                             if (nested_key_exists(bait, location, mantas, time))
                                 ImGui.Text("Mantas → " + bait[location][mantas][time]);
                         }
-
-                        // Super rare fish only found in specific locations and times that use abnormal bait.
-                        if (nested_key_exists(bait, location, special, time))
-                            ImGui.Text("Spectral Intuition → " + bait[location][special][time]);
                     }
                     catch(KeyNotFoundException e)
                     {
