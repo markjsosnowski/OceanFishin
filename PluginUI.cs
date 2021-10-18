@@ -185,7 +185,7 @@ namespace OceanFishin
                         if (bait.ContainsKey(location))
                         {
                             if (time == "Day")
-                                ImGui.Text("The suggested bait for " + location + " during the day is:");
+                                ImGui.Text("The suggested bait for " + location + " during the Day is:");
                             else
                                 ImGui.Text("The suggested bait for " + location + " at " + time + "is:");
                         
