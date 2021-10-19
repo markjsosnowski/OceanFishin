@@ -2,7 +2,7 @@
 
 A Dalamud plugin for FFXIV
 
-This repository is for development! If you just want to use this addon, install the [FFXIV Quick Launcher](https://github.com/goatcorp/FFXIVQuickLauncher)
+This repository is for development! If you just want to use this addon, install the [FFXIV Quick Launcher](https://github.com/goatcorp/FFXIVQuickLauncher).
 
 See [releases](https://github.com/markjsosnowski/OceanFishin/releases) for how to install the most current version.
 
@@ -23,4 +23,5 @@ Bait suggestions are based on data from [Zeke's Ocean Fishing Guidebook](https:/
 If you have questions or comments about the suggested baits, join the [dicussion thread](https://github.com/markjsosnowski/OceanFishin/discussions/4).
 
 *These recommendatations based on statistics gathered over many fishing sessions; Nothing is a guaranteed catch!*
+
 *Icon by [Temina](https://twitter.com/Pinecest "Twitter")*
