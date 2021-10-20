@@ -131,7 +131,6 @@ namespace OceanFishin
 
         public void DrawMainWindow(bool on_boat, string location, string time, ref Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> bait_dict)
         {
-            int spectral_state = 0;
             
             if (!Visible)
             {
@@ -145,6 +144,7 @@ namespace OceanFishin
             {
                 if (on_boat)
                 {
+                    int spectral_state;
                     try
                     {
                         if (OceanFishin.is_spectral_current())
@@ -171,18 +171,18 @@ namespace OceanFishin
 
                             ImGui.Text(first_line.ToString());
 
-                            if(spectral_state == 0)
+                            if(spectral_state == 0 || this.configuration.always_show_all)
                             {
                                 ImGui.Text("Start with → " + bait_dict[location]["always"]["start"]);
                                 ImGui.Text("Fisher's Intuition → " + bait_dict[location]["always"]["intuition"]);
                             }
 
-                            if (spectral_state == 1)
+                            if (spectral_state == 1 || this.configuration.always_show_all)
                             {
-                                ImGui.Text("High points → " + bait_dict[location][time][spectral]);
+                                ImGui.Text("Spectral high points → " + bait_dict[location][time][spectral]);
                                 // Super rare fish only found in specific locations and times that use abnormal bait.
                                 if (OceanFishin.nested_key_exists(ref bait_dict, location, time, special))
-                                    ImGui.Text("Fisher's Intuition → " + bait_dict[location][time][special]);
+                                    ImGui.Text("Spectral Fisher's Intuition → " + bait_dict[location][time][special]);
                             }
 
                             if (this.configuration.include_achievement_fish)
@@ -190,9 +190,6 @@ namespace OceanFishin
                                 ImGui.Separator();
 
                                 // Achievement fish are not found in every area, so we don't show them unless it's relevant.
-                                //if (is_fish_available(ref bait_dict, location, time, octopodes, spectral_state))
-                                //    ImGui.Text("Octopods → " + bait_dict[location][time][octopodes][spectral_state]);
-
                                 if (is_fish_available(ref bait_dict, location, time, octopodes, spectral_state))
                                     ImGui.Text("Octopods → " + bait_dict[location][time][octopodes][spectral_state]);
 
@@ -270,7 +267,7 @@ namespace OceanFishin
                     this.configuration.include_achievement_fish = include_achievement_fish;
                     this.configuration.Save();
                 }
-                if (ImGui.Checkbox("Always show full bait list.", ref always_show_all))
+                if (ImGui.Checkbox("Show all baits even if not in a spectral current.", ref always_show_all))
                 {
                     this.configuration.always_show_all = always_show_all;
                     this.configuration.Save();
