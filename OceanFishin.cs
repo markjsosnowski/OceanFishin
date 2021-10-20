@@ -10,6 +10,9 @@ using Dalamud.Game.ClientState;
 using Dalamud.Game;
 using Dalamud.Game.Gui;
 using System.IO;
+using System.Net;
+using Newtonsoft.Json;
+using Dalamud.Logging;
 
 namespace OceanFishin
 {  
@@ -20,7 +23,10 @@ namespace OceanFishin
         public const string commandName = "/oceanfishin";
         public const string altCommandName1 = "/oceanfishing";
         public const string altCommandName2 = "/bait";
-             
+
+        public static Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> bait_dictionary;
+        private string bait_file_url = "https://markjsosnowski.github.io/FFXIV/bait2.json";
+
         private DalamudPluginInterface PluginInterface { get; init; }
         private CommandManager CommandManager { get; init; }
         private Configuration Configuration { get; init; }
@@ -35,7 +41,7 @@ namespace OceanFishin
         private bool on_boat = false;
 
         private const string default_location = "location unknown";
-        public const string default_time = "time unknown";
+        private const string default_time = "time unknown";
 
         // These are known via addon inspector.
         private const int location_textnode_index = 20;
@@ -43,6 +49,10 @@ namespace OceanFishin
         private const int sunset_imagenode_index = 23;
         private const int day_imagenode_index = 24;
         private const int expected_nodelist_count = 24;
+        private const int expected_navimap_nodelist_count = 18;
+        private const int expected_weather_nodelist_count = 4;
+        private const int weather_basenode_index = 6;
+        private const int weather_imagenode_index = 2;
 
         // Three image nodes make up the time of day indicator.
         // They all use the same texture, so the part_id determines
@@ -54,11 +64,8 @@ namespace OceanFishin
         private const int sunset_icon_lit = 10;
         private const int night_icon_lit = 11;
 
-        // This is not used anymore since the JSON is now pulled from GitHub pages.
-        /*static string codebase = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
-          static UriBuilder uri = new UriBuilder(codebase);
-          static string path = Uri.UnescapeDataString(uri.Path);
-          string plugin_dir = System.IO.Path.GetDirectoryName(path);*/
+        private static IntPtr ocean_fishing_addon_ptr;
+        public static IntPtr navimap_addon_ptr;
 
         public OceanFishin(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
@@ -77,7 +84,6 @@ namespace OceanFishin
             this.Configuration.Initialize(this.PluginInterface);
 
             var assemblyLocation = Assembly.GetExecutingAssembly().Location;
-            //var json_path = Path.Combine(Path.GetDirectoryName(assemblyLocation)!, "bait.json");
 
             this.PluginUI = new PluginUI(this.Configuration);
 
@@ -96,8 +102,24 @@ namespace OceanFishin
                 HelpMessage = "Alias for /oceanfishin"
             });
 
+            try
+            {
+                using (WebClient wc = new WebClient())
+                {
+                    var json = wc.DownloadString(bait_file_url);
+                    bait_dictionary = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>>>(json);
+                }
+            }
+            catch (WebException e)
+            {
+                PluginLog.Error("There was a problem accessing the bait list. Is GitHub down?", e);
+                bait_dictionary = null;
+            }
+
             this.PluginInterface.UiBuilder.Draw += DrawUI;
-            this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;       
+            this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
+
+            //navimap_addon_ptr = GameGui.GetAddonByName("_NaviMap", 1);
         }
 
         public void Dispose()
@@ -117,9 +139,10 @@ namespace OceanFishin
             string location = default_location;
             string time = default_time;
             on_boat = check_location();
+            update_ocean_fishing_addon_ptr(on_boat);
             if (on_boat)
             {
-                (location, time) = get_data();
+                (location, time) = get_fishing_data();
             }
             this.PluginUI.Draw(on_boat, location, time);
             //this.PluginUI.Draw(true, "The Southern Strait of Merlthor", "Day");
@@ -139,29 +162,21 @@ namespace OceanFishin
                 return false;
         }
 
-        private unsafe (string, string) get_data()
+        private unsafe (string, string) get_fishing_data()
         {
-            string current_location = default_location;
-            string current_time = default_time;
-
-            // IKDFishingLog is the name of the blue window that appears during ocean fishing 
-            // that displays location, time, and what you caught. This is known via Addon Inspector.
-            var addon_ptr = GameGui.GetAddonByName("IKDFishingLog", 1);
-            if (addon_ptr == IntPtr.Zero)
+            if (OceanFishin.ocean_fishing_addon_ptr == IntPtr.Zero)
             {
-                return (current_location, current_time);
+                return (default_location, default_time);
             }
-            AtkUnitBase* addon = (AtkUnitBase*)addon_ptr;
+            AtkUnitBase* addon = (AtkUnitBase*)OceanFishin.ocean_fishing_addon_ptr;
 
             // Without this check, the plugin might try to get a child node before the list was 
             // populated and cause a null pointer exception. 
             if (addon->UldManager.NodeListCount < expected_nodelist_count)
             {
-                return (current_location, current_time);
+                return (default_location, default_time);
             }
-            current_location = get_location(addon);
-            current_time = get_time(addon);
-            return (current_location, current_time);
+            return (get_location(addon), get_time(addon));
         }
 
         private unsafe string get_location(AtkUnitBase* ptr)
@@ -191,5 +206,43 @@ namespace OceanFishin
                 return "Night";
             return default_time;
         }
+        public static bool nested_key_exists(ref Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> dictionary, string key1, string key2, string key3)
+        {
+            if (dictionary.ContainsKey(key1))
+                if (dictionary[key1].ContainsKey(key2))
+                    if (dictionary[key1][key2].ContainsKey(key3))
+                        return true;
+            return false;
+        }
+
+        public static unsafe bool is_spectral_current() //TODO get tex file of weather icon and compare it to spectral texture
+        {
+            return false;
+        }
+
+        private unsafe IntPtr  update_ocean_fishing_addon_ptr(bool on_boat)
+        {
+            if (!on_boat)
+                return OceanFishin.ocean_fishing_addon_ptr = IntPtr.Zero;
+            if (OceanFishin.ocean_fishing_addon_ptr != IntPtr.Zero)
+                return OceanFishin.ocean_fishing_addon_ptr;
+            else
+                // IKDFishingLog is the name of the blue window that appears during ocean fishing 
+                // that displays location, time, and what you caught. This is known via Addon Inspector.
+                return OceanFishin.ocean_fishing_addon_ptr = GameGui.GetAddonByName("IKDFishingLog", 1);
+        }
+
+        private unsafe IntPtr update_navimap_addon_ptr(bool on_boat)
+        {
+            if (!on_boat)
+                return OceanFishin.navimap_addon_ptr = IntPtr.Zero;
+            if (OceanFishin.ocean_fishing_addon_ptr != IntPtr.Zero)
+                return OceanFishin.ocean_fishing_addon_ptr;
+            else
+                // IKDFishingLog is the name of the blue window that appears during ocean fishing 
+                // that displays location, time, and what you caught. This is known via Addon Inspector.
+                return OceanFishin.ocean_fishing_addon_ptr = GameGui.GetAddonByName("_NaviMap", 1);
+        }
+
     }
 }

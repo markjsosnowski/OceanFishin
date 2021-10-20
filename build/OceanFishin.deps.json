@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v5.0": {
-      "OceanFishin/2.0": {
+      "OceanFishin/2.1": {
         "dependencies": {
           "DalamudPackager": "2.1.4",
           "System.Numerics.Vectors": "4.5.0"
@@ -20,7 +20,7 @@
     }
   },
   "libraries": {
-    "OceanFishin/2.0": {
+    "OceanFishin/2.1": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
