@@ -49,10 +49,7 @@ namespace OceanFishin
         private const int sunset_imagenode_index = 23;
         private const int day_imagenode_index = 24;
         private const int expected_nodelist_count = 24;
-        private const int expected_navimap_nodelist_count = 18;
-        private const int expected_weather_nodelist_count = 4;
-        private const int weather_basenode_index = 6;
-        private const int weather_imagenode_index = 2;
+        private const int cruising_texture_index = 3;
 
         // Three image nodes make up the time of day indicator.
         // They all use the same texture, so the part_id determines
@@ -65,7 +62,6 @@ namespace OceanFishin
         private const int night_icon_lit = 11;
 
         private static IntPtr ocean_fishing_addon_ptr;
-        public static IntPtr navimap_addon_ptr;
 
         public OceanFishin(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
@@ -118,8 +114,6 @@ namespace OceanFishin
 
             this.PluginInterface.UiBuilder.Draw += DrawUI;
             this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
-
-            //navimap_addon_ptr = GameGui.GetAddonByName("_NaviMap", 1);
         }
 
         public void Dispose()
@@ -215,9 +209,24 @@ namespace OceanFishin
             return false;
         }
 
-        public static unsafe bool is_spectral_current() //TODO get tex file of weather icon and compare it to spectral texture
+        public static unsafe bool is_spectral_current()
         {
-            return false;
+            // When the spectral current occurs, two image nodes become visible behind the IKDFishingLog addon for a graphical effect.
+            // They are both layered to increase the effect, so just one is chosen and checked for visiblility. 
+            // If it is visible, the spectral current must be active.
+
+            AtkUnitBase* addon;
+            if (OceanFishin.ocean_fishing_addon_ptr != IntPtr.Zero)
+                 addon = (AtkUnitBase*)OceanFishin.ocean_fishing_addon_ptr;
+            else
+                return false;
+            if(addon->UldManager.NodeListCount < expected_nodelist_count)
+                return false;
+            AtkImageNode* crusing_imagenode = (AtkImageNode*)addon->UldManager.NodeList[cruising_texture_index];
+            if (crusing_imagenode->AtkResNode.IsVisible)
+                return true;
+            else
+                return false;
         }
 
         private unsafe IntPtr  update_ocean_fishing_addon_ptr(bool on_boat)
@@ -231,18 +240,5 @@ namespace OceanFishin
                 // that displays location, time, and what you caught. This is known via Addon Inspector.
                 return OceanFishin.ocean_fishing_addon_ptr = GameGui.GetAddonByName("IKDFishingLog", 1);
         }
-
-        private unsafe IntPtr update_navimap_addon_ptr(bool on_boat)
-        {
-            if (!on_boat)
-                return OceanFishin.navimap_addon_ptr = IntPtr.Zero;
-            if (OceanFishin.ocean_fishing_addon_ptr != IntPtr.Zero)
-                return OceanFishin.ocean_fishing_addon_ptr;
-            else
-                // IKDFishingLog is the name of the blue window that appears during ocean fishing 
-                // that displays location, time, and what you caught. This is known via Addon Inspector.
-                return OceanFishin.ocean_fishing_addon_ptr = GameGui.GetAddonByName("_NaviMap", 1);
-        }
-
     }
 }

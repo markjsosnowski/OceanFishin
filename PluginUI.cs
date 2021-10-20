@@ -160,7 +160,7 @@ namespace OceanFishin
                             if (spectral_state == 1)
                                 first_line.Append(" spectral current");
                             if (time == "Day")
-                                first_line.Append(" during the Day is:");
+                                first_line.Append(" during the Day");
                             else
                             {
                                 first_line.Append(" at ");
@@ -190,8 +190,8 @@ namespace OceanFishin
                                 ImGui.Separator();
 
                                 // Achievement fish are not found in every area, so we don't show them unless it's relevant.
-                                if (is_fish_available(ref bait_dict, location, time, octopodes, spectral_state))
-                                    ImGui.Text("Octopods → " + bait_dict[location][time][octopodes][spectral_state]);
+                                //if (is_fish_available(ref bait_dict, location, time, octopodes, spectral_state))
+                                //    ImGui.Text("Octopods → " + bait_dict[location][time][octopodes][spectral_state]);
 
                                 if (is_fish_available(ref bait_dict, location, time, octopodes, spectral_state))
                                     ImGui.Text("Octopods → " + bait_dict[location][time][octopodes][spectral_state]);
