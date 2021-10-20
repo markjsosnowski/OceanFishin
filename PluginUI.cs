@@ -145,12 +145,20 @@ namespace OceanFishin
                 if (on_boat)
                 {
                     int spectral_state;
+                    string prefix;
                     try
                     {
                         if (OceanFishin.is_spectral_current())
+                        {
                             spectral_state = 1;
+                            prefix = "Spectral";
+                        }
                         else
+                        {
                             spectral_state = 0;
+                            prefix = "";
+                        }
+                            
 
                         if (bait_dict.ContainsKey(location))
                         {
@@ -188,28 +196,51 @@ namespace OceanFishin
                             if (this.configuration.include_achievement_fish)
                             {
                                 ImGui.Separator();
+                                if (this.configuration.always_show_all)
+                                    spectral_state = 0;
 
                                 // Achievement fish are not found in every area, so we don't show them unless it's relevant.
                                 if (is_fish_available(ref bait_dict, location, time, octopodes, spectral_state))
                                     ImGui.Text("Octopods → " + bait_dict[location][time][octopodes][spectral_state]);
+                                
+                                if (this.configuration.always_show_all && is_fish_available(ref bait_dict, location, time, octopodes, 1))
+                                    ImGui.Text("Spectral Octopods → " + bait_dict[location][time][octopodes][1]);
 
                                 if (is_fish_available(ref bait_dict, location, time, sharks, spectral_state))
                                     ImGui.Text("Sharks → " + bait_dict[location][time][sharks][spectral_state]);
 
+                                if (this.configuration.always_show_all && is_fish_available(ref bait_dict, location, time, sharks, 1))
+                                    ImGui.Text("Spectral Sharks → " + bait_dict[location][time][sharks][1]);
+
                                 if (is_fish_available(ref bait_dict, location, time, jellyfish, spectral_state))
                                     ImGui.Text("Jellyfish → " + bait_dict[location][time][jellyfish][spectral_state]);
+                                
+                                if (this.configuration.always_show_all && is_fish_available(ref bait_dict, location, time, jellyfish, 1))
+                                    ImGui.Text("Spectral Jellyfish → " + bait_dict[location][time][jellyfish][1]);
 
                                 if (is_fish_available(ref bait_dict, location, time, dragons, spectral_state))
                                     ImGui.Text("Sea Dragons → " + bait_dict[location][time][dragons][spectral_state]);
+                                
+                                if (this.configuration.always_show_all && is_fish_available(ref bait_dict, location, time, dragons, 1))
+                                    ImGui.Text("Spectral Sea Dragons → " + bait_dict[location][time][dragons][1]);
 
                                 if (is_fish_available(ref bait_dict, location, time, balloons, spectral_state))
                                     ImGui.Text("Balloons (Fugu) → " + bait_dict[location][time][balloons][spectral_state]);
 
+                                if (this.configuration.always_show_all && is_fish_available(ref bait_dict, location, time, balloons, 1))
+                                    ImGui.Text("Spectral Fugu → " + bait_dict[location][time][balloons][1]);
+
                                 if (is_fish_available(ref bait_dict, location, time, crabs, spectral_state))
                                     ImGui.Text("Crabs → " + bait_dict[location][time][crabs][spectral_state]);
 
+                                if (this.configuration.always_show_all && is_fish_available(ref bait_dict, location, time, crabs, 1))
+                                    ImGui.Text("Spectral Crabs → " + bait_dict[location][time][crabs][1]);
+
                                 if (is_fish_available(ref bait_dict, location, time, mantas, spectral_state))
                                     ImGui.Text("Mantas → " + bait_dict[location][time][mantas][spectral_state]);
+                                
+                                if (this.configuration.always_show_all && is_fish_available(ref bait_dict, location, time, mantas, 1))
+                                    ImGui.Text("Spectral Mantas → " + bait_dict[location][time][mantas][1]);
                             }
                         }
                         else
@@ -267,7 +298,7 @@ namespace OceanFishin
                     this.configuration.include_achievement_fish = include_achievement_fish;
                     this.configuration.Save();
                 }
-                if (ImGui.Checkbox("Show all baits even if not in a spectral current.", ref always_show_all))
+                if (ImGui.Checkbox("Always show spectral bait.", ref always_show_all))
                 {
                     this.configuration.always_show_all = always_show_all;
                     this.configuration.Save();
