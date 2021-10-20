@@ -264,19 +264,24 @@ namespace OceanFishin
                 ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
             {
                 var include_achievement_fish = this.configuration.include_achievement_fish;
+                var always_show_all = this.configuration.always_show_all;
                 if (ImGui.Checkbox("Recommend bait for mission/achievement fish.", ref include_achievement_fish))
                 {
                     this.configuration.include_achievement_fish = include_achievement_fish;
                     this.configuration.Save();
                 }
-
-                // TODO upcoming features
-               //var highlight_recommended_bait = this.configuration.highlight_recommended_bait;
-               /*if (ImGui.Checkbox("Highlight recommended bait in your tackle box.", ref highlight_recommended_bait))
+                if (ImGui.Checkbox("Always show full bait list.", ref always_show_all))
                 {
-                    this.configuration.highlight_recommended_bait = highlight_recommended_bait;
+                    this.configuration.always_show_all = always_show_all;
                     this.configuration.Save();
-                }*/
+                }
+                // TODO upcoming features
+                //var highlight_recommended_bait = this.configuration.highlight_recommended_bait;
+                /*if (ImGui.Checkbox("Highlight recommended bait in your tackle box.", ref highlight_recommended_bait))
+                 {
+                     this.configuration.highlight_recommended_bait = highlight_recommended_bait;
+                     this.configuration.Save();
+                 }*/
             }
             ImGui.End();
 

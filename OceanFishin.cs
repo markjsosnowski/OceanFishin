@@ -209,12 +209,11 @@ namespace OceanFishin
             return false;
         }
 
+        // When the spectral current occurs, two image nodes become visible behind the IKDFishingLog addon for a graphical effect.
+        // They are both layered to increase the effect, so just one is chosen and checked for visiblility. 
+        // If it is visible, the spectral current must be active.
         public static unsafe bool is_spectral_current()
         {
-            // When the spectral current occurs, two image nodes become visible behind the IKDFishingLog addon for a graphical effect.
-            // They are both layered to increase the effect, so just one is chosen and checked for visiblility. 
-            // If it is visible, the spectral current must be active.
-
             AtkUnitBase* addon;
             if (OceanFishin.ocean_fishing_addon_ptr != IntPtr.Zero)
                  addon = (AtkUnitBase*)OceanFishin.ocean_fishing_addon_ptr;
@@ -229,6 +228,7 @@ namespace OceanFishin
                 return false;
         }
 
+        // I think GetAddonByName is linear search time? So by only looking for it when it isn't defined and needs to be, we can avoid redundant lookups. 
         private unsafe IntPtr  update_ocean_fishing_addon_ptr(bool on_boat)
         {
             if (!on_boat)
