@@ -155,7 +155,6 @@ namespace OceanFishin
                         {
                             spectral_state = 0;
                         }
-                            
 
                         if (bait_dict.ContainsKey(location))
                         {
@@ -173,7 +172,7 @@ namespace OceanFishin
                             }
                             first_line.Append(" is:");
 
-                            ImGui.Text(first_line.ToString());
+                            ImGui.TextWrapped(first_line.ToString());
 
                             if(spectral_state == 0 || this.configuration.always_show_all)
                             {
@@ -283,7 +282,7 @@ namespace OceanFishin
                 return;
             }
 
-            ImGui.SetNextWindowSize(new Vector2(400, 100), ImGuiCond.Always);
+            ImGui.SetNextWindowSize(new Vector2(400, 120), ImGuiCond.Always);
             if (ImGui.Begin("Ocean Fishin' Configuration", ref this.settingsVisible,
                 ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
             {

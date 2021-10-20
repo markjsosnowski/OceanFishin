@@ -49,7 +49,7 @@ namespace OceanFishin
         private const int sunset_imagenode_index = 23;
         private const int day_imagenode_index = 24;
         private const int expected_nodelist_count = 24;
-        private const int cruising_texture_index = 3;
+        private const int cruising_resnode_index = 2;
 
         // Three image nodes make up the time of day indicator.
         // They all use the same texture, so the part_id determines
@@ -209,9 +209,7 @@ namespace OceanFishin
             return false;
         }
 
-        // When the spectral current occurs, two image nodes become visible behind the IKDFishingLog addon for a graphical effect.
-        // They are both layered to increase the effect, so just one is chosen and checked for visiblility. 
-        // If it is visible, the spectral current must be active.
+        // When the spectral current occurs, a AtkResNode becomes visible behind the IKDFishingLog window.
         public static unsafe bool is_spectral_current()
         {
             AtkUnitBase* addon;
@@ -221,8 +219,8 @@ namespace OceanFishin
                 return false;
             if(addon->UldManager.NodeListCount < expected_nodelist_count)
                 return false;
-            AtkImageNode* crusing_imagenode = (AtkImageNode*)addon->UldManager.NodeList[cruising_texture_index];
-            if (crusing_imagenode->AtkResNode.IsVisible)
+            AtkResNode* crusing_resnode = (AtkResNode*)addon->UldManager.NodeList[cruising_resnode_index];
+            if (crusing_resnode->IsVisible)
                 return true;
             else
                 return false;
