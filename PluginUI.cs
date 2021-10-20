@@ -299,13 +299,12 @@ namespace OceanFishin
                     this.configuration.always_show_all = always_show_all;
                     this.configuration.Save();
                 }
-                // TODO upcoming features
-                //var highlight_recommended_bait = this.configuration.highlight_recommended_bait;
-                /*if (ImGui.Checkbox("Highlight recommended bait in your tackle box.", ref highlight_recommended_bait))
-                 {
-                     this.configuration.highlight_recommended_bait = highlight_recommended_bait;
-                     this.configuration.Save();
-                 }*/
+                var highlight_recommended_bait = this.configuration.highlight_recommended_bait;
+                if (ImGui.Checkbox("Highlight recommended bait in your bait & tackle window.", ref highlight_recommended_bait))
+                {
+                    this.configuration.highlight_recommended_bait = highlight_recommended_bait;
+                    this.configuration.Save();
+                }
             }
             ImGui.End();
 
