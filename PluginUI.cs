@@ -282,28 +282,48 @@ namespace OceanFishin
                 return;
             }
 
-            ImGui.SetNextWindowSize(new Vector2(400, 120), ImGuiCond.Always);
+            ImGui.SetNextWindowSize(new Vector2(400, 140), ImGuiCond.Always);
             if (ImGui.Begin("Ocean Fishin' Configuration", ref this.settingsVisible,
                 ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
             {
                 var include_achievement_fish = this.configuration.include_achievement_fish;
-                var always_show_all = this.configuration.always_show_all;
+                
+                
                 if (ImGui.Checkbox("Recommend bait for mission/achievement fish.", ref include_achievement_fish))
                 {
                     this.configuration.include_achievement_fish = include_achievement_fish;
                     this.configuration.Save();
                 }
+                var always_show_all = this.configuration.always_show_all;
                 if (ImGui.Checkbox("Show all bait regardless of the current.", ref always_show_all))
                 {
                     this.configuration.always_show_all = always_show_all;
                     this.configuration.Save();
                 }
+
                 var highlight_recommended_bait = this.configuration.highlight_recommended_bait;
                 if (ImGui.Checkbox("Highlight recommended bait in your bait & tackle window.", ref highlight_recommended_bait))
                 {
                     this.configuration.highlight_recommended_bait = highlight_recommended_bait;
                     this.configuration.Save();
                 }
+
+                var color_code = this.configuration.color_code;
+
+                if (this.configuration.highlight_recommended_bait)
+                {
+                    if (ImGui.Checkbox("Color window text to match bait highlighting.", ref color_code))
+                    {
+                        this.configuration.color_code = color_code;
+                        this.configuration.Save();
+                    }
+                }
+                else
+                {
+                    this.configuration.color_code = false;
+                    this.configuration.Save();
+                }
+
             }
             ImGui.End();
 

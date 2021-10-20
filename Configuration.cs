@@ -12,6 +12,7 @@ namespace OceanFishin
         public bool include_achievement_fish { get; set; } = true;
         public bool highlight_recommended_bait {get;set;} = true;
         public bool always_show_all { get; set; } = false;
+        public bool color_code { get; set; } = true;
 
         public void Initialize(DalamudPluginInterface pluginInterface)
         {
