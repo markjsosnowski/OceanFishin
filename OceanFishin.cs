@@ -139,7 +139,7 @@ namespace OceanFishin
                 (location, time) = get_fishing_data();
             }
             this.PluginUI.Draw(on_boat, location, time);
-            //this.PluginUI.Draw(true, "The Southern Strait of Merlthor", "Day");
+            //this.PluginUI.Draw(true, "The Southern Strait of Merlthor", "Sunset");
         }
 
         private void DrawConfigUI()
