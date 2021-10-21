@@ -67,18 +67,19 @@ namespace OceanFishin
         private static IntPtr ocean_fishing_addon_ptr;
         private static IntPtr bait_window_addon_ptr;
 
-        private int last_known_bait_nodecount;
+        private static int last_known_bait_nodecount;
+        private static string last_highlighted_bait = null;
 
         //TODO actually fill in these item ids
         //TODO put in spectral int bait keys
-        private Dictionary<Int64, string> icon_id_to_string = new Dictionary<Int64, string>()
+        private static Dictionary<Int64, string> icon_id_to_string = new Dictionary<Int64, string>()
         {
             [27023] = "Krill",
             [27015] ="Plump Worm",
             [27004] = "Ragworm"
         };
 
-        private Dictionary<string, IntPtr> bait_to_inventory_ptr;
+        private static Dictionary<string, IntPtr> bait_to_inventory_ptr;
 
         public OceanFishin(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
@@ -129,8 +130,8 @@ namespace OceanFishin
                 bait_dictionary = null;
             }
 
-            this.last_known_bait_nodecount = 0;
-
+            last_known_bait_nodecount = 0;
+            
             this.PluginInterface.UiBuilder.Draw += DrawUI;
             this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
         }
@@ -152,13 +153,14 @@ namespace OceanFishin
             string location = default_location;
             string time = default_time;
             on_boat = check_location();
+            update_bait_window_addon_ptr(true); //change me back
             update_ocean_fishing_addon_ptr(on_boat);
             if (on_boat)
             {
                 (location, time) = get_fishing_data();
             }
-            this.PluginUI.Draw(on_boat, location, time);
-            //this.PluginUI.Draw(true, "The Southern Strait of Merlthor", "Sunset");
+            //this.PluginUI.Draw(on_boat, location, time);
+            this.PluginUI.Draw(true, "The Southern Strait of Merlthor", "Sunset");
         }
 
         private void DrawConfigUI()
@@ -272,11 +274,12 @@ namespace OceanFishin
 
         // A dictionary of bait types and pointers to that bait's entry in the bait window
         // Updated only when the bait window changes (eg. runs out of Krill and then buys more).
-        private unsafe void update_bait_pointer_dictionary()
+        private unsafe static void update_bait_pointer_dictionary()
         {
-            if (OceanFishin.bait_window_addon_ptr == IntPtr.Zero)
+            if (bait_window_addon_ptr == IntPtr.Zero)
                 return;
-            AtkUnitBase* addon = (AtkUnitBase*)ocean_fishing_addon_ptr;
+
+            AtkUnitBase* addon = (AtkUnitBase*)bait_window_addon_ptr;
             if (addon->UldManager.NodeListCount == expected_bait_window_nodelist_count)
                 return;
             
@@ -286,9 +289,9 @@ namespace OceanFishin
                 bait_to_inventory_ptr[key.Key] = IntPtr.Zero;
             }
             AtkComponentNode* bait_list_componentnode = (AtkComponentNode*)addon->UldManager.NodeList[bait_list_componentnode_index];
-            if (bait_list_componentnode->Component->UldManager.NodeListCount == this.last_known_bait_nodecount)
+            if (bait_list_componentnode->Component->UldManager.NodeListCount == OceanFishin.last_known_bait_nodecount)
                 return;
-            this.last_known_bait_nodecount = bait_list_componentnode->Component->UldManager.NodeListCount;
+            OceanFishin.last_known_bait_nodecount = bait_list_componentnode->Component->UldManager.NodeListCount;
             for(int i = 1; i< bait_list_componentnode->Component->UldManager.NodeListCount - 1; i++)
             {
                 AtkComponentNode* list_item_node = (AtkComponentNode*)bait_list_componentnode->Component->UldManager.NodeList[i];
@@ -300,6 +303,36 @@ namespace OceanFishin
                     continue;
                 }
             }
+        }
+
+        public unsafe static void highlight_inventory_item(string bait)
+        {
+            if (OceanFishin.bait_window_addon_ptr == IntPtr.Zero)
+                return;
+
+            update_bait_pointer_dictionary();
+            
+            if (bait == OceanFishin.last_highlighted_bait)
+                return;
+
+            IntPtr prev_node_ptr = OceanFishin.bait_to_inventory_ptr[bait];
+            
+            if(prev_node_ptr != IntPtr.Zero)
+            {
+                AtkComponentNode* prev_item_node = (AtkComponentNode*)OceanFishin.bait_to_inventory_ptr[bait];
+                prev_item_node->AtkResNode.MultiplyBlue = 100;
+                prev_item_node->AtkResNode.MultiplyGreen = 0;
+                prev_item_node->AtkResNode.MultiplyRed = 0;
+            }
+
+            IntPtr item_node_ptr = OceanFishin.bait_to_inventory_ptr[bait];
+            if (item_node_ptr == IntPtr.Zero)
+                return;
+            
+            AtkComponentNode* item_node = (AtkComponentNode*)item_node_ptr;
+            item_node->AtkResNode.MultiplyBlue = 100;
+            item_node->AtkResNode.MultiplyGreen = 0;
+            item_node->AtkResNode.MultiplyRed = 0;
         }
     }
 }

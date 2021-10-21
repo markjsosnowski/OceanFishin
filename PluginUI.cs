@@ -172,7 +172,13 @@ namespace OceanFishin
 
                             ImGui.TextWrapped(first_line.ToString());
 
-                            if(spectral_state == spectral_active || this.configuration.always_show_all)
+                            
+                            if(this.configuration.highlight_recommended_bait && spectral_state == spectral_inactive)
+                            {
+                                OceanFishin.highlight_inventory_item(bait_dict[location]["always"]["start"]);
+                            }
+                            
+                            if(spectral_state == spectral_inactive || this.configuration.always_show_all)
                             {
                                 ImGui.Text("Start with → " + bait_dict[location]["always"]["start"]);
                                 ImGui.Text("Fisher's Intuition → " + bait_dict[location]["always"]["intuition"]);
@@ -327,7 +333,6 @@ namespace OceanFishin
 
             }
             ImGui.End();
-
         }
     }
 }
