@@ -52,6 +52,7 @@ namespace OceanFishin
         private const int cruising_resnode_index = 2;
         private const int expected_bait_window_nodelist_count = 14;
         private const int bait_list_componentnode_index = 3;
+        private const int iconid_index = 2;
 
         // Three image nodes make up the time of day indicator.
         // They all use the same texture, so the part_id determines
@@ -68,12 +69,16 @@ namespace OceanFishin
 
         private int last_known_bait_nodecount;
 
-        private Dictionary<string, Int64> IconId = new Dictionary<string, Int64>()
+        //TODO actually fill in these item ids
+        //TODO put in spectral int bait keys
+        private Dictionary<Int64, string> icon_id_to_string = new Dictionary<Int64, string>()
         {
-            ["Krill"] = 0,
-            ["Plump Worm"] = 0,
-            ["Ragworm"] = 0,
+            [27023] = "Krill",
+            [27015] ="Plump Worm",
+            [27004] = "Ragworm"
         };
+
+        private Dictionary<string, IntPtr> bait_to_inventory_ptr;
 
         public OceanFishin(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
@@ -272,23 +277,29 @@ namespace OceanFishin
             if (OceanFishin.bait_window_addon_ptr == IntPtr.Zero)
                 return;
             AtkUnitBase* addon = (AtkUnitBase*)ocean_fishing_addon_ptr;
-            if (addon->UldManager.NodeListCount < expected_bait_window_nodelist_count)
+            if (addon->UldManager.NodeListCount == expected_bait_window_nodelist_count)
                 return;
-            AtkComponentBase* bait_list_componentnode = (AtkComponentBase*)addon->UldManager.NodeList[bait_list_componentnode_index];
-            if (bait_list_componentnode->UldManager.NodeListCount == this.last_known_bait_nodecount)
-                return;
-            this.last_known_bait_nodecount = bait_list_componentnode->UldManager.NodeListCount;
             
-            // TODO get the base of the bait list node 
-            // iterate through all the items, if one of the item ids matches a known one
-            // add it to the map
-            // should be able to do this in O(n), easy way would be O(n^2)
-            
-            foreach (KeyValuePair<string, Int64> baitID in this.IconId)
+            // Begin making the dictionary
+            foreach(KeyValuePair<string, IntPtr> key in bait_to_inventory_ptr)
             {
-
+                bait_to_inventory_ptr[key.Key] = IntPtr.Zero;
             }
-
+            AtkComponentNode* bait_list_componentnode = (AtkComponentNode*)addon->UldManager.NodeList[bait_list_componentnode_index];
+            if (bait_list_componentnode->Component->UldManager.NodeListCount == this.last_known_bait_nodecount)
+                return;
+            this.last_known_bait_nodecount = bait_list_componentnode->Component->UldManager.NodeListCount;
+            for(int i = 1; i< bait_list_componentnode->Component->UldManager.NodeListCount - 1; i++)
+            {
+                AtkComponentNode* list_item_node = (AtkComponentNode*)bait_list_componentnode->Component->UldManager.NodeList[i];
+                AtkComponentIcon* icon_node = (AtkComponentIcon*)list_item_node->Component->UldManager.NodeList[iconid_index];
+                Int64 node_icon_id = icon_node->IconId;
+                if (icon_id_to_string.ContainsKey(node_icon_id))
+                {
+                    bait_to_inventory_ptr[icon_id_to_string[node_icon_id]] = (IntPtr)list_item_node;
+                    continue;
+                }
+            }
         }
     }
 }
