@@ -50,6 +50,8 @@ namespace OceanFishin
         private const int day_imagenode_index = 24;
         private const int expected_nodelist_count = 24;
         private const int cruising_resnode_index = 2;
+        private const int expected_bait_window_nodelist_count = 14;
+        private const int bait_list_componentnode_index = 3;
 
         // Three image nodes make up the time of day indicator.
         // They all use the same texture, so the part_id determines
@@ -62,6 +64,16 @@ namespace OceanFishin
         private const int night_icon_lit = 11;
 
         private static IntPtr ocean_fishing_addon_ptr;
+        private static IntPtr bait_window_addon_ptr;
+
+        private int last_known_bait_nodecount;
+
+        private Dictionary<string, Int64> IconId = new Dictionary<string, Int64>()
+        {
+            ["Krill"] = 0,
+            ["Plump Worm"] = 0,
+            ["Ragworm"] = 0,
+        };
 
         public OceanFishin(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
@@ -111,6 +123,8 @@ namespace OceanFishin
                 PluginLog.Error("There was a problem accessing the bait list. Is GitHub down?", e);
                 bait_dictionary = null;
             }
+
+            this.last_known_bait_nodecount = 0;
 
             this.PluginInterface.UiBuilder.Draw += DrawUI;
             this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
@@ -227,7 +241,7 @@ namespace OceanFishin
         }
 
         // I think GetAddonByName is linear search time? So by only looking for it when it isn't defined and needs to be, we can avoid redundant lookups. 
-        private unsafe IntPtr  update_ocean_fishing_addon_ptr(bool on_boat)
+        private unsafe IntPtr update_ocean_fishing_addon_ptr(bool on_boat)
         {
             if (!on_boat)
                 return OceanFishin.ocean_fishing_addon_ptr = IntPtr.Zero;
@@ -237,6 +251,44 @@ namespace OceanFishin
                 // IKDFishingLog is the name of the blue window that appears during ocean fishing 
                 // that displays location, time, and what you caught. This is known via Addon Inspector.
                 return OceanFishin.ocean_fishing_addon_ptr = GameGui.GetAddonByName("IKDFishingLog", 1);
+        }
+
+        private unsafe IntPtr update_bait_window_addon_ptr(bool on_boat)
+        {
+            if (!on_boat)
+                return OceanFishin.bait_window_addon_ptr = IntPtr.Zero;
+            if (OceanFishin.bait_window_addon_ptr != IntPtr.Zero)
+                return OceanFishin.bait_window_addon_ptr;
+            else
+            {
+                return OceanFishin.bait_window_addon_ptr = GameGui.GetAddonByName("Bait", 1);
+            }
+        }
+
+        // A dictionary of bait types and pointers to that bait's entry in the bait window
+        // Updated only when the bait window changes (eg. runs out of Krill and then buys more).
+        private unsafe void update_bait_pointer_dictionary()
+        {
+            if (OceanFishin.bait_window_addon_ptr == IntPtr.Zero)
+                return;
+            AtkUnitBase* addon = (AtkUnitBase*)ocean_fishing_addon_ptr;
+            if (addon->UldManager.NodeListCount < expected_bait_window_nodelist_count)
+                return;
+            AtkComponentBase* bait_list_componentnode = (AtkComponentBase*)addon->UldManager.NodeList[bait_list_componentnode_index];
+            if (bait_list_componentnode->UldManager.NodeListCount == this.last_known_bait_nodecount)
+                return;
+            this.last_known_bait_nodecount = bait_list_componentnode->UldManager.NodeListCount;
+            
+            // TODO get the base of the bait list node 
+            // iterate through all the items, if one of the item ids matches a known one
+            // add it to the map
+            // should be able to do this in O(n), easy way would be O(n^2)
+            
+            foreach (KeyValuePair<string, Int64> baitID in this.IconId)
+            {
+
+            }
+
         }
     }
 }
