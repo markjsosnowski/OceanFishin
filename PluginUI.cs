@@ -175,6 +175,7 @@ namespace OceanFishin
                             
                             if(this.configuration.highlight_recommended_bait && spectral_state == spectral_inactive)
                             {
+                                PluginLog.Debug("Attempting to higlight bait " + bait_dict[location]["always"]["start"]);
                                 OceanFishin.highlight_inventory_item(bait_dict[location]["always"]["start"]);
                             }
                             
@@ -255,9 +256,10 @@ namespace OceanFishin
                     catch(KeyNotFoundException e)
                     {
                         // Now that we check if location is a key immediately, this shouldn't pop unless the json got messed up.
-                        PluginLog.Warning("A dictionary key was not found. Location was " + location + " and time was " + time, e);
-                        ImGui.Text("If this window does not update in a few seconds, something is broken.");
+                        PluginLog.Error("A dictionary key was not found. Location was " + location + " and time was " + time+":"+ e.ToString(), e);
+                        ImGui.Text("The plugin ran into a problem.");
                         ImGui.Text("Please contact the developer with your dalamund.log file.");
+                        throw new KeyNotFoundException();
                     }  
                 }
                 

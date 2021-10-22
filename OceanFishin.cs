@@ -24,9 +24,6 @@ namespace OceanFishin
         public const string altCommandName1 = "/oceanfishing";
         public const string altCommandName2 = "/bait";
 
-        public static Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> bait_dictionary;
-        private string bait_file_url = "https://markjsosnowski.github.io/FFXIV/bait2.json";
-
         private DalamudPluginInterface PluginInterface { get; init; }
         private CommandManager CommandManager { get; init; }
         private Configuration Configuration { get; init; }
@@ -35,15 +32,15 @@ namespace OceanFishin
         private Framework Framework { get; init; }
         private GameGui GameGui { get; init; }
 
+        private const string default_location = "location unknown";
+        private const string default_time = "time unknown";
+
         // This is the TerritoryType for the entire instance and does not
         // provide any information on fishing spots, routes, etc.
         private const int endevor_territory_type = 900;
         private bool on_boat = false;
 
-        private const string default_location = "location unknown";
-        private const string default_time = "time unknown";
-
-        // These are known via addon inspector.
+        // NodeList indexes, known via addon inspector.
         private const int location_textnode_index = 20;
         private const int night_imagenode_index = 22;
         private const int sunset_imagenode_index = 23;
@@ -53,6 +50,7 @@ namespace OceanFishin
         private const int expected_bait_window_nodelist_count = 14;
         private const int bait_list_componentnode_index = 3;
         private const int iconid_index = 2;
+        private const int item_border_image_index = 4;
 
         // Three image nodes make up the time of day indicator.
         // They all use the same texture, so the part_id determines
@@ -64,22 +62,31 @@ namespace OceanFishin
         private const int sunset_icon_lit = 10;
         private const int night_icon_lit = 11;
 
+        // Inventory icon texture part ids
+        private const int glowing_border_part_id = 5;
+        private const int default_border_part_id = 0;
+
+        // Cached Values
         private static IntPtr ocean_fishing_addon_ptr;
         private static IntPtr bait_window_addon_ptr;
-
-        private static int last_known_bait_nodecount;
         private static string last_highlighted_bait = null;
+        private unsafe static AtkComponentNode* last_highlighted_bait_node = null;
 
-        //TODO actually fill in these item ids
-        //TODO put in spectral int bait keys
-        private static Dictionary<Int64, string> icon_id_to_string = new Dictionary<Int64, string>()
+        // Dictionaries
+        public static Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> bait_dictionary;
+        private string bait_file_url = "https://markjsosnowski.github.io/FFXIV/bait2.json";
+        private static Dictionary<string, Int64> baitstring_to_iconid = new Dictionary<string, Int64>();
+        private static Dictionary<Int64, string> iconid_to_baitstring = new Dictionary<Int64, string>()
         {
             [27023] = "Krill",
             [27015] ="Plump Worm",
             [27004] = "Ragworm"
+            //TODO put in spectral int bait keys
         };
 
-        private static Dictionary<string, IntPtr> bait_to_inventory_ptr;
+        private static GameGui StaticGameGui;
+
+
 
         public OceanFishin(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
@@ -93,6 +100,7 @@ namespace OceanFishin
             this.ClientState = clientState;
             this.Framework = framework;
             this.GameGui = gameGui;
+            StaticGameGui = this.GameGui;
 
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             this.Configuration.Initialize(this.PluginInterface);
@@ -129,8 +137,12 @@ namespace OceanFishin
                 PluginLog.Error("There was a problem accessing the bait list. Is GitHub down?", e);
                 bait_dictionary = null;
             }
-
-            last_known_bait_nodecount = 0;
+            
+            // So only one dictionary of iconids needs to be maintained.
+            foreach(var pair in iconid_to_baitstring)
+            {
+                baitstring_to_iconid.Add(pair.Value, pair.Key);
+            }
             
             this.PluginInterface.UiBuilder.Draw += DrawUI;
             this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
@@ -160,7 +172,7 @@ namespace OceanFishin
                 (location, time) = get_fishing_data();
             }
             //this.PluginUI.Draw(on_boat, location, time);
-            this.PluginUI.Draw(true, "The Southern Strait of Merlthor", "Sunset");
+            this.PluginUI.Draw(true, "Galadion Bay", "Sunset");
         }
 
         private void DrawConfigUI()
@@ -263,69 +275,99 @@ namespace OceanFishin
         private unsafe IntPtr update_bait_window_addon_ptr(bool on_boat)
         {
             if (!on_boat)
-                return OceanFishin.bait_window_addon_ptr = IntPtr.Zero;
-            if (OceanFishin.bait_window_addon_ptr != IntPtr.Zero)
-                return OceanFishin.bait_window_addon_ptr;
+                return bait_window_addon_ptr = IntPtr.Zero;
+            if (bait_window_addon_ptr != IntPtr.Zero)
+                return bait_window_addon_ptr;
             else
             {
-                return OceanFishin.bait_window_addon_ptr = GameGui.GetAddonByName("Bait", 1);
+                return bait_window_addon_ptr = GameGui.GetAddonByName("Bait", 1);
             }
         }
 
+
+        /*
         // A dictionary of bait types and pointers to that bait's entry in the bait window
         // Updated only when the bait window changes (eg. runs out of Krill and then buys more).
-        private unsafe static void update_bait_pointer_dictionary()
+        private unsafe static void update_bait_pointer_dictionary() 
         {
-            if (bait_window_addon_ptr == IntPtr.Zero)
+            // If the bait window isn't open, do nothing.
+            if (OceanFishin.bait_window_addon_ptr == IntPtr.Zero)
                 return;
 
             AtkUnitBase* addon = (AtkUnitBase*)bait_window_addon_ptr;
-            if (addon->UldManager.NodeListCount == expected_bait_window_nodelist_count)
+            if (addon->UldManager.NodeListCount < expected_bait_window_nodelist_count)
                 return;
-            
-            // Begin making the dictionary
-            foreach(KeyValuePair<string, IntPtr> key in bait_to_inventory_ptr)
-            {
-                bait_to_inventory_ptr[key.Key] = IntPtr.Zero;
-            }
+            // If the bait window hasn't changed, we don't need to update anything.
             AtkComponentNode* bait_list_componentnode = (AtkComponentNode*)addon->UldManager.NodeList[bait_list_componentnode_index];
+                        
             if (bait_list_componentnode->Component->UldManager.NodeListCount == OceanFishin.last_known_bait_nodecount)
                 return;
+
+            // Reset the dictionary...
+            OceanFishin.baitstring_to_iconnode_ptr = new Dictionary<string, IntPtr>();
+
+            PluginLog.Debug("Trying to update the bait pointer map...");
+            PluginLog.Debug("ComponentNode->Component Node list count is  " + bait_list_componentnode->Component->UldManager.NodeListCount);
+            // ...then repopulate it.
             OceanFishin.last_known_bait_nodecount = bait_list_componentnode->Component->UldManager.NodeListCount;
             for(int i = 1; i< bait_list_componentnode->Component->UldManager.NodeListCount - 1; i++)
             {
                 AtkComponentNode* list_item_node = (AtkComponentNode*)bait_list_componentnode->Component->UldManager.NodeList[i];
-                AtkComponentIcon* icon_node = (AtkComponentIcon*)list_item_node->Component->UldManager.NodeList[iconid_index];
+                AtkComponentNode* icon_component_node = (AtkComponentNode*)list_item_node->Component->UldManager.NodeList[iconid_index];
+                AtkComponentIcon* icon_node = (AtkComponentIcon*)icon_component_node->Component;
                 Int64 node_icon_id = icon_node->IconId;
-                if (icon_id_to_string.ContainsKey(node_icon_id))
+                PluginLog.Debug("Node " + list_item_node->AtkResNode.NodeID + " at index " + i +" had an icon node " + icon_component_node->AtkResNode.NodeID + " with IconId " +node_icon_id);
+                if (iconid_to_baitstring.ContainsKey(node_icon_id))
                 {
-                    bait_to_inventory_ptr[icon_id_to_string[node_icon_id]] = (IntPtr)list_item_node;
+                    PluginLog.Information("Item " + iconid_to_baitstring[node_icon_id] + " with icon ID " + node_icon_id + " was found and added to the map.");
+                    baitstring_to_iconnode_ptr[iconid_to_baitstring[node_icon_id]] = (IntPtr)list_item_node;
                     continue;
                 }
             }
         }
 
-        public unsafe static void highlight_inventory_item(string bait)
+  
+        
+        //TODO Just do a linear, stop-short search of the bait list to get it working and worry about caching the pointer later
+        public unsafe static void highlight_inventory_item(string bait) 
         {
             if (OceanFishin.bait_window_addon_ptr == IntPtr.Zero)
                 return;
-
-            update_bait_pointer_dictionary();
-            
             if (bait == OceanFishin.last_highlighted_bait)
                 return;
+            if (OceanFishin.baitstring_to_iconnode_ptr == null)
+                return;
 
-            IntPtr prev_node_ptr = OceanFishin.bait_to_inventory_ptr[bait];
-            
-            if(prev_node_ptr != IntPtr.Zero)
+            Int64 current_bait_iconid = baitstring_to_iconid[bait];
+            AtkComponentNode* cached_item_component_ptr = (AtkComponentNode*)OceanFishin.baitstring_to_iconnode_ptr[bait];
+            AtkComponentNode* cached_icon_component_ptr = (AtkComponentNode*)cached_item_component_ptr->Component->UldManager.NodeList[iconid_index];
+            AtkComponentIcon* cached_icon_node_ptr = (AtkComponentIcon*)cached_icon_component_ptr->Component;
+            Int64 cached_ptr_iconid = cached_icon_node_ptr->IconId;
+            if (cached_ptr_iconid != current_bait_iconid)
+                update_bait_pointer_dictionary();
+
+            // if(if currently highlighted node's iconid != expected iconid)
+            // scan the bait list until it is found
+            // if it isn't there, return
+            // if it is there, cache the single pointer
+
+            // If last_highlighted_bait exists, unhighlight it before highlighting the new one.
+            if (OceanFishin.last_highlighted_bait != null)
             {
-                AtkComponentNode* prev_item_node = (AtkComponentNode*)OceanFishin.bait_to_inventory_ptr[bait];
-                prev_item_node->AtkResNode.MultiplyBlue = 100;
-                prev_item_node->AtkResNode.MultiplyGreen = 0;
-                prev_item_node->AtkResNode.MultiplyRed = 0;
+                IntPtr prev_node_ptr = OceanFishin.baitstring_to_iconnode_ptr[OceanFishin.last_highlighted_bait];
+
+                if (prev_node_ptr != IntPtr.Zero)
+                {
+                    AtkComponentNode* prev_item_node = (AtkComponentNode*)OceanFishin.baitstring_to_iconnode_ptr[OceanFishin.last_highlighted_bait];
+                    prev_item_node->AtkResNode.MultiplyBlue = 100;
+                    prev_item_node->AtkResNode.MultiplyGreen = 100;
+                    prev_item_node->AtkResNode.MultiplyRed = 100;
+                }
+
+                OceanFishin.last_highlighted_bait = bait;
             }
 
-            IntPtr item_node_ptr = OceanFishin.bait_to_inventory_ptr[bait];
+            IntPtr item_node_ptr = OceanFishin.baitstring_to_iconnode_ptr[bait];
             if (item_node_ptr == IntPtr.Zero)
                 return;
             
@@ -333,6 +375,85 @@ namespace OceanFishin
             item_node->AtkResNode.MultiplyBlue = 100;
             item_node->AtkResNode.MultiplyGreen = 0;
             item_node->AtkResNode.MultiplyRed = 0;
+        }*/
+
+        // Doesn't work if the bait window is closed and opened
+        public unsafe static void highlight_inventory_item(string bait)
+        {
+            // If the bait window isn't open, do nothing.
+            if (OceanFishin.bait_window_addon_ptr == IntPtr.Zero)
+            {
+                PluginLog.Debug("The bait window wasn't open.");
+                return;
+            }
+            //If the bait hasn't changed, do nothing.
+            if (bait == last_highlighted_bait)
+            {
+                PluginLog.Debug("The bait was the same as the previously highlighted bait.");
+                return;
+            }
+            try
+            {
+                AtkComponentNode* bait_node;
+                if (last_highlighted_bait_node == null)
+                {
+                    bait_node = find_bait_item_node(bait);
+                    last_highlighted_bait_node = bait_node;
+                }
+                else
+                {
+                    AtkComponentNode* icon_component_node = (AtkComponentNode*)last_highlighted_bait_node->Component->UldManager.NodeList[iconid_index];
+                    AtkComponentIcon* icon_node = (AtkComponentIcon*)icon_component_node->Component;
+                    if (icon_node->IconId == baitstring_to_iconid[bait])
+                        return;
+                }
+                bait_node = find_bait_item_node(bait);
+                last_highlighted_bait_node = bait_node;
+                if (bait_node != null)
+                {
+                    change_node_border(bait_node, true);
+                }   
+            }
+            catch(NullReferenceException e)
+            {
+                PluginLog.Debug("The bait window became inaccessible.", e);
+                return;
+            }
+        }
+
+        // Works but fails when 2 baits have the same icon
+        public unsafe static AtkComponentNode* find_bait_item_node(string bait)
+        {
+            PluginLog.Debug("Attempting to find the icon for " + bait);
+            IntPtr bait_window_ptr = StaticGameGui.GetAddonByName("Bait", 1);
+            if (bait_window_ptr == IntPtr.Zero)
+                return null;
+            AtkUnitBase* bait_window_addon = (AtkUnitBase*)bait_window_ptr;
+            AtkComponentNode* bait_list_componentnode = (AtkComponentNode*)bait_window_addon->UldManager.NodeList[bait_list_componentnode_index];
+            for (int i = 1; i < bait_list_componentnode->Component->UldManager.NodeListCount - 1; i++)
+            {
+                AtkComponentNode* list_item_node = (AtkComponentNode*)bait_list_componentnode->Component->UldManager.NodeList[i];
+                AtkComponentNode* icon_component_node = (AtkComponentNode*)list_item_node->Component->UldManager.NodeList[iconid_index];
+                AtkComponentIcon* icon_node = (AtkComponentIcon*)icon_component_node->Component;
+                if(baitstring_to_iconid[bait] == icon_node->IconId)
+                {
+                    PluginLog.Debug("Found it at index " + i + " with IconID " + icon_node->IconId);
+                    return list_item_node;
+                }
+            }
+            PluginLog.Debug("Could not find it.");
+            return null;
+        }
+
+        // Works
+        public unsafe static void change_node_border(AtkComponentNode* node, bool higlight)
+        {
+            AtkComponentNode* icon_component_node = (AtkComponentNode*)node->Component->UldManager.NodeList[iconid_index];
+            AtkImageNode* frame_node = (AtkImageNode*)icon_component_node->Component->UldManager.NodeList[item_border_image_index];
+            if(higlight)
+                frame_node->PartId = glowing_border_part_id;
+            else
+                frame_node->PartId = default_border_part_id;
         }
     }
 }
