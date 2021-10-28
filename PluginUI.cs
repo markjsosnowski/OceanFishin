@@ -41,6 +41,7 @@ namespace OceanFishin
                                                             "Spare some krill?"};
 
         private int random_index;
+        private OceanFishin OceanFishin;
 
         // This extra bool exists for ImGui, since you can't ref a property
         private bool visible = false;
@@ -62,7 +63,7 @@ namespace OceanFishin
         {
         }
 
-        public PluginUI(Configuration configuration)
+        public PluginUI(OceanFishin OceanFishin, Configuration configuration)
         {
             Random random = new Random();
             this.configuration = configuration;
@@ -70,6 +71,7 @@ namespace OceanFishin
             // Since the window is constantly updated, we just pick one 
             // random line and stick with it until the plugin is reloaded.
             this.random_index = random.Next(0, donation_lines.Length);
+            this.OceanFishin = OceanFishin;
         }
 
         public void Draw(bool on_boat, string location, string time)
@@ -81,7 +83,7 @@ namespace OceanFishin
             // There are other ways to do this, but it is generally best to keep the number of
             // draw delegates as low as possible.
 
-            DrawMainWindow(on_boat, location, time, ref OceanFishin.bait_dictionary);
+            DrawMainWindow(on_boat, location, time, ref this.OceanFishin.bait_dictionary);
             DrawSettingsWindow();
         }
 
@@ -92,39 +94,32 @@ namespace OceanFishin
             int minutes = now.Minute;
             if(hour % 2 == 0)
             {
-                if (minutes < 1)
-                {
-                    return "The current voyage set sail less than a minute ago.";
-                }
-                if(minutes == 1)
-                {
-                    return "The current voyage set sail 1 minute ago.";
-                }
-                if (minutes < 15) // The duty registration is open for 15 minutes.  
-                {
-                    return "The current voyage set sail " + minutes + " minutes ago.";
-                }
-                else
-                {
-                    return "The next voyage will begin in 1 hour, " + (60 - minutes) + " minute(s).";
+                switch(minutes){
+                    case < 1:
+                        return "The current voyage set sail less than a minute ago.";
+                    case 1:
+                        return "The current voyage set sail 1 minute ago.";
+                    case < 15:
+                        return "The current voyage set sail " + minutes + " minutes ago.";
+                    default:
+                        return "The next voyage will begin in 1 hour, " + (60 - minutes) + " minute(s).";
                 }
             }
             else
             {
-                if (minutes == 59)
+                switch (minutes)
                 {
-                    return "The next voyage will begin in 1 minute!";
-                }
-                else 
-                {
-                    return "The next voyage will begin in " + (60 - minutes) + " minutes.";
+                    case 59:
+                        return "The next voyage will begin in 1 minute!";
+                    default:
+                        return "The next voyage will begin in " + (60 - minutes) + " minutes.";
                 }
             }
         }
 
         public bool is_fish_available(ref Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> bait_dict, string location, string time, string fish_type, int state)
         {
-            if(OceanFishin.nested_key_exists(ref bait_dict,location, time, fish_type))
+            if(this.OceanFishin.nested_key_exists(ref bait_dict,location, time, fish_type))
             {
                 if (bait_dict[location][time][fish_type][state] != null)
                     return true;
@@ -152,7 +147,7 @@ namespace OceanFishin
                     {
                        
                         // This is stored as an int so it can be used to index the bait array of mission fish.
-                        spectral_state = OceanFishin.is_spectral_current() ? spectral_active : spectral_inactive;
+                        spectral_state = this.OceanFishin.is_spectral_current() ? spectral_active : spectral_inactive;
 
                         if (bait_dict.ContainsKey(location))
                         {
@@ -175,8 +170,7 @@ namespace OceanFishin
                             
                             if(this.configuration.highlight_recommended_bait && spectral_state == spectral_inactive)
                             {
-                                PluginLog.Debug("Attempting to higlight bait " + bait_dict[location]["always"]["start"]);
-                                OceanFishin.highlight_inventory_item(bait_dict[location]["always"]["start"]);
+                                this.OceanFishin.highlight_inventory_item(bait_dict[location]["always"]["start"]);
                             }
                             
                             if(spectral_state == spectral_inactive || this.configuration.always_show_all)
@@ -189,7 +183,7 @@ namespace OceanFishin
                             {
                                 ImGui.Text("Spectral high points → " + bait_dict[location][time][spectral]);
                                 // Super rare fish only found in specific locations and times that use abnormal bait.
-                                if (OceanFishin.nested_key_exists(ref bait_dict, location, time, special))
+                                if (this.OceanFishin.nested_key_exists(ref bait_dict, location, time, special))
                                     ImGui.Text("Spectral Fisher's Intuition → " + bait_dict[location][time][special]);
                             }
 

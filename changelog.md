@@ -1,3 +1,9 @@
+#Version 2.1-beta1
+* Automatically detects spectral current
+* Automatically updates the bait list to show (non)spectral current suited baits 
+* Added config option to always show the full bait list, regardless of spectral
+* Performance improvements
+
 # Version 2.0 (Current Version)
 * Added a next voyage timer
 * Added a donation button
