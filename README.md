@@ -1,9 +1,9 @@
 # ![icon](https://raw.githubusercontent.com/markjsosnowski/OceanFishin/master/icon.png) Ocean Fishin'
 
-A Dalamud plugin for FFXIV
-
-This repository is for development! If you just want to use this addon, you'll need to install the [FFXIV Quick Launcher](https://github.com/goatcorp/FFXIVQuickLauncher) and read the 
+This repository is for development of the plugin! If you just want to use this addon, you'll need to install the [FFXIV Quick Launcher](https://github.com/goatcorp/FFXIVQuickLauncher) and read the 
 [FAQ](https://goatcorp.github.io/faq/dalamud_troubleshooting.html#q-how-do-i-installenable-plugins).
+
+Ocean Fishin' is currently availble as a Dalamud testing plugin for Final Fantasy XIV. See [the FAQ](https://goatcorp.github.io/faq/dalamud_troubleshooting.html#q-how-do-i-enable-plugin-test-builds) for how to install testing plugins. 
 
 ## How to Use
 `/oceanfishin` opens a window to suggest baits while ocean fishing. 
@@ -17,6 +17,8 @@ While in the ocean fishing duty, this plugin suggests bait to use...
 * during the spectral current for fish worth a lot of points.
 * to catch the exceptionally rare spectral intuition fish.
 * for certain types of achievement and mission fish.
+
+Outside of the duty, the window will show you a timer counting down until the next voyage.
 
 ---
 
