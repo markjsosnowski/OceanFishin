@@ -281,10 +281,10 @@ namespace OceanFishin
             var buff_list = player_character.StatusList;
             for (int i = 0; i < buff_list.Length; i++)
             {
-                if(DEBUG) PluginLog.Debug("Status id " + i + " : "+ buff_list[i].StatusId);
+                if(DEBUG && buff_list[i].StatusId != 0) PluginLog.Debug("Status id " + i + " : "+ buff_list[i].StatusId);
                 if (buff_list[i].StatusId == intuition_buff_id)
                 {
-                    if(DEBUG) PluginLog.Debug("Intuition was true!");
+                    if(DEBUG) PluginLog.Debug("Intuition was detected!");
                     return true;
                 }
             }
@@ -358,6 +358,7 @@ namespace OceanFishin
             if (!addon_is_open(this.bait_window_addon_ptr))
                 return null;
             PluginLog.Debug("Attempting to find the icon for " + bait);
+            //TODO a crash still happens right around here. maybe check expected count?
             AtkUnitBase* bait_window_addon = (AtkUnitBase*)this.bait_window_addon_ptr;
             AtkComponentNode* bait_list_componentnode = (AtkComponentNode*)bait_window_addon->UldManager.NodeList[bait_list_componentnode_index];
             //TODO this is only a temporary solution, searching for the back. have to find a solution that is more consistent
