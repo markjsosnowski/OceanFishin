@@ -2,6 +2,7 @@
 using Dalamud.Plugin;
 using Dalamud.IoC;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using System;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
@@ -13,12 +14,13 @@ using System.IO;
 using System.Net;
 using Newtonsoft.Json;
 using Dalamud.Logging;
+using Dalamud.Game.ClientState.Objects.SubKinds;
 
 namespace OceanFishin
 {  
     public sealed class OceanFishin : IDalamudPlugin
     {
-        private const bool DEBUG = true;
+        private const bool DEBUG = false;
         
         public string Name => "Ocean Fishin'";
 
@@ -63,6 +65,8 @@ namespace OceanFishin
         private const int sunset_icon_lit = 10;
         private const int night_icon_lit = 11;
 
+        private const int intuition_buff_id = 568;
+
         // Inventory icon texture part ids
         private const int glowing_border_part_id = 5;
         private const int default_border_part_id = 0;
@@ -77,12 +81,19 @@ namespace OceanFishin
         public Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> bait_dictionary;
         private string bait_file_url = "https://markjsosnowski.github.io/FFXIV/bait2.json";
         private Dictionary<string, Int64> baitstring_to_iconid = new Dictionary<string, Int64>(); // Generated on initalization based on iconid_to_baitstring
-        private Dictionary<Int64, string> iconid_to_baitstring = new Dictionary<Int64, string>()
+        /*private Dictionary<Int64, string> iconid_to_baitstring = new Dictionary<Int64, string>()
         {
             [27023] = "Krill",
             [27015] ="Plump Worm",
             [27004] = "Ragworm"
             //TODO put in spectral int bait keys
+        };*/
+
+        private Dictionary<Int64, string> iconid_to_baitstring = new Dictionary<Int64, string>()
+        {
+            [29715] = "Krill",
+            [29716] ="Plump Worm",
+            [29714] = "Ragworm"
         };
 
         public OceanFishin(
@@ -184,6 +195,7 @@ namespace OceanFishin
         }
 
 
+        // Since you have to be a fisher to get into the Duty, checking player job is probably unnecessary. 
         private bool in_ocean_fishing_duty()
         {
             if (DEBUG || (int)ClientState.TerritoryType == endevor_territory_type)
@@ -262,6 +274,23 @@ namespace OceanFishin
                 return false;
         }
 
+        //Works
+        public unsafe bool has_intuition_buff()
+        {
+            PlayerCharacter player_character = ClientState.LocalPlayer;
+            var buff_list = player_character.StatusList;
+            for (int i = 0; i < buff_list.Length; i++)
+            {
+                if(DEBUG) PluginLog.Debug("Status id " + i + " : "+ buff_list[i].StatusId);
+                if (buff_list[i].StatusId == intuition_buff_id)
+                {
+                    if(DEBUG) PluginLog.Debug("Intuition was true!");
+                    return true;
+                }
+            }
+            return false;
+        }
+
         private unsafe void update_addon_pointers(Framework framework)
         {
             if (!in_ocean_fishing_duty())
@@ -331,20 +360,123 @@ namespace OceanFishin
             PluginLog.Debug("Attempting to find the icon for " + bait);
             AtkUnitBase* bait_window_addon = (AtkUnitBase*)this.bait_window_addon_ptr;
             AtkComponentNode* bait_list_componentnode = (AtkComponentNode*)bait_window_addon->UldManager.NodeList[bait_list_componentnode_index];
-            for (int i = 1; i < bait_list_componentnode->Component->UldManager.NodeListCount - 1; i++)
+            //TODO this is only a temporary solution, searching for the back. have to find a solution that is more consistent
+            for (int i = bait_list_componentnode->Component->UldManager.NodeListCount - 1; i > 0 ; i--)
             {
                 AtkComponentNode* list_item_node = (AtkComponentNode*)bait_list_componentnode->Component->UldManager.NodeList[i];
                 AtkComponentNode* icon_component_node = (AtkComponentNode*)list_item_node->Component->UldManager.NodeList[iconid_index];
                 AtkComponentIcon* icon_node = (AtkComponentIcon*)icon_component_node->Component;
                 if(baitstring_to_iconid[bait] == icon_node->IconId)
                 {
-                    PluginLog.Debug("Found " + bait + " at index " + i + " with IconID " + icon_node->IconId);
+                    //PluginLog.Debug("Found " + bait + " at index " + i + " with IconID " + icon_node->IconId);
                     return list_item_node;
                 }
             }
             PluginLog.Debug("Could not find the node for " + bait);
             return null;
         }
+
+        
+        /*
+        // Treated the node as an InventoryItem does not work 
+        // Treating the node as a ListItemTrenderer doesn't work
+        public unsafe AtkComponentNode* find_bait_item_node(string bait_name)
+        {
+            try
+            {
+                
+                
+
+                AtkUnitBase* bait_window_addon = (AtkUnitBase*)this.bait_window_addon_ptr;
+                AtkComponentNode* list_componentnode = (AtkComponentNode*)bait_window_addon->UldManager.NodeList[bait_list_componentnode_index]->GetComponent();
+                for(int i = 0; i < list_componentnode->Component->UldManager.NodeListCount; i++)
+                {
+                    var text_node = (InventoryItem*)list_componentnode->Component->UldManager.NodeList[i];
+                    PluginLog.Debug("["+i+"] " +text_node->ToString());
+                    PluginLog.Debug("Item ID: " + text_node->ItemID);
+                    PluginLog.Debug("Quantity: " + text_node->Quantity);
+                }
+
+
+
+                /*AtkComponentNode* lst_comp_node = (AtkComponentNode*)bait_window_addon->UldManager.NodeList[bait_list_componentnode_index];
+                AtkComponentNode* item_comp_node = (AtkComponentNode*)lst_comp_node->Component->UldManager.NodeList[3];
+                AtkCollisionNode* coll_node = (AtkCollisionNode*)item_comp_node->Component->UldManager.NodeList[0];
+                long* vtbl = (long*)coll_node->AtkResNode.AtkEventTarget.vtbl;
+                
+                PluginLog.Debug(vtbl->ToString());
+                var linked_comp = coll_node->LinkedComponent;
+                PluginLog.Debug("Linked component: " + linked_comp->ToString());*/
+
+
+                /*AtkComponentList* list_component = (AtkComponentList*)bait_window_addon->UldManager.NodeList[bait_list_componentnode_index]->GetComponent();
+                var list_length = list_component->ListLength;
+                PluginLog.Debug("List length is " + list_length);
+                AtkComponentList.ListItem* item_list = list_component->ItemRendererList;
+                for(int i = 0; i<list_component->ListLength; i++)
+                {
+                    var list_item_ptr = (IntPtr*)&item_list[i].AtkComponentListItemRenderer;
+                    PluginLog.Debug("[" + i + "] Item Renderer Ptr: " + list_item_ptr->ToString("X"));
+                    PluginLog.Debug("Type of [" + i + "] is " + item_list[i].ToString());
+                    var button_node_ptr = (IntPtr*)&item_list[i].AtkComponentListItemRenderer->AtkComponentButton;
+                    var button_node = item_list[i].AtkComponentListItemRenderer->AtkComponentButton;
+                    PluginLog.Debug("[" + i + "] Button Ptr: " + button_node_ptr->ToString("X"));
+                    PluginLog.Debug("[" + i + "] Button IsEnabled: " + button_node.IsEnabled);
+                    var text_node_ptr = (IntPtr*)&item_list[i].AtkComponentListItemRenderer->AtkComponentButton.ButtonTextNode;
+                    PluginLog.Debug("[" + i + "] ButtonTextNodePtr: " + text_node_ptr->ToString("X"));
+                    PluginLog.Debug("[" + i + "] ButtonNode NodeListCount: " + button_node.AtkComponentBase.UldManager.NodeListCount);
+                    for (int j =0; j< button_node.AtkComponentBase.UldManager.NodeListCount; j++)
+                    {
+                        PluginLog.Debug("\t["+j+"] is " + button_node.AtkComponentBase.UldManager.NodeList[j]->ToString() +" at " + ((IntPtr*)button_node.AtkComponentBase.UldManager.NodeList[j])->ToString("X"));
+                    }
+
+
+                }
+
+                AtkComponentListItemRenderer* item_renderer = item_list[0].AtkComponentListItemRenderer;
+                IntPtr* item_renderer_ptr = (IntPtr*)item_renderer;
+                PluginLog.Debug("Breakpoint 2" + item_renderer_ptr->ToString("X"));
+                AtkComponentButton item_renderer_button = item_renderer->AtkComponentButton;
+                PluginLog.Debug("Breakpoint 3");
+                AtkTextNode* button_text_node = item_renderer_button.ButtonTextNode;
+                PluginLog.Debug("Breakpoint 4");
+                PluginLog.Debug(text_node_to_string(button_text_node));
+
+            }
+            catch (Exception e)
+            {
+                PluginLog.Debug(e.ToString());
+                return null;
+            }
+
+            //AtkComponentNode* bait_list_componentnode = (AtkComponentNode*)bait_window_addon->UldManager.NodeList[bait_list_componentnode_index];
+            try
+            {
+                for (int i = 1; i < bait_list_componentnode->Component->UldManager.NodeListCount - 1; i++)
+                {
+                    PluginLog.Debug("Seaching index " + i);
+                    AtkComponentListItemRenderer* list_item_node = (AtkComponentListItemRenderer*)bait_list_componentnode->Component->UldManager.NodeList[i];
+                    
+
+                    PluginLog.Debug("Break Point 1");
+                    AtkComponentButton item_button_node = list_item_node->AtkComponentButton;
+                    PluginLog.Debug("Break Point 2");
+                    AtkTextNode* button_text_node = item_button_node.ButtonTextNode;
+                    PluginLog.Debug("Break Point 3");
+                    PluginLog.Debug("The ListItemRenderer's ComponentButton's TextNode's Text was " + Marshal.PtrToStringAnsi(new IntPtr(button_text_node->NodeText.StringPtr)));
+                    //if (baitstring_to_iconid[bait_name] == inventory_item_node->ItemID)
+                    //    return list_item_node;
+                }
+                return null;
+            }
+            catch(Exception e)
+            {
+                PluginLog.Debug(e.ToString(), e);
+                return null;
+            }
+            return null;
+
+        }*/
 
         public unsafe  void change_node_border(AtkComponentNode* node, bool higlight)
         {
@@ -359,6 +491,20 @@ namespace OceanFishin
         public unsafe bool addon_is_open(IntPtr addon)
         {
             return (addon != IntPtr.Zero);
+        }
+
+        public unsafe string text_node_to_string(AtkTextNode* text_node)
+        {
+            try
+            {
+                return Marshal.PtrToStringAnsi(new IntPtr(text_node->NodeText.StringPtr));
+            }
+            catch(Exception e)
+            {
+                PluginLog.Debug(e.ToString());
+                return "Text node was null.";
+            }
+            
         }
     }
 }
