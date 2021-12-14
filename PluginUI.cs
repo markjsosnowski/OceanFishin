@@ -163,16 +163,16 @@ namespace OceanFishin
                                 if (spectral_key == spectral_inactive)
                                 {
                                     if (intuition_state)
-                                        ImGui.Text("Use → " + bait_dict[location]["always"]["intuition"]);
+                                        ImGui.Text("Recommended → " + bait_dict[location]["always"]["intuition"]);
                                     else
-                                        ImGui.Text("Use → " + bait_dict[location]["always"]["start"]);
+                                        ImGui.Text("Recommended → " + bait_dict[location]["always"]["start"]);
                                 }
                                 else
                                 {
                                     if (intuition_state && this.OceanFishin.nested_key_exists(ref bait_dict, location, time, special))
-                                        ImGui.Text("Use → " + bait_dict[location][time][special]);
+                                        ImGui.Text("Recommended → " + bait_dict[location][time][special]);
                                     else
-                                        ImGui.Text("Use → " + bait_dict[location][time][spectral]);
+                                        ImGui.Text("Recommended → " + bait_dict[location][time][spectral]);
                                 }
                             }
                             else
@@ -194,13 +194,13 @@ namespace OceanFishin
                                 ImGui.TextWrapped(first_line.ToString());
 
 
-                                if (this.configuration.highlight_recommended_bait && spectral_key == spectral_inactive)
+                                /*if (this.configuration.highlight_recommended_bait && spectral_key == spectral_inactive)
                                 {
                                     if (intuition_state)
                                         this.OceanFishin.highlight_inventory_item(bait_dict[location]["always"]["intuition"]);
                                     else
                                         this.OceanFishin.highlight_inventory_item(bait_dict[location]["always"]["start"]);
-                                }
+                                }*/
 
                                 if (spectral_key == spectral_inactive || this.configuration.display_mode == display_full)
                                 {
@@ -210,13 +210,13 @@ namespace OceanFishin
 
                                 if (spectral_key == spectral_active || this.configuration.display_mode == display_full)
                                 {
-                                    ImGui.Text("Spectral high points → " + bait_dict[location][time][spectral]);
+                                    ImGui.Text("Spectral high points → " + bait_dict[location][time]["spectral"]);
                                     // Super rare fish only found in specific locations and times that use abnormal bait.
                                     if (this.OceanFishin.nested_key_exists(ref bait_dict, location, time, special))
                                         ImGui.Text("Spectral Fisher's Intuition → " + bait_dict[location][time][special]);
                                 }
-
-                                if (this.configuration.include_achievement_fish)
+                            }
+                            if (this.configuration.include_achievement_fish)
                                 {
                                     ImGui.Separator();
 
@@ -265,7 +265,7 @@ namespace OceanFishin
                                         if (is_fish_available(ref bait_dict, location, time, mantas, spectral_active))
                                             ImGui.Text("Spectral Current Mantas → " + bait_dict[location][time][mantas][spectral_active]);
                                     }
-                                    else
+                                    else // Standard display mode...
                                     {
                                         if (is_fish_available(ref bait_dict, location, time, octopodes, spectral_key))
                                             ImGui.Text("Octopods → " + bait_dict[location][time][octopodes][spectral_key]);
@@ -283,15 +283,11 @@ namespace OceanFishin
                                             ImGui.Text("Mantas → " + bait_dict[location][time][mantas][spectral_key]);
                                     }
                                 }
-                            }
-                        }
                             
-
-                            
-                           
+                        }           
                         else
                         {
-                            // This will show for a second when the window is open when loading into the duty
+                            // This will show for a second when the window is open when loading into/out of the duty
                             // and will automatically update once the location can actually be read.
                             ImGui.Text("Just a second, I'm still getting your location!");
                         }
@@ -334,22 +330,13 @@ namespace OceanFishin
                 return;
             }
 
-            ImGui.SetNextWindowSize(new Vector2(400, 140), ImGuiCond.Always);
+            ImGui.SetNextWindowSize(new Vector2(400, 160), ImGuiCond.Always);
             if (ImGui.Begin("Ocean Fishin' Configuration", ref this.settingsVisible,
                 ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
             {
-                
-                
-                
-                var include_achievement_fish = this.configuration.include_achievement_fish;
-                if (ImGui.Checkbox("Recommend bait for mission/achievement fish.", ref include_achievement_fish))
-                {
-                    this.configuration.include_achievement_fish = include_achievement_fish;
-                    this.configuration.Save();
-                }
 
                 var display_mode = this.configuration.display_mode;
-                if(ImGui.ListBox("Display Mode", ref display_mode, this.configuration.display_modes, 3))
+                if (ImGui.Combo("Display Mode", ref display_mode, this.configuration.display_modes, 3))
                 {
                     this.configuration.display_mode = display_mode;
                     this.configuration.Save();
@@ -357,12 +344,19 @@ namespace OceanFishin
 
                 ImGui.TextWrapped(this.configuration.display_mode_desc[display_mode]);
 
-                var highlight_recommended_bait = this.configuration.highlight_recommended_bait;
-                if (ImGui.Checkbox("Highlight recommended bait in your bait & tackle window.", ref highlight_recommended_bait))
+                var include_achievement_fish = this.configuration.include_achievement_fish;
+                if (ImGui.Checkbox("Recommend bait for mission/achievement fish.", ref include_achievement_fish))
+                {
+                    this.configuration.include_achievement_fish = include_achievement_fish;
+                    this.configuration.Save();
+                }
+
+                /*var highlight_recommended_bait = this.configuration.highlight_recommended_bait;
+                if (ImGui.Checkbox("Highlight recommended bait in your tackle box.", ref highlight_recommended_bait))
                 {
                     this.configuration.highlight_recommended_bait = highlight_recommended_bait;
                     this.configuration.Save();
-                }
+                }*/
             }
             ImGui.End();
         }

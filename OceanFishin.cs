@@ -20,7 +20,7 @@ namespace OceanFishin
 {  
     public sealed class OceanFishin : IDalamudPlugin
     {
-        private const bool DEBUG = false;
+        private const bool DEBUG = true;
         
         public string Name => "Ocean Fishin'";
 
