@@ -274,19 +274,25 @@ namespace OceanFishin
                 return false;
         }
 
-        //Works
+        // crashes on load in to the duty, should check player_character for null and return until it's actually defined
         public unsafe bool has_intuition_buff()
         {
+            Dalamud.Game.ClientState.Statuses.StatusList buff_list;
             PlayerCharacter player_character = ClientState.LocalPlayer;
-            var buff_list = player_character.StatusList;
-            for (int i = 0; i < buff_list.Length; i++)
+            
+            if(player_character != null && player_character.StatusList != null)
             {
-                if(DEBUG && buff_list[i].StatusId != 0) PluginLog.Debug("Status id " + i + " : "+ buff_list[i].StatusId);
-                if (buff_list[i].StatusId == intuition_buff_id)
+                buff_list = player_character.StatusList;
+                for (int i = 0; i < buff_list.Length; i++)
                 {
-                    if(DEBUG) PluginLog.Debug("Intuition was detected!");
-                    return true;
+                    if (DEBUG && buff_list[i].StatusId != 0) PluginLog.Debug("Status id " + i + " : " + buff_list[i].StatusId);
+                    if (buff_list[i].StatusId == intuition_buff_id)
+                    {
+                        if (DEBUG) PluginLog.Debug("Intuition was detected!");
+                        return true;
+                    }
                 }
+                return false;
             }
             return false;
         }
