@@ -5,7 +5,7 @@
 		<LangVersion>latest</LangVersion>
 		<PackageId>OceanFishin'</PackageId>
 		<Authors>Sl0nderman</Authors>
-		<Version>2.0</Version>
+		<Version>2.2</Version>
 	</PropertyGroup>
 	
 	<PropertyGroup>
@@ -30,7 +30,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DalamudPackager" Version="2.1.4" />
+		<PackageReference Include="DalamudPackager" Version="2.1.5" />
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0">
 			<Private>false</Private>
 		</PackageReference>
