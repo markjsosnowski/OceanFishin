@@ -1,11 +1,16 @@
 {
+  "Disabled": false,
+  "Testing": false,
+  "ScheduledForDeletion": false,
+  "InstalledFromUrl": "",
+  "IsThirdParty": false,
+  "EffectiveVersion": "2.3.0.0",
+  "IsAvailableForTesting": false,
   "Author": "Sl0nderman",
   "Name": "Ocean Fishin'",
-  "InternalName": "OceanFishin",
-  "AssemblyVersion": "2.2.0.0",
+  "Punchline": "Suggests bait for ocean fishing.",
   "Description": "Automatically recommends bait to use based on your ocean fishing route. \nYou'll get suggestions for spectral fish, fisher's intuition buff, and missions.",
-  "ApplicableVersion": "any",
-  "RepoUrl": "https://github.com/markjsosnowski/OceanFishin",
+  "Changelog": null,
   "Tags": [
     "fishing",
     "bait",
@@ -14,11 +19,29 @@
   "CategoryTags": [
     "jobs"
   ],
-  "DalamudApiLevel": 5,
+  "IsHide": false,
+  "InternalName": "OceanFishin",
+  "AssemblyVersion": "2.3.0.0",
+  "TestingAssemblyVersion": null,
+  "IsTestingExclusive": false,
+  "RepoUrl": "https://github.com/markjsosnowski/OceanFishin",
+  "ApplicableVersion": "any",
+  "DalamudApiLevel": 8,
+  "DownloadCount": 0,
+  "LastUpdate": 0,
+  "DownloadLinkInstall": null,
+  "DownloadLinkUpdate": null,
+  "DownloadLinkTesting": null,
+  "LoadRequiredState": 0,
+  "LoadSync": false,
   "LoadPriority": 0,
+  "CanUnloadAsync": false,
   "ImageUrls": [
     "https://raw.githubusercontent.com/markjsosnowski/OceanFishin/master/preview1.png"
   ],
   "IconUrl": "https://raw.githubusercontent.com/markjsosnowski/OceanFishin/master/icon.png",
-  "Punchline": "Suggests bait for ocean fishing."
+  "AcceptsFeedback": true,
+  "FeedbackMessage": null,
+  "_isDip17Plugin": false,
+  "_Dip17Channel": null
 }
