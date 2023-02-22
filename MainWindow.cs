@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -56,6 +57,8 @@ public class MainWindow : Window, IDisposable
 
         this.plugin = plugin;
         this.configuration = configuration;
+        Random random = new Random();
+        this.random_index = random.Next(0, donation_lines.Length);
     }
 
     public void Dispose(){}
@@ -216,7 +219,21 @@ public class MainWindow : Window, IDisposable
         }
         else
         {
+            // This window appears if the command is issued when not part of the duty.
+            ImGui.Text("This plugin is meant to be used during the Ocean Fishing duty.");
+            ImGui.Text("Once you're aboard The Endeavor, the bait list will automatically update.");
             ImGui.Text(time_until_next_voyage());
+            ImGui.Separator();
+            ImGui.Text(donation_lines[this.random_index]);
+            ImGui.SameLine();
+            if (ImGui.Button("Donate"))
+            {
+                System.Diagnostics.Process.Start(new ProcessStartInfo
+                {
+                    FileName = "https://ko-fi.com/sl0nderman",
+                    UseShellExecute = true
+                });
+            }
         }
     }
 

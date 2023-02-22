@@ -23,7 +23,7 @@ namespace OceanFishin
 {  
     public sealed class OceanFishin : IDalamudPlugin
     {
-        private const bool DEBUG = true;
+        private const bool DEBUG = false;
         
         public string Name => "Ocean Fishin'";
 
@@ -34,7 +34,6 @@ namespace OceanFishin
         private DalamudPluginInterface PluginInterface { get; init; }
         private CommandManager CommandManager { get; init; }
         private Configuration Configuration { get; init; }
-        private PluginUI PluginUI { get; init; }
         private MainWindow MainWindow { get; init; }
         private ClientState ClientState { get; init; }
         private Framework Framework { get; init; }
