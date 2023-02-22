@@ -2,6 +2,7 @@
 using ImGuiNET;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -46,6 +47,44 @@ namespace OceanFishin
             {
                 this.Configuration.include_achievement_fish = include_achievement_fish;
                 this.Configuration.Save();
+            }
+
+            var debugMode = this.Configuration.DebugMode;
+            if (ImGui.Checkbox("Debug Tools", ref debugMode))
+            {
+                this.Configuration.DebugMode = debugMode;
+                this.Configuration.Save();
+            }
+
+            if(this.Configuration.DebugMode)
+            {
+                int debugLocation = (int)this.Configuration.DebugLocation;
+                if(ImGui.Combo("Force Location", ref debugLocation, this.Plugin.LocationStrings[OceanFishin.Language.en], 8))
+                {
+                    this.Configuration.DebugLocation = (OceanFishin.Locations)debugLocation;
+                    this.Configuration.Save();
+                }
+
+                int debugTime = (int)this.Configuration.DebugTime;
+                if (ImGui.Combo("Force Time", ref debugTime, this.Plugin.TimeStrings[OceanFishin.Language.en], 3))
+                {
+                    this.Configuration.DebugTime = (OceanFishin.Times)debugTime;
+                    this.Configuration.Save();
+                }
+                
+                bool debugSpectral = this.Configuration.DebugSpectral; 
+                if (ImGui.Checkbox("Force Spectral", ref debugSpectral))
+                {
+                    this.Configuration.DebugSpectral = debugSpectral; 
+                    this.Configuration.Save();
+                }
+
+                bool debugIntution = this.Configuration.DebugIntution;   
+                if (ImGui.Checkbox("Force Intuition", ref debugIntution))
+                {
+                    this.Configuration.DebugSpectral = debugIntution;
+                    this.Configuration.Save();
+                }
             }
         }
     }

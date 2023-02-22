@@ -20,11 +20,9 @@ using Dalamud.Interface.Windowing;
 using System.Runtime.CompilerServices;
 
 namespace OceanFishin
-{  
+{
     public sealed class OceanFishin : IDalamudPlugin
     {
-        private const bool DEBUG = false;
-        
         public string Name => "Ocean Fishin'";
 
         public const string commandName = "/oceanfishin";
@@ -97,8 +95,61 @@ namespace OceanFishin
         private Dictionary<Int64, string> iconid_to_baitstring = new Dictionary<Int64, string>()
         {
             [29715] = "Krill",
-            [29716] ="Plump Worm",
+            [29716] = "Plump Worm",
             [29714] = "Ragworm"
+        };
+
+        public enum Language
+        {
+            en,
+            fr,
+            de,
+            jp
+        }
+
+        public enum Locations
+        {
+            Unknown,
+            BloodbrineSea,
+            Cieldales,
+            GaladionBay,
+            NorthernStrait,
+            RhotanoSea,
+            RothlytSound,
+            SoutherStraight,
+        }
+
+        public enum Times
+        {
+            Day,
+            Sunset,
+            Night
+        }
+
+        public Dictionary<Language, string[]> LocationStrings = new Dictionary<Language, string[]>
+        {
+            [Language.en] = new string[8]
+            {
+                "Unknown",
+                "The Bloodbrine Sea",
+                "The Cieldalaes",
+                "Galadion Bay",
+                "The Northern Strait of Merlthor",
+                "Rhotano Sea",
+                "The Rothlyt Sound",
+                "The Southern Strait of Merlthor"
+            },
+            //TODO add other languages
+        };
+
+        public Dictionary<Language, string[]> TimeStrings = new Dictionary<Language, string[]> 
+        {
+            [Language.en] = new string[3]
+            {
+                "Day",
+                "Sunset",
+                "Night"
+            }
         };
 
         public OceanFishin(
@@ -192,11 +243,6 @@ namespace OceanFishin
             {
                 (location, time) = get_fishing_data();
             }
-            if (DEBUG)
-            {
-                location = "Galadion Bay";
-                time = "Sunset";
-            }
             WindowSystem.Draw();
         }
 
@@ -209,7 +255,7 @@ namespace OceanFishin
         // Since you have to be a fisher to get into the Duty, checking player job is probably unnecessary. 
         public bool in_ocean_fishing_duty()
         {
-            if (DEBUG || (int)ClientState.TerritoryType == endevor_territory_type)
+            if (this.Configuration.DebugMode || (int)ClientState.TerritoryType == endevor_territory_type)
                 return true;
             else
                 return false;
@@ -218,9 +264,9 @@ namespace OceanFishin
         public unsafe (string, string) get_fishing_data()
         {
 
-            if (DEBUG)
+            if (this.Configuration.DebugMode)
             {
-                return ("Galadion Bay", "Sunset");
+                return (LocationStrings[Language.en][(int)this.Configuration.DebugLocation], TimeStrings[Language.en][(int)this.Configuration.DebugTime]);
             }
             
             if (this.ocean_fishing_addon_ptr == IntPtr.Zero)
@@ -302,10 +348,10 @@ namespace OceanFishin
                 buff_list = player_character.StatusList;
                 for (int i = 0; i < buff_list.Length; i++)
                 {
-                    if (DEBUG && buff_list[i].StatusId != 0) PluginLog.Debug("Status id " + i + " : " + buff_list[i].StatusId);
+                    if (this.Configuration.DebugMode && buff_list[i].StatusId != 0) PluginLog.Debug("Status id " + i + " : " + buff_list[i].StatusId);
                     if (buff_list[i].StatusId == intuition_buff_id)
                     {
-                        if (DEBUG) PluginLog.Debug("Intuition was detected!");
+                        if (this.Configuration.DebugMode) PluginLog.Debug("Intuition was detected!");
                         return true;
                     }
                 }

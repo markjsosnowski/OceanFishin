@@ -1,6 +1,7 @@
 ﻿using Dalamud.Configuration;
 using Dalamud.Plugin;
 using System;
+using System.Diagnostics;
 
 namespace OceanFishin
 {
@@ -19,7 +20,14 @@ namespace OceanFishin
                                                             "Only recommends one bait at a time based on current conditions.\nGood for when you don't want to think.",
                                                             "Shows a list of all bait recommendations for the area at all times.\nGood for when you want to help your team."};
         public int display_mode { get; set; } = 0;
-        
+
+        public bool DebugMode = false;
+        public OceanFishin.Locations DebugLocation = 0;
+        public OceanFishin.Times DebugTime = 0;
+        public bool DebugSpectral = false;
+        public bool DebugIntution = false;
+
+
         public void Initialize(DalamudPluginInterface pluginInterface)
         {
             this.pluginInterface = pluginInterface;
