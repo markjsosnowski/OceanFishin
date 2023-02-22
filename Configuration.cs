@@ -22,8 +22,8 @@ namespace OceanFishin
         public int display_mode { get; set; } = 0;
 
         public bool DebugMode = false;
-        public OceanFishin.Locations DebugLocation = 0;
-        public OceanFishin.Times DebugTime = 0;
+        public OceanFishin.Location DebugLocation = OceanFishin.Location.Unknown;
+        public OceanFishin.Time DebugTime = OceanFishin.Time.Day;
         public bool DebugSpectral = false;
         public bool DebugIntution = false;
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using Dalamud.Interface.Windowing;
 using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using ImGuiNET;
 
 namespace OceanFishin.Windows;
@@ -65,19 +67,37 @@ public class MainWindow : Window, IDisposable
 
     public override void Draw()
     {
+        if (this.Plugin.InOceanFishingDuty())
+        {
+            
+            OceanFishin.Location location = this.Plugin.GetFishingLocation();
+            OceanFishin.Time time = this.Plugin.GetFishingTime();
 
-        if (Plugin.in_ocean_fishing_duty())
+            if (location == OceanFishin.Location.Unknown || time == OceanFishin.Time.Unknown) { LoadingWindow(); return; }
+
+            if (this.Configuration.display_mode == display_compact) { CompactMode(location, time); }
+            if (this.Configuration.display_mode == display_full) { FullMode(location, time); }
+            if (this.Configuration.display_mode == display_standard) { DefaultMode(location, time); }
+        }
+        else
+        {
+            { countdownWindow(); }
+        }
+
+
+        /*if (Plugin.inOceanFishingDuty())
         {
             Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> bait_dict = Plugin.bait_dictionary;
-            (string location, string time) = Plugin.get_fishing_data();
+            OceanFishin.Location location = this.Plugin.getFishingLocation();
+            OceanFishin.Time time = Plugin.getFishingTime();
             int spectral_key;
             bool intuition_state;
             try
             {
 
                 // This is stored as an int so it can be used to index the bait array of mission fish.
-                spectral_key = this.Plugin.is_spectral_current() ? spectral_active : spectral_inactive;
-                intuition_state = this.Plugin.has_intuition_buff();
+                spectral_key = this.Plugin.IsSpectralCurrent() ? spectral_active : spectral_inactive;
+                intuition_state = this.Plugin.HasIntuitionBuff();
 
                 if (bait_dict.ContainsKey(location))
                 {
@@ -219,21 +239,87 @@ public class MainWindow : Window, IDisposable
         }
         else
         {
-            // This window appears if the command is issued when not part of the duty.
-            ImGui.Text("This plugin is meant to be used during the Ocean Fishing duty.");
-            ImGui.Text("Once you're aboard The Endeavor, the bait list will automatically update.");
-            ImGui.Text(time_until_next_voyage());
+            countdownWindow();
+        }*/
+    }
+
+    private void LoadingWindow()
+    {
+        ImGui.Text("Waiting for location...");
+    }
+
+    private void DefaultMode(OceanFishin.Location location, OceanFishin.Time time)
+    {
+        if (this.Plugin.IsSpectralCurrent())
+        {
+            ImGui.Text("High Points: " + this.Plugin.getSpectralHighPointsBait(location, time).ToString());
+            if (this.Plugin.getSpectralIntuitionBait(location, time) != OceanFishin.Bait.None) ImGui.Text("Fisher's Intuition Buff: " + this.Plugin.getSpectralIntuitionBait(location, time).ToString());
+        }
+        else
+        {
+            ImGui.Text("Best Spectral Chance: " + this.Plugin.getSpectralChanceBait(location).ToString());
+            ImGui.Text("Fisher's Intuition Buff: " + this.Plugin.getFishersIntuitionBait(location, time).ToString());
+        }
+        if (this.Configuration.include_achievement_fish)
+        {
             ImGui.Separator();
-            ImGui.Text(donation_lines[this.random_index]);
-            ImGui.SameLine();
-            if (ImGui.Button("Donate"))
+            ImGui.Text("Your mission fish:"); //TODO filter this to only show the actual fish being asked for
+            if (this.Plugin.IsSpectralCurrent() ) 
             {
-                System.Diagnostics.Process.Start(new ProcessStartInfo
-                {
-                    FileName = "https://ko-fi.com/sl0nderman",
-                    UseShellExecute = true
-                });
+                var specMissionFishHolder = this.Plugin.getSpectralMissionFishBaits(location, time);
+                if (specMissionFishHolder != null){ ImGui.Text(string.Join('\n', specMissionFishHolder)); }
+            } 
+            else
+            {
+                ImGui.Text(string.Join('\n', this.Plugin.getMissionFishBaits(location)));
             }
+        }
+    }
+    
+    private void FullMode(OceanFishin.Location location, OceanFishin.Time time)
+    {
+        ImGui.Text("Best Spectral Chance: " + this.Plugin.getSpectralChanceBait(location).ToString());
+        ImGui.Text("Fisher's Intuition Buff: " + this.Plugin.getFishersIntuitionBait(location, time).ToString());
+        ImGui.Text("Spectral Current High Points: " + this.Plugin.getSpectralHighPointsBait(location, time).ToString());
+        if (this.Plugin.getSpectralIntuitionBait(location, time) != OceanFishin.Bait.None) ImGui.Text("Spectral Intuition: " + this.Plugin.getSpectralIntuitionBait(location, time).ToString());
+        
+        if (this.Configuration.include_achievement_fish)
+        {
+            ImGui.Separator();
+            ImGui.Text("Mission Fish:");
+            ImGui.Text(string.Join('\n', this.Plugin.getMissionFishBaits(location)));
+
+            var specMissionFishHolder = this.Plugin.getSpectralMissionFishBaits(location, time);
+            if (specMissionFishHolder != null)
+            {
+            ImGui.Separator();
+            ImGui.Text("Spectral Current Mission Fish:");
+            ImGui.Text(string.Join('\n', specMissionFishHolder));
+            }
+        }
+    }
+
+    private void CompactMode(OceanFishin.Location location, OceanFishin.Time time)
+    {
+        ImGui.Text(this.Plugin.getSingleBestBait(location, time).ToString());
+    }
+    
+    private void countdownWindow()
+    {
+        // This window appears if the command is issued when not part of the duty.
+        ImGui.Text("This plugin is meant to be used during the Ocean Fishing duty.");
+        ImGui.Text("Once you're aboard The Endeavor, the bait list will automatically update.");
+        ImGui.Text(time_until_next_voyage());
+        ImGui.Separator();
+        ImGui.Text(donation_lines[this.random_index]);
+        ImGui.SameLine();
+        if (ImGui.Button("Donate"))
+        {
+            System.Diagnostics.Process.Start(new ProcessStartInfo
+            {
+                FileName = "https://ko-fi.com/sl0nderman",
+                UseShellExecute = true
+            });
         }
     }
 

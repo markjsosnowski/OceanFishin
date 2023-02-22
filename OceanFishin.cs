@@ -18,6 +18,7 @@ using Dalamud.Game.ClientState.Objects.SubKinds;
 using OceanFishin.Windows;
 using Dalamud.Interface.Windowing;
 using System.Runtime.CompilerServices;
+using FFXIVClientStructs.Attributes;
 
 namespace OceanFishin
 {
@@ -80,9 +81,168 @@ namespace OceanFishin
         private string last_highlighted_bait = "";
         private unsafe AtkComponentNode* last_highlighted_bait_node = null;
 
-        // Dictionaries
-        public Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> bait_dictionary;
-        private string bait_file_url = "https://markjsosnowski.github.io/FFXIV/bait2.json";
+        public Language UserLanguage;
+
+        //Enums 
+        public enum Language
+        {
+            en,
+            fr,
+            de,
+            jp
+        }
+
+        public enum Location
+        {
+            Unknown,
+            BloodbrineSea,
+            Cieldales,
+            GaladionBay,
+            NorthernStrait,
+            RhotanoSea,
+            RothlytSound,
+            SouthernStraight,
+        }
+
+        public enum Time
+        {
+            Unknown,
+            Day,
+            Sunset,
+            Night
+        }
+
+        public enum FishTypes
+        {
+            None,
+            Balloons,
+            Crabs,
+            Dragons,
+            Jellyfish,
+            Mantas,
+            Octopodes,
+            Sharks
+        }
+
+        public enum Bait
+        {
+            None,
+            Krill = 27023,
+            PlumpWorm = 27015,
+            Ragworm = 27004,
+            Glowworm, //TODO
+            ShrimpCageFeeder,
+            HeavySteelJig,
+            SquidStrip,
+            RatTail,
+            PillBug
+        }
+
+        // Localization Tables
+
+
+        public Dictionary<Language, Dictionary<string, Location>> StringToLocation = new Dictionary<Language, Dictionary<string, Location>>
+        {
+            [Language.en] = new Dictionary<string, Location>
+            {
+                ["Unknown"] = Location.Unknown,
+                ["The Bloodbrine Sea"] = Location.BloodbrineSea,
+                ["The Cieldalaes"] =Location.Cieldales,
+                ["Galadion Bay"] =Location.GaladionBay,
+                ["The Northern Strait of Merlthor"] = Location.NorthernStrait,
+                ["Rhotano Sea"] = Location.RhotanoSea,
+                ["The Rothlyt Sound"] = Location.RothlytSound,
+                ["The Southern Strait of Merlthor"] = Location.NorthernStrait
+            }
+        };
+
+        public Dictionary<Language, Dictionary<string, Time>> StringToTime = new Dictionary<Language, Dictionary<string, Time>>
+        {
+            [Language.en] = new Dictionary<string, Time>
+            {
+                ["Unknown"] = Time.Unknown,
+                ["Day"] = Time.Day,
+                ["Sunset"] = Time.Sunset,
+                ["Night"] = Time.Night
+            }
+        };
+
+        //Bait Dictionaries
+
+        private Dictionary<Location, Bait> SpectralChanceBaitDictionary = new Dictionary<Location, Bait>
+        {
+            [Location.BloodbrineSea] = Bait.Krill,
+            [Location.Cieldales] = Bait.Ragworm,
+            [Location.GaladionBay] = Bait.Krill,
+            [Location.NorthernStrait] = Bait.Ragworm,
+            [Location.RhotanoSea] = Bait.PlumpWorm,
+            [Location.RothlytSound] = Bait.PlumpWorm,
+            [Location.SouthernStraight] = Bait.Krill
+        };
+
+        private Dictionary<Location, Bait> FishersIntutionBaitDictionary = new Dictionary<Location, Bait>
+        {
+            [Location.BloodbrineSea] = Bait.Krill,
+            [Location.Cieldales] = Bait.Krill,
+            [Location.GaladionBay] = Bait.Krill,
+            [Location.NorthernStrait] = Bait.Ragworm,
+            [Location.RhotanoSea] = Bait.Krill,
+            [Location.RothlytSound] = Bait.Ragworm,
+            [Location.SouthernStraight] = Bait.PlumpWorm
+        };
+
+        private Dictionary<(Location,Time), Bait> SpectralIntuitionBaitDictionary = new Dictionary<(Location, Time), Bait>
+        {
+            [(Location.BloodbrineSea, Time.Day)] =  Bait.PillBug,
+            [(Location.Cieldales, Time.Night)] =  Bait.SquidStrip,
+            [(Location.GaladionBay, Time.Night)] = Bait.Glowworm,
+            [(Location.NorthernStrait, Time.Day)] = Bait.HeavySteelJig,
+            [(Location.RhotanoSea, Time.Sunset)] = Bait.RatTail,
+            [(Location.RothlytSound, Time.Sunset)] = Bait.Ragworm,
+            [(Location.SouthernStraight, Time.Night)] = Bait.ShrimpCageFeeder
+        };
+
+        private Dictionary<Location, Dictionary<Time, Bait>> SpectralHighPointsBaitDictionary = new Dictionary<Location, Dictionary<Time, Bait>>
+        {
+            [Location.BloodbrineSea] = new Dictionary<Time, Bait>{ [Time.Day] = Bait.Ragworm, [Time.Sunset] = Bait.PlumpWorm, [Time.Night] = Bait.Krill },
+            [Location.Cieldales] = new Dictionary<Time, Bait>{ [Time.Day] = Bait.Krill, [Time.Sunset] = Bait.PlumpWorm, [Time.Night] = Bait.Krill },
+            [Location.GaladionBay] = new Dictionary<Time, Bait> { [Time.Day] = Bait.Ragworm, [Time.Sunset]= Bait.PlumpWorm, [Time.Night]=Bait.Krill },
+            [Location.NorthernStrait] = new Dictionary<Time, Bait> { [Time.Day] = Bait.PlumpWorm, [Time.Sunset] = Bait.Krill, [Time.Night] = Bait.Krill },
+            [Location.RhotanoSea] = new Dictionary<Time, Bait> { [Time.Day] = Bait.PlumpWorm, [Time.Sunset] = Bait.Ragworm, [Time.Night] = Bait.Krill },
+            [Location.RothlytSound] = new Dictionary<Time, Bait> { [Time.Day] = Bait.Krill, [Time.Sunset] = Bait.Krill, [Time.Night] = Bait.Krill },
+            [Location.SouthernStraight] = new Dictionary<Time, Bait> { [Time.Day] = Bait.Krill, [Time.Sunset] = Bait.Ragworm, [Time.Night] = Bait.Ragworm }
+        };
+
+        private Dictionary<Location, Dictionary<FishTypes, Bait>> MissionFishBaitDictionary = new Dictionary<Location, Dictionary<FishTypes, Bait>>
+        {
+            [Location.BloodbrineSea] = new Dictionary<FishTypes, Bait> { [FishTypes.Crabs] = Bait.Ragworm },
+            [Location.Cieldales] = new Dictionary<FishTypes, Bait> { [FishTypes.Balloons] = Bait.Ragworm, [FishTypes.Crabs] = Bait.Krill, [FishTypes.Mantas] = Bait.PlumpWorm },
+            [Location.GaladionBay] = new Dictionary<FishTypes, Bait> { [FishTypes.Octopodes] = Bait.Krill , [FishTypes.Sharks] = Bait.PlumpWorm },
+            [Location.NorthernStrait] = new Dictionary<FishTypes, Bait> { [FishTypes.Crabs] = Bait.Krill, [FishTypes.Balloons] = Bait.Krill},
+            [Location.RhotanoSea] = new Dictionary<FishTypes, Bait> { [FishTypes.Sharks] = Bait.PlumpWorm, [FishTypes.Balloons] = Bait.Ragworm},
+            [Location.RothlytSound] = new Dictionary<FishTypes, Bait> { [FishTypes.Balloons] = Bait.Ragworm, [FishTypes.Jellyfish] = Bait.Krill, [FishTypes.Sharks] = Bait.Krill},
+            [Location.SouthernStraight] = new Dictionary<FishTypes, Bait> { [FishTypes.Jellyfish] = Bait.Ragworm, [FishTypes.Dragons] = Bait.Ragworm , [FishTypes.Balloons] = Bait.Krill }
+        };
+
+        private Dictionary<(Location, Time), Dictionary<FishTypes, Bait>> SpectralFishBaitDictionary = new Dictionary<(Location, Time), Dictionary<FishTypes, Bait>>
+        {
+            [(Location.BloodbrineSea, Time.Day)] = new Dictionary<FishTypes, Bait> { [FishTypes.Crabs] = Bait.Ragworm, [FishTypes.Sharks] = Bait.PlumpWorm },
+            [(Location.BloodbrineSea, Time.Sunset)] = new Dictionary<FishTypes, Bait> { [FishTypes.Sharks] = Bait.PlumpWorm },
+            [(Location.BloodbrineSea, Time.Night)] = new Dictionary<FishTypes, Bait> { [FishTypes.Sharks] = Bait.PlumpWorm, [FishTypes.Mantas] = Bait.Krill },
+            [(Location.NorthernStrait, Time.Sunset)] = new Dictionary<FishTypes, Bait> { [FishTypes.Dragons] = Bait.Ragworm },
+            [(Location.NorthernStrait, Time.Night)] = new Dictionary<FishTypes, Bait> { [FishTypes.Octopodes] = Bait.Krill, [FishTypes.Crabs] = Bait.Ragworm },
+            [(Location.RhotanoSea, Time.Day)] = new Dictionary<FishTypes, Bait> { [FishTypes.Sharks] = Bait.PlumpWorm, [FishTypes.Balloons] = Bait.Ragworm },
+            [(Location.RhotanoSea, Time.Sunset)] = new Dictionary<FishTypes, Bait> { [FishTypes.Balloons] = Bait.Ragworm },
+            [(Location.RhotanoSea, Time.Night)] = new Dictionary<FishTypes, Bait> { [FishTypes.Balloons] = Bait.Ragworm },
+            [(Location.RothlytSound, Time.Day)] = new Dictionary<FishTypes, Bait> { [FishTypes.Balloons] = Bait.Krill, [FishTypes.Mantas] = Bait.PlumpWorm },
+            [(Location.RothlytSound, Time.Night)] = new Dictionary<FishTypes, Bait> { [FishTypes.Balloons] = Bait.Krill },
+            [(Location.SouthernStraight, Time.Sunset)] = new Dictionary<FishTypes, Bait> { [FishTypes.Jellyfish] = Bait.Ragworm },
+            [(Location.SouthernStraight, Time.Night)] = new Dictionary<FishTypes, Bait> { [FishTypes.Jellyfish] = Bait.Ragworm }
+        };
+
+    // Dictionaries
+    public Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> bait_dictionary;
+        //private string bait_file_url = "https://markjsosnowski.github.io/FFXIV/bait2.json";
         private Dictionary<string, Int64> baitstring_to_iconid = new Dictionary<string, Int64>(); // Generated on initalization based on iconid_to_baitstring
         /*private Dictionary<Int64, string> iconid_to_baitstring = new Dictionary<Int64, string>()
         {
@@ -97,59 +257,6 @@ namespace OceanFishin
             [29715] = "Krill",
             [29716] = "Plump Worm",
             [29714] = "Ragworm"
-        };
-
-        public enum Language
-        {
-            en,
-            fr,
-            de,
-            jp
-        }
-
-        public enum Locations
-        {
-            Unknown,
-            BloodbrineSea,
-            Cieldales,
-            GaladionBay,
-            NorthernStrait,
-            RhotanoSea,
-            RothlytSound,
-            SoutherStraight,
-        }
-
-        public enum Times
-        {
-            Day,
-            Sunset,
-            Night
-        }
-
-        public Dictionary<Language, string[]> LocationStrings = new Dictionary<Language, string[]>
-        {
-            [Language.en] = new string[8]
-            {
-                "Unknown",
-                "The Bloodbrine Sea",
-                "The Cieldalaes",
-                "Galadion Bay",
-                "The Northern Strait of Merlthor",
-                "Rhotano Sea",
-                "The Rothlyt Sound",
-                "The Southern Strait of Merlthor"
-            },
-            //TODO add other languages
-        };
-
-        public Dictionary<Language, string[]> TimeStrings = new Dictionary<Language, string[]> 
-        {
-            [Language.en] = new string[3]
-            {
-                "Day",
-                "Sunset",
-                "Night"
-            }
         };
 
         public OceanFishin(
@@ -191,7 +298,7 @@ namespace OceanFishin
                 HelpMessage = "Alias for /oceanfishin"
             });
 
-            try
+            /*try
             {
                 using (WebClient wc = new WebClient())
                 {
@@ -209,41 +316,34 @@ namespace OceanFishin
             foreach(var pair in iconid_to_baitstring)
             {
                 baitstring_to_iconid.Add(pair.Value, pair.Key);
-            }
+            }*/
 
-            Framework.Update += update_addon_pointers;
+            Framework.Update += updateAddonPtrs;
             this.bait_window_addon_ptr = IntPtr.Zero;
             this.ocean_fishing_addon_ptr = IntPtr.Zero;
 
             this.PluginInterface.UiBuilder.Draw += DrawUI;
             this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
+
+            this.UserLanguage = Language.en;
         }
 
         public unsafe void Dispose()
         {
-            Framework.Update -= update_addon_pointers;
+            Framework.Update -= updateAddonPtrs;
             this.MainWindow.Dispose();
             this.CommandManager.RemoveHandler(commandName);
             this.CommandManager.RemoveHandler(altCommandName1);
             this.CommandManager.RemoveHandler(altCommandName2);
-            if (this.last_highlighted_bait_node != null)
-                change_node_border(this.last_highlighted_bait_node, false);
             WindowSystem.RemoveAllWindows();
+            if (this.last_highlighted_bait_node != null)
+            {
+                change_node_border(this.last_highlighted_bait_node, false);
+            }
         }
         private void OnCommand(string command, string args)
         {
             MainWindow.IsOpen = true;
-        }
-
-        private void DrawUI()
-        {
-            string location = default_location;
-            string time = default_time;
-            if (in_ocean_fishing_duty())
-            {
-                (location, time) = get_fishing_data();
-            }
-            WindowSystem.Draw();
         }
 
         private void DrawConfigUI()
@@ -251,9 +351,13 @@ namespace OceanFishin
             this.ConfigWindow.IsOpen = true;
         }
 
+        private void DrawUI()
+        {
+            WindowSystem.Draw();
+        }
 
         // Since you have to be a fisher to get into the Duty, checking player job is probably unnecessary. 
-        public bool in_ocean_fishing_duty()
+        public bool InOceanFishingDuty()
         {
             if (this.Configuration.DebugMode || (int)ClientState.TerritoryType == endevor_territory_type)
                 return true;
@@ -261,17 +365,16 @@ namespace OceanFishin
                 return false;
         }
 
-        public unsafe (string, string) get_fishing_data()
+        public unsafe (Location, Time) getFishingDetails()
         {
-
             if (this.Configuration.DebugMode)
             {
-                return (LocationStrings[Language.en][(int)this.Configuration.DebugLocation], TimeStrings[Language.en][(int)this.Configuration.DebugTime]);
+                return (this.Configuration.DebugLocation, this.Configuration.DebugTime);
             }
             
             if (this.ocean_fishing_addon_ptr == IntPtr.Zero)
             {
-                return (default_location, default_time);
+                return (Location.Unknown, Time.Unknown);
             }
             AtkUnitBase* addon = (AtkUnitBase*)this.ocean_fishing_addon_ptr;
 
@@ -279,37 +382,96 @@ namespace OceanFishin
             // populated and cause a null pointer exception. 
             if (addon->UldManager.NodeListCount < expected_nodelist_count)
             {
-                return (default_location, default_time);
+                return (Location.Unknown, Time.Unknown);
             }
-            return (get_location(addon), get_time(addon));
+            return (getFishingLocation(addon), getFishingTime(addon));
         }
 
-        private unsafe string get_location(AtkUnitBase* ptr)
-        {
+        private unsafe Location getFishingLocation(AtkUnitBase* ptr)
+        {            
             if (ptr == null)
-                return default_location;
+                return Location.Unknown;
             AtkResNode* res_node = ptr->UldManager.NodeList[location_textnode_index];
             AtkTextNode* text_node = (AtkTextNode*)res_node;
-            return Marshal.PtrToStringAnsi(new IntPtr(text_node->NodeText.StringPtr));
+            string? locationString = Marshal.PtrToStringAnsi(new IntPtr(text_node->NodeText.StringPtr));
+            
+            if (locationString != null)
+            {
+                return StringToLocation[Language.en][locationString];
+            }
+            else
+            {
+                return Location.Unknown;
+            }
         }
 
-        private unsafe string get_time(AtkUnitBase* ptr)
+        public unsafe Location GetFishingLocation()
+        {
+            if (this.Configuration.DebugMode){
+                return this.Configuration.DebugLocation;
+            }
+
+            AtkUnitBase* ptr = (AtkUnitBase*)this.ocean_fishing_addon_ptr;
+            if (ptr == null || ptr->UldManager.NodeListCount < expected_nodelist_count)
+                return Location.Unknown;
+
+            AtkResNode* res_node = ptr->UldManager.NodeList[location_textnode_index];
+            AtkTextNode* text_node = (AtkTextNode*)res_node;
+            string? locationString = Marshal.PtrToStringAnsi(new IntPtr(text_node->NodeText.StringPtr));
+
+            if (locationString != null)
+            {
+                return StringToLocation[Language.en][locationString];
+            }
+            else
+            {
+                return Location.Unknown;
+            }
+        }
+
+        private unsafe Time getFishingTime(AtkUnitBase* ptr)
         {
             if (ptr == null)
-                return default_time;
+                return Time.Unknown;
             AtkResNode* res_node = ptr->UldManager.NodeList[day_imagenode_index];
             AtkImageNode* image_node = (AtkImageNode*)res_node;
             if (image_node->PartId == day_icon_lit)
-                return "Day";
+                return Time.Day;
             res_node = ptr->UldManager.NodeList[sunset_imagenode_index];
             image_node = (AtkImageNode*)res_node;
             if (image_node->PartId == sunset_icon_lit)
-                return "Sunset";
+                return Time.Sunset;
             res_node = ptr->UldManager.NodeList[night_imagenode_index];
             image_node = (AtkImageNode*)res_node;
             if (image_node->PartId == night_icon_lit)
-                return "Night";
-            return default_time;
+                return Time.Night;
+            return Time.Unknown;
+        }
+
+        public unsafe Time GetFishingTime()
+        {
+            if (this.Configuration.DebugMode)
+            {
+                return this.Configuration.DebugTime;
+            }
+
+            AtkUnitBase* ptr = (AtkUnitBase*)this.ocean_fishing_addon_ptr;
+            if (ptr == null || ptr->UldManager.NodeListCount < expected_nodelist_count)
+                return Time.Unknown;
+            AtkResNode* res_node = ptr->UldManager.NodeList[day_imagenode_index];
+            AtkImageNode* image_node = (AtkImageNode*)res_node;
+            
+            if (image_node->PartId == day_icon_lit)
+                return Time.Day;
+            res_node = ptr->UldManager.NodeList[sunset_imagenode_index];
+            image_node = (AtkImageNode*)res_node;
+            if (image_node->PartId == sunset_icon_lit)
+                return Time.Sunset;
+            res_node = ptr->UldManager.NodeList[night_imagenode_index];
+            image_node = (AtkImageNode*)res_node;
+            if (image_node->PartId == night_icon_lit)
+                return Time.Night;
+            return Time.Unknown;
         }
         public bool nested_key_exists(ref Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> dictionary, string key1, string key2, string key3)
         {
@@ -321,8 +483,11 @@ namespace OceanFishin
         }
 
         // When the spectral current occurs, this AtkResNode becomes visible behind the IKDFishingLog window.
-        public unsafe bool is_spectral_current()
+        public unsafe bool IsSpectralCurrent()
         {
+            if (this.Configuration.DebugSpectral) return true;
+            
+            
             AtkUnitBase* addon;
             if (this.ocean_fishing_addon_ptr != IntPtr.Zero)
                  addon = (AtkUnitBase*)this.ocean_fishing_addon_ptr;
@@ -338,8 +503,10 @@ namespace OceanFishin
         }
 
         // crashes on load in to the duty, should check player_character for null and return until it's actually defined
-        public unsafe bool has_intuition_buff()
+        public unsafe bool HasIntuitionBuff()
         {
+            if (this.Configuration.DebugIntution) return true;
+            
             Dalamud.Game.ClientState.Statuses.StatusList buff_list;
             PlayerCharacter player_character = ClientState.LocalPlayer;
             
@@ -360,12 +527,12 @@ namespace OceanFishin
             return false;
         }
 
-        private unsafe void update_addon_pointers(Framework framework)
+        private unsafe void updateAddonPtrs(Framework framework)
         {
-            if (!in_ocean_fishing_duty())
+            if (!InOceanFishingDuty())
             {
-                bait_window_addon_ptr = IntPtr.Zero;
-                ocean_fishing_addon_ptr = IntPtr.Zero;
+                this.bait_window_addon_ptr = IntPtr.Zero;
+                this.ocean_fishing_addon_ptr = IntPtr.Zero;
                 return;
             }
             try
@@ -381,6 +548,60 @@ namespace OceanFishin
             {
                 PluginLog.Verbose("Ocean Fishin' caught an exception: " + e);
             }
+        }
+
+        public Bait getSpectralChanceBait(Location location)
+        {
+            //if(location == Location.GaladionBay && getWeather() == showers) { return Bait.PlumpWorm; }
+            try { return SpectralChanceBaitDictionary[location]; }
+            catch (KeyNotFoundException e) { return Bait.None; }
+        }
+
+        public Bait getFishersIntuitionBait(Location location,  Time time)
+        {
+            try { return FishersIntutionBaitDictionary[location]; }
+            catch (KeyNotFoundException e) { return Bait.None; }
+        }
+
+        public Bait getSpectralIntuitionBait(Location location, Time time)
+        {
+            try 
+            {
+                if (SpectralIntuitionBaitDictionary.ContainsKey((location, time))) { return SpectralIntuitionBaitDictionary[(location, time)]; }
+                else { return Bait.None; }
+            }
+            catch (KeyNotFoundException e) { return Bait.None; }
+        }
+
+        public Dictionary<FishTypes, Bait> getMissionFishBaits(Location location)
+        {
+            return MissionFishBaitDictionary[location];
+        }
+
+        public Dictionary<FishTypes, Bait>? getSpectralMissionFishBaits(Location location, Time time)
+        {
+            if (location == Location.GaladionBay || location == Location.Cieldales) { return getMissionFishBaits(location); }
+            else if (SpectralFishBaitDictionary.ContainsKey((location, time))){ return SpectralFishBaitDictionary[(location, time)]; }
+            else{ return null; }
+        }
+
+        public Bait getSpectralHighPointsBait(Location location, Time time)
+        {
+            try { return SpectralHighPointsBaitDictionary[location][time]; }
+            catch (KeyNotFoundException e) { return Bait.None; }
+        }
+
+        //TODO this will also be used to determine what to highlight in the tacklebox
+        public Bait getSingleBestBait(Location location, Time time)
+        {
+            if (IsSpectralCurrent())
+            {
+                if (HasIntuitionBuff() && getSpectralIntuitionBait(location, time) != Bait.None) return getSpectralIntuitionBait(location, time);
+                else return getSpectralHighPointsBait(location, time);
+            }
+            if (HasIntuitionBuff()) return getFishersIntuitionBait(location, time);
+            //if (weather == clear) return getMissionFishBait(location, time); //TODO implement weather checking
+            return getSpectralChanceBait(location);
         }
 
         public unsafe void highlight_inventory_item(string bait)

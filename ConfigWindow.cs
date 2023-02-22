@@ -59,16 +59,16 @@ namespace OceanFishin
             if(this.Configuration.DebugMode)
             {
                 int debugLocation = (int)this.Configuration.DebugLocation;
-                if(ImGui.Combo("Force Location", ref debugLocation, this.Plugin.LocationStrings[OceanFishin.Language.en], 8))
+                if(ImGui.Combo("Force Location", ref debugLocation, this.Plugin.StringToLocation[this.Plugin.UserLanguage].Keys.ToArray(), 8))
                 {
-                    this.Configuration.DebugLocation = (OceanFishin.Locations)debugLocation;
+                    this.Configuration.DebugLocation = (OceanFishin.Location)debugLocation;
                     this.Configuration.Save();
                 }
 
                 int debugTime = (int)this.Configuration.DebugTime;
-                if (ImGui.Combo("Force Time", ref debugTime, this.Plugin.TimeStrings[OceanFishin.Language.en], 3))
+                if (ImGui.Combo("Force Time", ref debugTime, this.Plugin.StringToTime[this.Plugin.UserLanguage].Keys.ToArray(), 4))
                 {
-                    this.Configuration.DebugTime = (OceanFishin.Times)debugTime;
+                    this.Configuration.DebugTime = (OceanFishin.Time)debugTime;
                     this.Configuration.Save();
                 }
                 
@@ -82,7 +82,7 @@ namespace OceanFishin
                 bool debugIntution = this.Configuration.DebugIntution;   
                 if (ImGui.Checkbox("Force Intuition", ref debugIntution))
                 {
-                    this.Configuration.DebugSpectral = debugIntution;
+                    this.Configuration.DebugIntution = debugIntution;
                     this.Configuration.Save();
                 }
             }
