@@ -289,6 +289,7 @@ namespace OceanFishin
                         {
                             // This will show for a second when the window is open when loading into/out of the duty
                             // and will automatically update once the location can actually be read.
+                            ImGui.Text(location + "" + time);
                             ImGui.Text("Just a second, I'm still getting your location!");
                         }
                     }
