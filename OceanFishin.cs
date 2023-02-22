@@ -15,6 +15,9 @@ using System.Net;
 using Newtonsoft.Json;
 using Dalamud.Logging;
 using Dalamud.Game.ClientState.Objects.SubKinds;
+using OceanFishin.Windows;
+using Dalamud.Interface.Windowing;
+using System.Runtime.CompilerServices;
 
 namespace OceanFishin
 {  
@@ -31,10 +34,13 @@ namespace OceanFishin
         private DalamudPluginInterface PluginInterface { get; init; }
         private CommandManager CommandManager { get; init; }
         private Configuration Configuration { get; init; }
-        private PluginUI PluginUI { get; init; }
+        private MainWindow MainWindow { get; init; }
         private ClientState ClientState { get; init; }
         private Framework Framework { get; init; }
         private GameGui GameGui { get; init; }
+        private ConfigWindow ConfigWindow { get; init; }
+
+        private WindowSystem WindowSystem = new("Ocean Fishin'");
 
         private const string default_location = "location unknown";
         private const string default_time = "time unknown";
@@ -113,7 +119,12 @@ namespace OceanFishin
             this.Configuration.Initialize(this.PluginInterface);
 
             var assemblyLocation = Assembly.GetExecutingAssembly().Location;
-            this.PluginUI = new PluginUI(this, this.Configuration);
+            this.MainWindow = new MainWindow(this, this.Configuration);
+            this.WindowSystem.AddWindow(this.MainWindow);
+
+            this.ConfigWindow = new ConfigWindow(this, this.Configuration);
+            this.WindowSystem.AddWindow(this.ConfigWindow);
+
 
             this.CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
             {
@@ -161,16 +172,17 @@ namespace OceanFishin
         public unsafe void Dispose()
         {
             Framework.Update -= update_addon_pointers;
-            this.PluginUI.Dispose();
+            this.MainWindow.Dispose();
             this.CommandManager.RemoveHandler(commandName);
             this.CommandManager.RemoveHandler(altCommandName1);
             this.CommandManager.RemoveHandler(altCommandName2);
             if (this.last_highlighted_bait_node != null)
                 change_node_border(this.last_highlighted_bait_node, false);
+            WindowSystem.RemoveAllWindows();
         }
         private void OnCommand(string command, string args)
         {
-            this.PluginUI.Visible = true;
+            MainWindow.IsOpen = true;
         }
 
         private void DrawUI()
@@ -186,17 +198,17 @@ namespace OceanFishin
                 location = "Galadion Bay";
                 time = "Sunset";
             }
-            this.PluginUI.Draw(in_ocean_fishing_duty(), location, time);
+            WindowSystem.Draw();
         }
 
         private void DrawConfigUI()
         {
-            this.PluginUI.SettingsVisible = true;
+            this.ConfigWindow.IsOpen = true;
         }
 
 
         // Since you have to be a fisher to get into the Duty, checking player job is probably unnecessary. 
-        private bool in_ocean_fishing_duty()
+        public bool in_ocean_fishing_duty()
         {
             if (DEBUG || (int)ClientState.TerritoryType == endevor_territory_type)
                 return true;
@@ -204,8 +216,14 @@ namespace OceanFishin
                 return false;
         }
 
-        private unsafe (string, string) get_fishing_data()
+        public unsafe (string, string) get_fishing_data()
         {
+
+            if (DEBUG)
+            {
+                return ("Galadion Bay", "Sunset");
+            }
+            
             if (this.ocean_fishing_addon_ptr == IntPtr.Zero)
             {
                 return (default_location, default_time);

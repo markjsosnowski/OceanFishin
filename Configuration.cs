@@ -19,7 +19,7 @@ namespace OceanFishin
                                                             "Only recommends one bait at a time based on current conditions.\nGood for when you don't want to think.",
                                                             "Shows a list of all bait recommendations for the area at all times.\nGood for when you want to help your team."};
         public int display_mode { get; set; } = 0;
-
+        
         public void Initialize(DalamudPluginInterface pluginInterface)
         {
             this.pluginInterface = pluginInterface;

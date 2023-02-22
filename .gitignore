@@ -3,3 +3,4 @@
 .vs/OceanFishing
 *.suo
 bait.json
+*.vsidx
