@@ -1,0 +1,43 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v7.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v7.0": {
+      "OceanFishin/2.3": {
+        "dependencies": {
+          "DalamudPackager": "2.1.10",
+          "System.Numerics.Vectors": "4.5.0"
+        },
+        "runtime": {
+          "OceanFishin.dll": {}
+        }
+      },
+      "DalamudPackager/2.1.10": {},
+      "System.Numerics.Vectors/4.5.0": {}
+    }
+  },
+  "libraries": {
+    "OceanFishin/2.3": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "DalamudPackager/2.1.10": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-S6NrvvOnLgT4GDdgwuKVJjbFo+8ZEj+JsEYk9ojjOR/MMfv1dIFpT8aRJQfI24rtDcw1uF+GnSSMN4WW1yt7fw==",
+      "path": "dalamudpackager/2.1.10",
+      "hashPath": "dalamudpackager.2.1.10.nupkg.sha512"
+    },
+    "System.Numerics.Vectors/4.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-QQTlPTl06J/iiDbJCiepZ4H//BVraReU4O4EoRw1U02H5TLUIT7xn3GnDp9AXPSlJUDyFs4uWjWafNX6WrAojQ==",
+      "path": "system.numerics.vectors/4.5.0",
+      "hashPath": "system.numerics.vectors.4.5.0.nupkg.sha512"
+    }
+  }
+}

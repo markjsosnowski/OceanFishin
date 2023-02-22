@@ -1,33 +1,39 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0-windows</TargetFramework>
-		<LangVersion>latest</LangVersion>
 		<PackageId>OceanFishin'</PackageId>
 		<Authors>Sl0nderman</Authors>
 		<Version>2.3</Version>
+		<Description>Suggests bait while in the Ocean Fishing duty.</Description>
+		<PackageProjectUrl>https://github.com/markjsosnowski/OceanFishin</PackageProjectUrl>
 	</PropertyGroup>
 	
 	<PropertyGroup>
+		<TargetFramework>net7.0-windows</TargetFramework>
+		<Platforms>x64</Platforms>
+		<Nullable>enable</Nullable>
+		<LangVersion>latest</LangVersion>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<DocumentationFile></DocumentationFile>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
 		<OutputPath>build\</OutputPath>
 	</PropertyGroup>
 
-	<ItemGroup>
-	  <Compile Remove="OceanFishin - Copy.cs" />
-	  <Compile Remove="OceanFishinUI - Copy.cs" />
-	</ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+		<OutputPath>debug\</OutputPath>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="DalamudPackager" Version="2.1.10" />
@@ -35,29 +41,32 @@
 			<Private>false</Private>
 		</PackageReference>
 		<Reference Include="Dalamud">
-			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\Dalamud.dll</HintPath>
+			<HintPath>$(DalamudLibPath)Dalamud.dll</HintPath>
 			<Private>false</Private>
 		</Reference>
 		<Reference Include="ImGui.NET">
-			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\ImGui.NET.dll</HintPath>
+			<HintPath>$(DalamudLibPath)ImGui.NET.dll</HintPath>
 			<Private>false</Private>
 		</Reference>
 		<Reference Include="ImGuiScene">
-			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\ImGuiScene.dll</HintPath>
+			<HintPath>$(DalamudLibPath)ImGuiScene.dll</HintPath>
 			<Private>false</Private>
 		</Reference>
 		<Reference Include="Lumina">
-			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\Lumina.dll</HintPath>
+			<HintPath>$(DalamudLibPath)Lumina.dll</HintPath>
 			<Private>false</Private>
 		</Reference>
 		<Reference Include="Newtonsoft.Json">
-			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\Newtonsoft.Json.dll</HintPath>
+			<HintPath>$(DalamudLibPath)Newtonsoft.Json.dll</HintPath>
 			<Private>false</Private>
 		</Reference>
 		<Reference Include="FFXIVClientStructs">
-			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\FFXIVClientStructs.dll</HintPath>
+			<HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
 			<Private>false</Private>
 		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
 		<Reference Include="System.Configuration">
 		  <Private>false</Private>
 		</Reference>
