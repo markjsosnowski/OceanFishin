@@ -13,8 +13,8 @@ namespace OceanFishin
 
     public class ConfigWindow : Window, IDisposable
     {
-        private OceanFishin plugin;
-        private Configuration configuration;
+        private OceanFishin Plugin;
+        private Configuration Configuration;
 
         public ConfigWindow(OceanFishin plugin, Configuration configuration) : base("Ocean Fishin' Configuration", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
         {
@@ -24,28 +24,28 @@ namespace OceanFishin
                 MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
             };
 
-            this.plugin = plugin;
-            this.configuration = configuration;
+            this.Plugin = plugin;
+            this.Configuration = configuration;
         }
 
         public void Dispose(){}
 
         public override void Draw()
         {
-            var display_mode = this.configuration.display_mode;
-            if (ImGui.Combo("Display Mode", ref display_mode, this.configuration.display_modes, 3))
+            var display_mode = this.Configuration.display_mode;
+            if (ImGui.Combo("Display Mode", ref display_mode, this.Configuration.display_modes, 3))
             {
-                this.configuration.display_mode = display_mode;
-                this.configuration.Save();
+                this.Configuration.display_mode = display_mode;
+                this.Configuration.Save();
             }
 
-            ImGui.TextWrapped(this.configuration.display_mode_desc[display_mode]);
+            ImGui.TextWrapped(this.Configuration.display_mode_desc[display_mode]);
 
-            var include_achievement_fish = this.configuration.include_achievement_fish;
+            var include_achievement_fish = this.Configuration.include_achievement_fish;
             if (ImGui.Checkbox("Recommend bait for mission/achievement fish.", ref include_achievement_fish))
             {
-                this.configuration.include_achievement_fish = include_achievement_fish;
-                this.configuration.Save();
+                this.Configuration.include_achievement_fish = include_achievement_fish;
+                this.Configuration.Save();
             }
         }
     }

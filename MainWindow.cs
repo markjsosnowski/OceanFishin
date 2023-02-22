@@ -14,8 +14,8 @@ namespace OceanFishin.Windows;
 
 public class MainWindow : Window, IDisposable
 {
-    private OceanFishin plugin;
-    private Configuration configuration;
+    private OceanFishin Plugin;
+    private Configuration Configuration;
 
     private const string octopodes = "octopodes";
     private const string sharks = "sharks";
@@ -55,8 +55,8 @@ public class MainWindow : Window, IDisposable
             MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
         };
 
-        this.plugin = plugin;
-        this.configuration = configuration;
+        this.Plugin = plugin;
+        this.Configuration = configuration;
         Random random = new Random();
         this.random_index = random.Next(0, donation_lines.Length);
     }
@@ -66,23 +66,23 @@ public class MainWindow : Window, IDisposable
     public override void Draw()
     {
 
-        if (plugin.in_ocean_fishing_duty())
+        if (Plugin.in_ocean_fishing_duty())
         {
-            Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> bait_dict = plugin.bait_dictionary;
-            (string location, string time) = plugin.get_fishing_data();
+            Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> bait_dict = Plugin.bait_dictionary;
+            (string location, string time) = Plugin.get_fishing_data();
             int spectral_key;
             bool intuition_state;
             try
             {
 
                 // This is stored as an int so it can be used to index the bait array of mission fish.
-                spectral_key = this.plugin.is_spectral_current() ? spectral_active : spectral_inactive;
-                intuition_state = this.plugin.has_intuition_buff();
+                spectral_key = this.Plugin.is_spectral_current() ? spectral_active : spectral_inactive;
+                intuition_state = this.Plugin.has_intuition_buff();
 
                 if (bait_dict.ContainsKey(location))
                 {
 
-                    if (this.configuration.display_mode == display_compact)
+                    if (this.Configuration.display_mode == display_compact)
                     {
                         if (spectral_key == spectral_inactive)
                         {
@@ -93,7 +93,7 @@ public class MainWindow : Window, IDisposable
                         }
                         else
                         {
-                            if (intuition_state && this.plugin.nested_key_exists(ref bait_dict, location, time, special))
+                            if (intuition_state && this.Plugin.nested_key_exists(ref bait_dict, location, time, special))
                                 ImGui.Text("Recommended → " + bait_dict[location][time][special]);
                             else
                                 ImGui.Text("Recommended → " + bait_dict[location][time][spectral]);
@@ -118,25 +118,25 @@ public class MainWindow : Window, IDisposable
                         ImGui.TextWrapped(first_line.ToString());
 
 
-                        if (spectral_key == spectral_inactive || this.configuration.display_mode == display_full)
+                        if (spectral_key == spectral_inactive || this.Configuration.display_mode == display_full)
                         {
                             ImGui.Text("Start with → " + bait_dict[location]["always"]["start"]);
                             ImGui.Text("Fisher's Intuition → " + bait_dict[location]["always"]["intuition"]);
                         }
 
-                        if (spectral_key == spectral_active || this.configuration.display_mode == display_full)
+                        if (spectral_key == spectral_active || this.Configuration.display_mode == display_full)
                         {
                             ImGui.Text("Spectral high points → " + bait_dict[location][time]["spectral"]);
                             // Super rare fish only found in specific locations and times that use abnormal bait.
-                            if (this.plugin.nested_key_exists(ref bait_dict, location, time, special))
+                            if (this.Plugin.nested_key_exists(ref bait_dict, location, time, special))
                                 ImGui.Text("Spectral Fisher's Intuition → " + bait_dict[location][time][special]);
                         }
                     }
-                    if (this.configuration.include_achievement_fish)
+                    if (this.Configuration.include_achievement_fish)
                     {
                         ImGui.Separator();
 
-                        if (this.configuration.display_mode == display_full)
+                        if (this.Configuration.display_mode == display_full)
                         {
                             // Achievement fish are not found in every area, so we don't show them unless it's relevant.
                             if (is_fish_available(ref bait_dict, location, time, octopodes, spectral_inactive))
@@ -270,7 +270,7 @@ public class MainWindow : Window, IDisposable
 
     public bool is_fish_available(ref Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> bait_dict, string location, string time, string fish_type, int state)
     {
-        if (this.plugin.nested_key_exists(ref bait_dict, location, time, fish_type))
+        if (this.Plugin.nested_key_exists(ref bait_dict, location, time, fish_type))
         {
             if (bait_dict[location][time][fish_type][state] != null)
                 return true;

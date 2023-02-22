@@ -39,7 +39,6 @@ namespace OceanFishin
         private Framework Framework { get; init; }
         private GameGui GameGui { get; init; }
         private ConfigWindow ConfigWindow { get; init; }
-
         private WindowSystem WindowSystem = new("Ocean Fishin'");
 
         private const string default_location = "location unknown";
