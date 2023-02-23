@@ -125,6 +125,7 @@ public class MainWindow : Window, IDisposable
     
     private void FullMode(OceanFishin.Location location, OceanFishin.Time time)
     {
+        //TODO localize this stuff
         ImGui.Text("Best Spectral Chance: " + Localizer.Localize(this.Plugin.GetSpectralChanceBait(location)));
         ImGui.Text("Fisher's Intuition Buff: " + Localizer.Localize(this.Plugin.GetFishersIntuitionBait(location, time)));
         ImGui.Text("Spectral Current High Points: " + Localizer.Localize(this.Plugin.GetSpectralHighPointsBait(location, time)));
@@ -204,7 +205,7 @@ public class MainWindow : Window, IDisposable
         
         foreach(var pair in dict)
         {
-            ret += (Localizer.Localize(pair.Key) + " -> " + Localizer.Localize(pair.Value));
+            ret += (Localizer.Localize(pair.Key) + ": " + Localizer.Localize(pair.Value));
             ret += "\n";
         }
 
