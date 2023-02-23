@@ -99,13 +99,13 @@ public class MainWindow : Window, IDisposable
     {
         if (this.Plugin.IsSpectralCurrent())
         {
-            ImGui.Text("High Points: " + Localizer.Localize(this.Plugin.getSpectralHighPointsBait(location, time)));
-            if (this.Plugin.getSpectralIntuitionBait(location, time) != OceanFishin.Bait.None) ImGui.Text("Fisher's Intuition Buff: " + this.Plugin.getSpectralIntuitionBait(location, time).ToString());
+            ImGui.Text("High Points: " + Localizer.Localize(this.Plugin.GetSpectralHighPointsBait(location, time)));
+            if (this.Plugin.GetSpectralIntuitionBait(location, time) != OceanFishin.Bait.None) ImGui.Text("Fisher's Intuition Buff: " + this.Plugin.GetSpectralIntuitionBait(location, time).ToString());
         }
         else
         {
-            ImGui.Text("Best Spectral Chance: " + this.Plugin.getSpectralChanceBait(location).ToString());
-            ImGui.Text("Fisher's Intuition Buff: " + this.Plugin.getFishersIntuitionBait(location, time).ToString());
+            ImGui.Text("Best Spectral Chance: " + this.Plugin.GetSpectralChanceBait(location).ToString());
+            ImGui.Text("Fisher's Intuition Buff: " + this.Plugin.GetFishersIntuitionBait(location, time).ToString());
         }
         if (this.Configuration.include_achievement_fish)
         {
@@ -113,30 +113,30 @@ public class MainWindow : Window, IDisposable
             ImGui.Text("Your mission fish:"); //TODO filter this to only show the actual fish being asked for
             if (this.Plugin.IsSpectralCurrent() ) 
             {
-                var specMissionFishHolder = this.Plugin.getSpectralMissionFishBaits(location, time);
+                var specMissionFishHolder = this.Plugin.GetSpectralMissionFishBaits(location, time);
                 if (specMissionFishHolder != null){ ImGui.Text(string.Join('\n', specMissionFishHolder)); }
             } 
             else
             {
-                ImGui.Text(string.Join('\n', this.Plugin.getMissionFishBaits(location)));
+                ImGui.Text(string.Join('\n', this.Plugin.GetMissionFishBaits(location)));
             }
         }
     }
     
     private void FullMode(OceanFishin.Location location, OceanFishin.Time time)
     {
-        ImGui.Text("Best Spectral Chance: " + Localizer.Localize(this.Plugin.getSpectralChanceBait(location)));
-        ImGui.Text("Fisher's Intuition Buff: " + Localizer.Localize(this.Plugin.getFishersIntuitionBait(location, time)));
-        ImGui.Text("Spectral Current High Points: " + Localizer.Localize(this.Plugin.getSpectralHighPointsBait(location, time)));
-        if (this.Plugin.getSpectralIntuitionBait(location, time) != OceanFishin.Bait.None) ImGui.Text("Spectral Intuition: " + Localizer.Localize(this.Plugin.getSpectralIntuitionBait(location, time)));
+        ImGui.Text("Best Spectral Chance: " + Localizer.Localize(this.Plugin.GetSpectralChanceBait(location)));
+        ImGui.Text("Fisher's Intuition Buff: " + Localizer.Localize(this.Plugin.GetFishersIntuitionBait(location, time)));
+        ImGui.Text("Spectral Current High Points: " + Localizer.Localize(this.Plugin.GetSpectralHighPointsBait(location, time)));
+        if (this.Plugin.GetSpectralIntuitionBait(location, time) != OceanFishin.Bait.None) ImGui.Text("Spectral Intuition: " + Localizer.Localize(this.Plugin.GetSpectralIntuitionBait(location, time)));
         
         if (this.Configuration.include_achievement_fish)
         {
             ImGui.Separator();
             ImGui.Text("Mission Fish:");
-            ImGui.Text(MissionFishDictToString(this.Plugin.getMissionFishBaits(location)));
+            ImGui.Text(MissionFishDictToString(this.Plugin.GetMissionFishBaits(location)));
 
-            var specMissionFishHolder = this.Plugin.getSpectralMissionFishBaits(location, time);
+            var specMissionFishHolder = this.Plugin.GetSpectralMissionFishBaits(location, time);
             if (specMissionFishHolder != null)
             {
                 ImGui.Separator();
@@ -148,7 +148,7 @@ public class MainWindow : Window, IDisposable
 
     private void CompactMode(OceanFishin.Location location, OceanFishin.Time time)
     {
-        ImGui.Text(this.Plugin.getSingleBestBait(location, time).ToString());
+        ImGui.Text(this.Plugin.GetSingleBestBait(location, time).ToString());
     }
     
     private void countdownWindow()

@@ -149,7 +149,7 @@ namespace OceanFishin
             None = 0
         }
 
-        private Dictionary<string, Int64> baitstring_to_iconid = new Dictionary<string, Int64>();
+        //private Dictionary<string, Int64> baitstring_to_iconid = new Dictionary<string, Int64>();
         //Bait Icon ids
         //Krill 27023
         //PlumpWorm 27015
@@ -275,16 +275,13 @@ namespace OceanFishin
 
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             this.Configuration.Initialize(this.PluginInterface);
-
             this.Localizer = new Localizer(this, this.Configuration);
-
-            var assemblyLocation = Assembly.GetExecutingAssembly().Location;
             this.MainWindow = new MainWindow(this, this.Configuration, this.Localizer);
             this.WindowSystem.AddWindow(this.MainWindow);
-
             this.ConfigWindow = new ConfigWindow(this, this.Configuration, this.Localizer);
             this.WindowSystem.AddWindow(this.ConfigWindow);
 
+            var assemblyLocation = Assembly.GetExecutingAssembly().Location;
 
             this.CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
             {
@@ -320,7 +317,7 @@ namespace OceanFishin
                 baitstring_to_iconid.Add(pair.Value, pair.Key);
             }*/
 
-            Framework.Update += updateAddonPtrs;
+            Framework.Update += UpdateAddonPtrs;
             this.bait_window_addon_ptr = IntPtr.Zero;
             this.ocean_fishing_addon_ptr = IntPtr.Zero;
 
@@ -334,16 +331,16 @@ namespace OceanFishin
 
         public unsafe void Dispose()
         {
-            Framework.Update -= updateAddonPtrs;
+            Framework.Update -= UpdateAddonPtrs;
             this.MainWindow.Dispose();
             this.CommandManager.RemoveHandler(commandName);
             this.CommandManager.RemoveHandler(altCommandName1);
             this.CommandManager.RemoveHandler(altCommandName2);
             WindowSystem.RemoveAllWindows();
-            if (this.last_highlighted_bait_node != null)
+            /*if (this.last_highlighted_bait_node != null)
             {
                 change_node_border(this.last_highlighted_bait_node, false);
-            }
+            }*/
         }
         private void OnCommand(string command, string args)
         {
@@ -410,14 +407,6 @@ namespace OceanFishin
                 return Time.Night;
             return Time.Unknown;
         }
-        public bool nested_key_exists(ref Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> dictionary, string key1, string key2, string key3)
-        {
-            if (dictionary.ContainsKey(key1))
-                if (dictionary[key1].ContainsKey(key2))
-                    if (dictionary[key1][key2].ContainsKey(key3))
-                        return true;
-            return false;
-        }
 
         // When the spectral current occurs, this AtkResNode becomes visible behind the IKDFishingLog window.
         public unsafe bool IsSpectralCurrent()
@@ -467,7 +456,7 @@ namespace OceanFishin
             return false;
         }
 
-        private unsafe void updateAddonPtrs(Framework framework)
+        private unsafe void UpdateAddonPtrs(Framework framework)
         {
             if (!InOceanFishingDuty())
             {
@@ -490,20 +479,20 @@ namespace OceanFishin
             }
         }
 
-        public Bait getSpectralChanceBait(Location location)
+        public Bait GetSpectralChanceBait(Location location)
         {
             //if(location == Location.GaladionBay && getWeather() == showers) { return Bait.PlumpWorm; }
             try { return SpectralChanceBaitDictionary[location]; }
             catch (KeyNotFoundException e) { return Bait.None; }
         }
 
-        public Bait getFishersIntuitionBait(Location location,  Time time)
+        public Bait GetFishersIntuitionBait(Location location,  Time time)
         {
             try { return FishersIntutionBaitDictionary[location]; }
             catch (KeyNotFoundException e) { return Bait.None; }
         }
 
-        public Bait getSpectralIntuitionBait(Location location, Time time)
+        public Bait GetSpectralIntuitionBait(Location location, Time time)
         {
             try 
             {
@@ -513,38 +502,38 @@ namespace OceanFishin
             catch (KeyNotFoundException e) { return Bait.None; }
         }
 
-        public Dictionary<FishTypes, Bait> getMissionFishBaits(Location location)
+        public Dictionary<FishTypes, Bait> GetMissionFishBaits(Location location)
         {
             return MissionFishBaitDictionary[location];
         }
 
-        public Dictionary<FishTypes, Bait>? getSpectralMissionFishBaits(Location location, Time time)
+        public Dictionary<FishTypes, Bait>? GetSpectralMissionFishBaits(Location location, Time time)
         {
-            if (location == Location.GaladionBay || location == Location.Cieldales) { return getMissionFishBaits(location); }
+            if (location == Location.GaladionBay || location == Location.Cieldales) { return GetMissionFishBaits(location); }
             else if (SpectralFishBaitDictionary.ContainsKey((location, time))){ return SpectralFishBaitDictionary[(location, time)]; }
             else{ return null; }
         }
 
-        public Bait getSpectralHighPointsBait(Location location, Time time)
+        public Bait GetSpectralHighPointsBait(Location location, Time time)
         {
             try { return SpectralHighPointsBaitDictionary[location][time]; }
             catch (KeyNotFoundException e) { return Bait.None; }
         }
 
         //TODO this will also be used to determine what to highlight in the tacklebox
-        public Bait getSingleBestBait(Location location, Time time)
+        public Bait GetSingleBestBait(Location location, Time time)
         {
             if (IsSpectralCurrent())
             {
-                if (HasIntuitionBuff() && getSpectralIntuitionBait(location, time) != Bait.None) return getSpectralIntuitionBait(location, time);
-                else return getSpectralHighPointsBait(location, time);
+                if (HasIntuitionBuff() && GetSpectralIntuitionBait(location, time) != Bait.None) return GetSpectralIntuitionBait(location, time);
+                else return GetSpectralHighPointsBait(location, time);
             }
-            if (HasIntuitionBuff()) return getFishersIntuitionBait(location, time);
+            if (HasIntuitionBuff()) return GetFishersIntuitionBait(location, time);
             //if (weather == clear) return getMissionFishBait(location, time); //TODO implement weather checking
-            return getSpectralChanceBait(location);
+            return GetSpectralChanceBait(location);
         }
 
-        public unsafe void highlight_inventory_item(string bait)
+        /*public unsafe void highlight_inventory_item(string bait)
         {
             // If the bait window isn't open, do nothing.
             if (!addon_is_open(this.bait_window_addon_ptr))
@@ -573,7 +562,7 @@ namespace OceanFishin
                 PluginLog.Debug("[Ocean Fishin'] The bait window was probably closed while it was being used. " + e, e);
                 return;
             }
-        }
+        }*/
 
         /* Problem: Searching by icon doesn't work because multiple baits use the same icon.
          * Ideas:
@@ -583,7 +572,7 @@ namespace OceanFishin
          * Skip the first search result and use the second. Won't work if the player only has one of the other bait.
          * The bait has to know it's name somehow when it is hovered over for the tooltip, so figure out how the tooltip is being generated without having to hover.
          */
-        public unsafe AtkComponentNode* find_bait_item_node(string bait)
+        /*public unsafe AtkComponentNode* find_bait_item_node(string bait)
         {
             if (!addon_is_open(this.bait_window_addon_ptr))
                 return null;
@@ -605,7 +594,7 @@ namespace OceanFishin
             }
             PluginLog.Debug("Could not find the node for " + bait);
             return null;
-        }
+        }*/
 
         
         /*
@@ -709,7 +698,8 @@ namespace OceanFishin
 
         }*/
 
-        public unsafe  void change_node_border(AtkComponentNode* node, bool higlight)
+
+        /*public unsafe  void change_node_border(AtkComponentNode* node, bool higlight)
         {
             AtkComponentNode* icon_component_node = (AtkComponentNode*)node->Component->UldManager.NodeList[iconid_index];
             AtkImageNode* frame_node = (AtkImageNode*)icon_component_node->Component->UldManager.NodeList[item_border_image_index];
@@ -736,6 +726,6 @@ namespace OceanFishin
                 return "Text node was null.";
             }
             
-        }
+        }*/
     }
 }

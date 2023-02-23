@@ -25,7 +25,6 @@ namespace OceanFishin
         public bool DebugSpectral = false;
         public bool DebugIntution = false;
 
-
         public void Initialize(DalamudPluginInterface pluginInterface)
         {
             this.pluginInterface = pluginInterface;
