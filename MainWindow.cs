@@ -104,21 +104,21 @@ public class MainWindow : Window, IDisposable
         }
         else
         {
-            ImGui.Text("Best Spectral Chance: " + this.Plugin.GetSpectralChanceBait(location).ToString());
-            ImGui.Text("Fisher's Intuition Buff: " + this.Plugin.GetFishersIntuitionBait(location, time).ToString());
+            ImGui.Text("Best Spectral Chance: " + Localizer.Localize(this.Plugin.GetSpectralChanceBait(location)));
+            ImGui.Text("Fisher's Intuition Buff: " + Localizer.Localize(this.Plugin.GetFishersIntuitionBait(location, time)));
         }
         if (this.Configuration.include_achievement_fish)
         {
             ImGui.Separator();
-            ImGui.Text("Your mission fish:"); //TODO filter this to only show the actual fish being asked for
+            //ImGui.Text("Your mission fish:"); //TODO filter this to only show the actual fish being asked for
             if (this.Plugin.IsSpectralCurrent() ) 
             {
                 var specMissionFishHolder = this.Plugin.GetSpectralMissionFishBaits(location, time);
-                if (specMissionFishHolder != null){ ImGui.Text(string.Join('\n', specMissionFishHolder)); }
+                if (specMissionFishHolder != null){ ImGui.Text(MissionFishDictToString(specMissionFishHolder)); }
             } 
             else
             {
-                ImGui.Text(string.Join('\n', this.Plugin.GetMissionFishBaits(location)));
+                ImGui.Text(MissionFishDictToString(this.Plugin.GetMissionFishBaits(location)));
             }
         }
     }
@@ -133,14 +133,14 @@ public class MainWindow : Window, IDisposable
         if (this.Configuration.include_achievement_fish)
         {
             ImGui.Separator();
-            ImGui.Text("Mission Fish:");
+            ImGui.Text("Mission Fish:"); //TODO localize this string
             ImGui.Text(MissionFishDictToString(this.Plugin.GetMissionFishBaits(location)));
 
             var specMissionFishHolder = this.Plugin.GetSpectralMissionFishBaits(location, time);
             if (specMissionFishHolder != null)
             {
                 ImGui.Separator();
-                ImGui.Text("Spectral Current Mission Fish:");
+                ImGui.Text("Spectral Current Mission Fish:"); //TODO localize this string
                 ImGui.Text(MissionFishDictToString(specMissionFishHolder));
             }
         }
