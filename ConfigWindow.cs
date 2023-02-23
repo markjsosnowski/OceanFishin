@@ -16,8 +16,9 @@ namespace OceanFishin
     {
         private OceanFishin Plugin;
         private Configuration Configuration;
+        private Localizer Localizer;
 
-        public ConfigWindow(OceanFishin plugin, Configuration configuration) : base("Ocean Fishin' Configuration", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
+        public ConfigWindow(OceanFishin plugin, Configuration configuration, Localizer localizer) : base("Ocean Fishin' Configuration", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
         {
             this.SizeConstraints = new WindowSizeConstraints
             {
@@ -27,6 +28,7 @@ namespace OceanFishin
 
             this.Plugin = plugin;
             this.Configuration = configuration;
+            this.Localizer = localizer;
         }
 
         public void Dispose(){}
@@ -34,16 +36,16 @@ namespace OceanFishin
         public override void Draw()
         {
             var display_mode = this.Configuration.display_mode;
-            if (ImGui.Combo("Display Mode", ref display_mode, this.Configuration.display_modes, 3))
+            if (ImGui.Combo(Localizer.Localize("displayMode"), ref display_mode, Localizer.Localize(this.Configuration.display_modes), 3))
             {
                 this.Configuration.display_mode = display_mode;
                 this.Configuration.Save();
             }
 
-            ImGui.TextWrapped(this.Configuration.display_mode_desc[display_mode]);
+            ImGui.TextWrapped(Localizer.Localize(this.Configuration.display_mode_desc[display_mode]));
 
             var include_achievement_fish = this.Configuration.include_achievement_fish;
-            if (ImGui.Checkbox("Recommend bait for mission/achievement fish.", ref include_achievement_fish))
+            if (ImGui.Checkbox(Localizer.Localize("achievementFish"), ref include_achievement_fish))
             {
                 this.Configuration.include_achievement_fish = include_achievement_fish;
                 this.Configuration.Save();

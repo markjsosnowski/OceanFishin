@@ -154,13 +154,13 @@ public class MainWindow : Window, IDisposable
     private void countdownWindow()
     {
         // This window appears if the command is issued when not part of the duty.
-        ImGui.Text("This plugin is meant to be used during the Ocean Fishing duty.");
-        ImGui.Text("Once you're aboard The Endeavor, the bait list will automatically update.");
+        ImGui.Text(Localizer.Localize("notOnShip"));
         ImGui.Text(time_until_next_voyage());
         ImGui.Separator();
-        ImGui.Text(donation_lines[this.random_index]);
+        //ImGui.Text(donation_lines[this.random_index]);
+        ImGui.Text(Localizer.Localize("donateText"));
         ImGui.SameLine();
-        if (ImGui.Button("Donate"))
+        if (ImGui.Button(Localizer.Localize("donateButton")))
         {
             System.Diagnostics.Process.Start(new ProcessStartInfo
             {
@@ -179,14 +179,10 @@ public class MainWindow : Window, IDisposable
         {
             switch (minutes)
             {
-                case < 1:
-                    return "The current voyage set sail less than a minute ago.";
-                case 1:
-                    return "The current voyage set sail 1 minute ago.";
                 case < 15:
-                    return "The current voyage set sail " + minutes + " minutes ago.";
+                    return Localizer.Localize("currentShip") + (15 - minutes) + Localizer.Localize("minutes");
                 default:
-                    return "The next voyage will begin in 1 hour, " + (60 - minutes) + " minute(s).";
+                    return Localizer.Localize("countdown") + "1 " + Localizer.Localize("hours") + ", " + (60 - minutes) + " " + Localizer.Localize("minutes");
             }
         }
         else
@@ -194,9 +190,9 @@ public class MainWindow : Window, IDisposable
             switch (minutes)
             {
                 case 59:
-                    return "The next voyage will begin in 1 minute!";
+                    return Localizer.Localize("countdown") + Localizer.Localize("lessThanOne");
                 default:
-                    return "The next voyage will begin in " + (60 - minutes) + " minutes.";
+                    return Localizer.Localize("countdown") + (60 - minutes) + " " + Localizer.Localize("minutes");
             }
         }
     }

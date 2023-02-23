@@ -282,7 +282,7 @@ namespace OceanFishin
             this.MainWindow = new MainWindow(this, this.Configuration, this.Localizer);
             this.WindowSystem.AddWindow(this.MainWindow);
 
-            this.ConfigWindow = new ConfigWindow(this, this.Configuration);
+            this.ConfigWindow = new ConfigWindow(this, this.Configuration, this.Localizer);
             this.WindowSystem.AddWindow(this.ConfigWindow);
 
 
