@@ -92,6 +92,7 @@ namespace OceanFishin
         public Language UserLanguage;
 
         public ExcelSheet<IKDSpot>? LocationSheet { get; private set; }
+        public Localizer Localizer { get; private set; }
 
         //Enums 
         public enum Language
@@ -147,7 +148,8 @@ namespace OceanFishin
             SquidStrip = 27590,
             None = 0
         }
-        
+
+        private Dictionary<string, Int64> baitstring_to_iconid = new Dictionary<string, Int64>();
         //Bait Icon ids
         //Krill 27023
         //PlumpWorm 27015
@@ -255,25 +257,6 @@ namespace OceanFishin
             [(Location.SouthernStraight, Time.Night)] = new Dictionary<FishTypes, Bait> { [FishTypes.Jellyfish] = Bait.Ragworm }
         };
 
-    // Dictionaries
-    //public Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> bait_dictionary;
-        //private string bait_file_url = "https://markjsosnowski.github.io/FFXIV/bait2.json";
-        private Dictionary<string, Int64> baitstring_to_iconid = new Dictionary<string, Int64>(); // Generated on initalization based on iconid_to_baitstring
-        /*private Dictionary<Int64, string> iconid_to_baitstring = new Dictionary<Int64, string>()
-        {
-            [27023] = "Krill",
-            [27015] ="Plump Worm",
-            [27004] = "Ragworm"
-            //TODO put in spectral int bait keys
-        };*/
-
-        private Dictionary<Int64, string> iconid_to_baitstring = new Dictionary<Int64, string>()
-        {
-            [29715] = "Krill",
-            [29716] = "Plump Worm",
-            [29714] = "Ragworm"
-        };
-
         public OceanFishin(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
             [RequiredVersion("1.0")] CommandManager commandManager,            
@@ -293,8 +276,10 @@ namespace OceanFishin
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             this.Configuration.Initialize(this.PluginInterface);
 
+            this.Localizer = new Localizer(this, this.Configuration);
+
             var assemblyLocation = Assembly.GetExecutingAssembly().Location;
-            this.MainWindow = new MainWindow(this, this.Configuration);
+            this.MainWindow = new MainWindow(this, this.Configuration, this.Localizer);
             this.WindowSystem.AddWindow(this.MainWindow);
 
             this.ConfigWindow = new ConfigWindow(this, this.Configuration);
@@ -384,52 +369,9 @@ namespace OceanFishin
                 return false;
         }
 
-        public unsafe (Location, Time) getFishingDetails()
-        {
-            if (this.Configuration.DebugMode)
-            {
-                return (this.Configuration.DebugLocation, this.Configuration.DebugTime);
-            }
-            
-            if (this.ocean_fishing_addon_ptr == IntPtr.Zero)
-            {
-                return (Location.Unknown, Time.Unknown);
-            }
-            AtkUnitBase* addon = (AtkUnitBase*)this.ocean_fishing_addon_ptr;
-
-            // Without this check, the plugin might try to get a child node before the list was 
-            // populated and cause a null pointer exception. 
-            if (addon->UldManager.NodeListCount < expected_nodelist_count)
-            {
-                return (Location.Unknown, Time.Unknown);
-            }
-            return (getFishingLocation(addon), getFishingTime(addon));
-        }
-
-        private unsafe Location getFishingLocation(AtkUnitBase* ptr)
-        {            
-            if (ptr == null)
-                return Location.Unknown;
-            AtkResNode* res_node = ptr->UldManager.NodeList[location_textnode_index];
-            AtkTextNode* text_node = (AtkTextNode*)res_node;
-            string? locationString = Marshal.PtrToStringAnsi(new IntPtr(text_node->NodeText.StringPtr));
-            
-            if (locationString != null)
-            {
-                
-                return StringToLocation[Language.en][locationString];
-            }
-            else
-            {
-                return Location.Unknown;
-            }
-        }
-
         public unsafe Location GetFishingLocation()
         {
-            if (this.Configuration.DebugMode){
-                return this.Configuration.DebugLocation;
-            }
+            if (this.Configuration.DebugMode){ return this.Configuration.DebugLocation; }
 
             AtkUnitBase* ptr = (AtkUnitBase*)this.ocean_fishing_addon_ptr;
             if (ptr == null || ptr->UldManager.NodeListCount < expected_nodelist_count)
@@ -437,43 +379,10 @@ namespace OceanFishin
 
             AtkResNode* res_node = ptr->UldManager.NodeList[location_textnode_index];
             AtkTextNode* text_node = (AtkTextNode*)res_node;
-            string locationString = Marshal.PtrToStringUTF8(new IntPtr(text_node->NodeText.StringPtr));
-            //Marshal.Pt
-            
+            string? locationString = Marshal.PtrToStringUTF8(new IntPtr(text_node->NodeText.StringPtr));
 
-           // PluginLog.Debug("LocationString is "+ locationString );
-            if (locationString != null)
-            {
-                for (uint i = 0; i < LocationSheet.RowCount; i++)
-                {
-                   // PluginLog.Debug("Comparing to " + LocationSheet.GetRow(i).PlaceName.Value.Name.ToString());
-                    if (locationString == LocationSheet.GetRow(i).PlaceName.Value.Name.ToString()) { return (Location)i; }
-                }
-                return Location.Unknown;
-            }
-            else
-            {
-                return Location.Unknown;
-            }
-        }
-
-        private unsafe Time getFishingTime(AtkUnitBase* ptr)
-        {
-            if (ptr == null)
-                return Time.Unknown;
-            AtkResNode* res_node = ptr->UldManager.NodeList[day_imagenode_index];
-            AtkImageNode* image_node = (AtkImageNode*)res_node;
-            if (image_node->PartId == day_icon_lit)
-                return Time.Day;
-            res_node = ptr->UldManager.NodeList[sunset_imagenode_index];
-            image_node = (AtkImageNode*)res_node;
-            if (image_node->PartId == sunset_icon_lit)
-                return Time.Sunset;
-            res_node = ptr->UldManager.NodeList[night_imagenode_index];
-            image_node = (AtkImageNode*)res_node;
-            if (image_node->PartId == night_icon_lit)
-                return Time.Night;
-            return Time.Unknown;
+            #pragma warning disable CS8604 // Possible null reference argument.
+            return this.Localizer.SpotStringToLocation(locationString);
         }
 
         public unsafe Time GetFishingTime()
@@ -543,7 +452,10 @@ namespace OceanFishin
                 buff_list = player_character.StatusList;
                 for (int i = 0; i < buff_list.Length; i++)
                 {
+
+                    #pragma warning disable CS8602 // Dereference of a possibly null reference.
                     if (this.Configuration.DebugMode && buff_list[i].StatusId != 0) PluginLog.Debug("Status id " + i + " : " + buff_list[i].StatusId);
+
                     if (buff_list[i].StatusId == intuition_buff_id)
                     {
                         if (this.Configuration.DebugMode) PluginLog.Debug("Intuition was detected!");
@@ -812,7 +724,7 @@ namespace OceanFishin
             return (addon != IntPtr.Zero);
         }
 
-        public unsafe string text_node_to_string(AtkTextNode* text_node)
+        public unsafe string? text_node_to_string(AtkTextNode* text_node)
         {
             try
             {

@@ -21,6 +21,7 @@ public class MainWindow : Window, IDisposable
 {
     private OceanFishin Plugin;
     private Configuration Configuration;
+    private Localizer Localizer;
 
     private const string octopodes = "octopodes";
     private const string sharks = "sharks";
@@ -52,62 +53,7 @@ public class MainWindow : Window, IDisposable
 
     private int random_index;
 
-    private Lumina.Excel.ExcelSheet<Item>? ItemSheet;
-
-    private Dictionary<OceanFishin.FishTypes, Dictionary<Dalamud.ClientLanguage, string>> FishTypesSheet = new Dictionary<OceanFishin.FishTypes, Dictionary<Dalamud.ClientLanguage, string>>
-    {
-        [OceanFishin.FishTypes.Balloons] = new Dictionary<Dalamud.ClientLanguage, string> 
-        { 
-            [Dalamud.ClientLanguage.English] = "Balloons / Fugu", 
-            [Dalamud.ClientLanguage.French] = "Ballons / Fugu", 
-            [Dalamud.ClientLanguage.German] = "Ballons / Fugu",
-            [Dalamud.ClientLanguage.Japanese] = "バルーン / フグ"
-        },
-        [OceanFishin.FishTypes.Crabs] = new Dictionary<Dalamud.ClientLanguage, string>
-        {
-            [Dalamud.ClientLanguage.English] = "Crabs",
-            [Dalamud.ClientLanguage.French] = "Crabes",
-            [Dalamud.ClientLanguage.German] = "Krabben",
-            [Dalamud.ClientLanguage.Japanese] = "カニ"
-        },
-        [OceanFishin.FishTypes.Dragons]  = new Dictionary<Dalamud.ClientLanguage, string>
-        {
-            [Dalamud.ClientLanguage.English] = "Seahorses",
-            [Dalamud.ClientLanguage.French] = "Hippocampes",
-            [Dalamud.ClientLanguage.German] = "Seepferdchen",
-            [Dalamud.ClientLanguage.Japanese] = "タツノオトシゴ"
-        },
-        [OceanFishin.FishTypes.Jellyfish] = new Dictionary<Dalamud.ClientLanguage, string>
-        {
-            [Dalamud.ClientLanguage.English] = "Jellyfish",
-            [Dalamud.ClientLanguage.French] = "Méduse",
-            [Dalamud.ClientLanguage.German] = "Mantas",
-            [Dalamud.ClientLanguage.Japanese] = "クラゲ"
-        },
-        [OceanFishin.FishTypes.Mantas] = new Dictionary<Dalamud.ClientLanguage, string>
-        {
-            [Dalamud.ClientLanguage.English] = "Jellyfish",
-            [Dalamud.ClientLanguage.French] = "Raies",
-            [Dalamud.ClientLanguage.German] = "Quallen",
-            [Dalamud.ClientLanguage.Japanese] = "アカエイ"
-        },
-        [OceanFishin.FishTypes.Octopodes] = new Dictionary<Dalamud.ClientLanguage, string>
-        {
-            [Dalamud.ClientLanguage.English] = "Octopodes",
-            [Dalamud.ClientLanguage.French] = "Poulpes",
-            [Dalamud.ClientLanguage.German] = "Oktopusse",
-            [Dalamud.ClientLanguage.Japanese] = "タコ"
-        },
-        [OceanFishin.FishTypes.Sharks] = new Dictionary<Dalamud.ClientLanguage, string>
-        {
-            [Dalamud.ClientLanguage.English] = "Sharks",
-            [Dalamud.ClientLanguage.French] = "Requins",
-            [Dalamud.ClientLanguage.German] = "Haie",
-            [Dalamud.ClientLanguage.Japanese] = "サメ"
-        }
-    };
-    
-    public MainWindow(OceanFishin plugin, Configuration configuration) : base("Ocean Fishin'", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
+    public MainWindow(OceanFishin plugin, Configuration configuration, Localizer localizer) : base("Ocean Fishin'", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
     {
         this.SizeConstraints = new WindowSizeConstraints
         {
@@ -117,9 +63,9 @@ public class MainWindow : Window, IDisposable
 
         this.Plugin = plugin;
         this.Configuration = configuration;
+        this.Localizer = localizer; 
         Random random = new Random();
         this.random_index = random.Next(0, donation_lines.Length);
-        this.ItemSheet = this.Plugin.DataManager.GetExcelSheet<Item>();
     }
 
     public void Dispose(){}
@@ -153,7 +99,7 @@ public class MainWindow : Window, IDisposable
     {
         if (this.Plugin.IsSpectralCurrent())
         {
-            ImGui.Text("High Points: " + Localize(this.Plugin.getSpectralHighPointsBait(location, time)));
+            ImGui.Text("High Points: " + Localizer.Localize(this.Plugin.getSpectralHighPointsBait(location, time)));
             if (this.Plugin.getSpectralIntuitionBait(location, time) != OceanFishin.Bait.None) ImGui.Text("Fisher's Intuition Buff: " + this.Plugin.getSpectralIntuitionBait(location, time).ToString());
         }
         else
@@ -179,10 +125,10 @@ public class MainWindow : Window, IDisposable
     
     private void FullMode(OceanFishin.Location location, OceanFishin.Time time)
     {
-        ImGui.Text("Best Spectral Chance: " + Localize(this.Plugin.getSpectralChanceBait(location)));
-        ImGui.Text("Fisher's Intuition Buff: " + Localize(this.Plugin.getFishersIntuitionBait(location, time)));
-        ImGui.Text("Spectral Current High Points: " + Localize(this.Plugin.getSpectralHighPointsBait(location, time)));
-        if (this.Plugin.getSpectralIntuitionBait(location, time) != OceanFishin.Bait.None) ImGui.Text("Spectral Intuition: " + Localize(this.Plugin.getSpectralIntuitionBait(location, time)));
+        ImGui.Text("Best Spectral Chance: " + Localizer.Localize(this.Plugin.getSpectralChanceBait(location)));
+        ImGui.Text("Fisher's Intuition Buff: " + Localizer.Localize(this.Plugin.getFishersIntuitionBait(location, time)));
+        ImGui.Text("Spectral Current High Points: " + Localizer.Localize(this.Plugin.getSpectralHighPointsBait(location, time)));
+        if (this.Plugin.getSpectralIntuitionBait(location, time) != OceanFishin.Bait.None) ImGui.Text("Spectral Intuition: " + Localizer.Localize(this.Plugin.getSpectralIntuitionBait(location, time)));
         
         if (this.Configuration.include_achievement_fish)
         {
@@ -255,18 +201,6 @@ public class MainWindow : Window, IDisposable
         }
     }
 
-    public bool is_fish_available(ref Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> bait_dict, string location, string time, string fish_type, int state)
-    {
-        if (this.Plugin.nested_key_exists(ref bait_dict, location, time, fish_type))
-        {
-            if (bait_dict[location][time][fish_type][state] != null)
-                return true;
-        }
-        return false;
-    }
-
-
-
     public string MissionFishDictToString(Dictionary<OceanFishin.FishTypes ,OceanFishin.Bait> dict)
     {
         string ret = "";
@@ -274,26 +208,10 @@ public class MainWindow : Window, IDisposable
         
         foreach(var pair in dict)
         {
-            ret += (Localize(pair.Key) + " -> " + Localize(pair.Value));
+            ret += (Localizer.Localize(pair.Key) + " -> " + Localizer.Localize(pair.Value));
             ret += "\n";
         }
 
         return ret;
-    }
-
-    public string Localize(OceanFishin.Bait bait)
-    {
-        if (ItemSheet != null)
-        {
-            return ItemSheet.GetRow((uint)bait).Singular.ToString();
-        }
-
-        return bait.ToString();
-    }
-
-    public string Localize(OceanFishin.FishTypes type)
-    {
-        PluginLog.Debug("client lang is " + this.Plugin.DataManager.Language.ToString());
-        return FishTypesSheet[type][this.Plugin.DataManager.Language];
     }
 }
