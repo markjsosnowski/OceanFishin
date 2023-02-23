@@ -59,14 +59,14 @@ namespace OceanFishin
             if(this.Configuration.DebugMode)
             {
                 int debugLocation = (int)this.Configuration.DebugLocation;
-                if(ImGui.Combo("Force Location", ref debugLocation, this.Plugin.StringToLocation[this.Plugin.UserLanguage].Keys.ToArray(), 8))
+                if(ImGui.Combo("Force Location", ref debugLocation, System.Enum.GetNames(typeof(OceanFishin.Location)), 8))
                 {
                     this.Configuration.DebugLocation = (OceanFishin.Location)debugLocation;
                     this.Configuration.Save();
                 }
 
                 int debugTime = (int)this.Configuration.DebugTime;
-                if (ImGui.Combo("Force Time", ref debugTime, this.Plugin.StringToTime[this.Plugin.UserLanguage].Keys.ToArray(), 4))
+                if (ImGui.Combo("Force Time", ref debugTime, System.Enum.GetNames(typeof(OceanFishin.Time)), 4))
                 {
                     this.Configuration.DebugTime = (OceanFishin.Time)debugTime;
                     this.Configuration.Save();

@@ -37,6 +37,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="DalamudPackager" Version="2.1.10" />
+		<PackageReference Include="Lumina.Excel" Version="6.3.2" />
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0">
 			<Private>false</Private>
 		</PackageReference>

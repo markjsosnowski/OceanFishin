@@ -19,6 +19,12 @@ using OceanFishin.Windows;
 using Dalamud.Interface.Windowing;
 using System.Runtime.CompilerServices;
 using FFXIVClientStructs.Attributes;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using Dalamud.Data;
+using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel;
+using FFXIVClientStructs.FFXIV.Client.System.String;
+using System.Text;
 
 namespace OceanFishin
 {
@@ -38,6 +44,7 @@ namespace OceanFishin
         private Framework Framework { get; init; }
         private GameGui GameGui { get; init; }
         private ConfigWindow ConfigWindow { get; init; }
+        public DataManager DataManager { get; init; }
         private WindowSystem WindowSystem = new("Ocean Fishin'");
 
         private const string default_location = "location unknown";
@@ -79,9 +86,12 @@ namespace OceanFishin
         private IntPtr ocean_fishing_addon_ptr;
         private IntPtr bait_window_addon_ptr;
         private string last_highlighted_bait = "";
+        private string last_location_string = "";
         private unsafe AtkComponentNode* last_highlighted_bait_node = null;
 
         public Language UserLanguage;
+
+        public ExcelSheet<IKDSpot>? LocationSheet { get; private set; }
 
         //Enums 
         public enum Language
@@ -94,14 +104,14 @@ namespace OceanFishin
 
         public enum Location
         {
-            Unknown,
-            BloodbrineSea,
-            Cieldales,
-            GaladionBay,
-            NorthernStrait,
-            RhotanoSea,
-            RothlytSound,
-            SouthernStraight,
+            Unknown = 0,
+            GaladionBay = 1,
+            SouthernStraight = 2,
+            NorthernStrait = 3,
+            RhotanoSea = 4,
+            Cieldales = 5,
+            BloodbrineSea = 6,
+            RothlytSound = 7
         }
 
         public enum Time
@@ -124,19 +134,24 @@ namespace OceanFishin
             Sharks
         }
 
-        public enum Bait
+        public enum Bait : uint
         {
-            None,
-            Krill = 27023,
-            PlumpWorm = 27015,
-            Ragworm = 27004,
-            Glowworm, //TODO
-            ShrimpCageFeeder,
-            HeavySteelJig,
-            SquidStrip,
-            RatTail,
-            PillBug
+            Glowworm = 2603,
+            HeavySteelJig = 2619,
+            Krill = 29715,
+            PillBug = 2587,
+            PlumpWorm = 29716,
+            Ragworm = 29714,
+            RatTail = 2591,
+            ShrimpCageFeeder = 2613,
+            SquidStrip = 27590,
+            None = 0
         }
+        
+        //Bait Icon ids
+        //Krill 27023
+        //PlumpWorm 27015
+        //Ragworm 27004
 
         // Localization Tables
 
@@ -147,8 +162,8 @@ namespace OceanFishin
             {
                 ["Unknown"] = Location.Unknown,
                 ["The Bloodbrine Sea"] = Location.BloodbrineSea,
-                ["The Cieldalaes"] =Location.Cieldales,
-                ["Galadion Bay"] =Location.GaladionBay,
+                ["The Cieldalaes"] = Location.Cieldales,
+                ["Galadion Bay"] = Location.GaladionBay,
                 ["The Northern Strait of Merlthor"] = Location.NorthernStrait,
                 ["Rhotano Sea"] = Location.RhotanoSea,
                 ["The Rothlyt Sound"] = Location.RothlytSound,
@@ -241,7 +256,7 @@ namespace OceanFishin
         };
 
     // Dictionaries
-    public Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> bait_dictionary;
+    //public Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> bait_dictionary;
         //private string bait_file_url = "https://markjsosnowski.github.io/FFXIV/bait2.json";
         private Dictionary<string, Int64> baitstring_to_iconid = new Dictionary<string, Int64>(); // Generated on initalization based on iconid_to_baitstring
         /*private Dictionary<Int64, string> iconid_to_baitstring = new Dictionary<Int64, string>()
@@ -264,13 +279,16 @@ namespace OceanFishin
             [RequiredVersion("1.0")] CommandManager commandManager,            
             [RequiredVersion("1.0")] ClientState clientState,
             [RequiredVersion("1.0")] Framework framework,
-            [RequiredVersion("1.0")] GameGui gameGui)
+            [RequiredVersion("1.0")] GameGui gameGui,
+            [RequiredVersion("1.0")] DataManager dataManager
+            )
         {
             this.PluginInterface = pluginInterface;
             this.CommandManager = commandManager;
             this.ClientState = clientState;
             this.Framework = framework;
             this.GameGui = gameGui;
+            this.DataManager = dataManager;
 
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             this.Configuration.Initialize(this.PluginInterface);
@@ -297,7 +315,6 @@ namespace OceanFishin
             {
                 HelpMessage = "Alias for /oceanfishin"
             });
-
             /*try
             {
                 using (WebClient wc = new WebClient())
@@ -326,6 +343,8 @@ namespace OceanFishin
             this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
 
             this.UserLanguage = Language.en;
+            LocationSheet = this.DataManager.GetExcelSheet<IKDSpot>();
+
         }
 
         public unsafe void Dispose()
@@ -397,6 +416,7 @@ namespace OceanFishin
             
             if (locationString != null)
             {
+                
                 return StringToLocation[Language.en][locationString];
             }
             else
@@ -417,11 +437,19 @@ namespace OceanFishin
 
             AtkResNode* res_node = ptr->UldManager.NodeList[location_textnode_index];
             AtkTextNode* text_node = (AtkTextNode*)res_node;
-            string? locationString = Marshal.PtrToStringAnsi(new IntPtr(text_node->NodeText.StringPtr));
+            string locationString = Marshal.PtrToStringUTF8(new IntPtr(text_node->NodeText.StringPtr));
+            //Marshal.Pt
+            
 
+           // PluginLog.Debug("LocationString is "+ locationString );
             if (locationString != null)
             {
-                return StringToLocation[Language.en][locationString];
+                for (uint i = 0; i < LocationSheet.RowCount; i++)
+                {
+                   // PluginLog.Debug("Comparing to " + LocationSheet.GetRow(i).PlaceName.Value.Name.ToString());
+                    if (locationString == LocationSheet.GetRow(i).PlaceName.Value.Name.ToString()) { return (Location)i; }
+                }
+                return Location.Unknown;
             }
             else
             {
@@ -507,8 +535,8 @@ namespace OceanFishin
         {
             if (this.Configuration.DebugIntution) return true;
             
-            Dalamud.Game.ClientState.Statuses.StatusList buff_list;
-            PlayerCharacter player_character = ClientState.LocalPlayer;
+            Dalamud.Game.ClientState.Statuses.StatusList? buff_list;
+            PlayerCharacter? player_character = ClientState.LocalPlayer;
             
             if(player_character != null && player_character.StatusList != null)
             {

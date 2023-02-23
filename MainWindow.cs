@@ -7,10 +7,13 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Dalamud.Interface.Windowing;
+using Dalamud.Data;
 using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using ImGuiNET;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using Lumina.Excel.GeneratedSheets;
 
 namespace OceanFishin.Windows;
 
@@ -49,6 +52,61 @@ public class MainWindow : Window, IDisposable
 
     private int random_index;
 
+    private Lumina.Excel.ExcelSheet<Item>? ItemSheet;
+
+    private Dictionary<OceanFishin.FishTypes, Dictionary<Dalamud.ClientLanguage, string>> FishTypesSheet = new Dictionary<OceanFishin.FishTypes, Dictionary<Dalamud.ClientLanguage, string>>
+    {
+        [OceanFishin.FishTypes.Balloons] = new Dictionary<Dalamud.ClientLanguage, string> 
+        { 
+            [Dalamud.ClientLanguage.English] = "Balloons / Fugu", 
+            [Dalamud.ClientLanguage.French] = "Ballons / Fugu", 
+            [Dalamud.ClientLanguage.German] = "Ballons / Fugu",
+            [Dalamud.ClientLanguage.Japanese] = "バルーン / フグ"
+        },
+        [OceanFishin.FishTypes.Crabs] = new Dictionary<Dalamud.ClientLanguage, string>
+        {
+            [Dalamud.ClientLanguage.English] = "Crabs",
+            [Dalamud.ClientLanguage.French] = "Crabes",
+            [Dalamud.ClientLanguage.German] = "Krabben",
+            [Dalamud.ClientLanguage.Japanese] = "カニ"
+        },
+        [OceanFishin.FishTypes.Dragons]  = new Dictionary<Dalamud.ClientLanguage, string>
+        {
+            [Dalamud.ClientLanguage.English] = "Seahorses",
+            [Dalamud.ClientLanguage.French] = "Hippocampes",
+            [Dalamud.ClientLanguage.German] = "Seepferdchen",
+            [Dalamud.ClientLanguage.Japanese] = "タツノオトシゴ"
+        },
+        [OceanFishin.FishTypes.Jellyfish] = new Dictionary<Dalamud.ClientLanguage, string>
+        {
+            [Dalamud.ClientLanguage.English] = "Jellyfish",
+            [Dalamud.ClientLanguage.French] = "Méduse",
+            [Dalamud.ClientLanguage.German] = "Mantas",
+            [Dalamud.ClientLanguage.Japanese] = "クラゲ"
+        },
+        [OceanFishin.FishTypes.Mantas] = new Dictionary<Dalamud.ClientLanguage, string>
+        {
+            [Dalamud.ClientLanguage.English] = "Jellyfish",
+            [Dalamud.ClientLanguage.French] = "Raies",
+            [Dalamud.ClientLanguage.German] = "Quallen",
+            [Dalamud.ClientLanguage.Japanese] = "アカエイ"
+        },
+        [OceanFishin.FishTypes.Octopodes] = new Dictionary<Dalamud.ClientLanguage, string>
+        {
+            [Dalamud.ClientLanguage.English] = "Octopodes",
+            [Dalamud.ClientLanguage.French] = "Poulpes",
+            [Dalamud.ClientLanguage.German] = "Oktopusse",
+            [Dalamud.ClientLanguage.Japanese] = "タコ"
+        },
+        [OceanFishin.FishTypes.Sharks] = new Dictionary<Dalamud.ClientLanguage, string>
+        {
+            [Dalamud.ClientLanguage.English] = "Sharks",
+            [Dalamud.ClientLanguage.French] = "Requins",
+            [Dalamud.ClientLanguage.German] = "Haie",
+            [Dalamud.ClientLanguage.Japanese] = "サメ"
+        }
+    };
+    
     public MainWindow(OceanFishin plugin, Configuration configuration) : base("Ocean Fishin'", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
     {
         this.SizeConstraints = new WindowSizeConstraints
@@ -61,6 +119,7 @@ public class MainWindow : Window, IDisposable
         this.Configuration = configuration;
         Random random = new Random();
         this.random_index = random.Next(0, donation_lines.Length);
+        this.ItemSheet = this.Plugin.DataManager.GetExcelSheet<Item>();
     }
 
     public void Dispose(){}
@@ -83,164 +142,6 @@ public class MainWindow : Window, IDisposable
         {
             { countdownWindow(); }
         }
-
-
-        /*if (Plugin.inOceanFishingDuty())
-        {
-            Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>> bait_dict = Plugin.bait_dictionary;
-            OceanFishin.Location location = this.Plugin.getFishingLocation();
-            OceanFishin.Time time = Plugin.getFishingTime();
-            int spectral_key;
-            bool intuition_state;
-            try
-            {
-
-                // This is stored as an int so it can be used to index the bait array of mission fish.
-                spectral_key = this.Plugin.IsSpectralCurrent() ? spectral_active : spectral_inactive;
-                intuition_state = this.Plugin.HasIntuitionBuff();
-
-                if (bait_dict.ContainsKey(location))
-                {
-
-                    if (this.Configuration.display_mode == display_compact)
-                    {
-                        if (spectral_key == spectral_inactive)
-                        {
-                            if (intuition_state)
-                                ImGui.Text("Recommended → " + bait_dict[location]["always"]["intuition"]);
-                            else
-                                ImGui.Text("Recommended → " + bait_dict[location]["always"]["start"]);
-                        }
-                        else
-                        {
-                            if (intuition_state && this.Plugin.nested_key_exists(ref bait_dict, location, time, special))
-                                ImGui.Text("Recommended → " + bait_dict[location][time][special]);
-                            else
-                                ImGui.Text("Recommended → " + bait_dict[location][time][spectral]);
-                        }
-                    }
-                    else
-                    {
-                        StringBuilder first_line = new StringBuilder();
-                        first_line.Append("The suggested bait for ");
-                        first_line.Append(location);
-                        if (spectral_key == 1)
-                            first_line.Append(" spectral current");
-                        if (time == "Day")
-                            first_line.Append(" during the Day");
-                        else
-                        {
-                            first_line.Append(" at ");
-                            first_line.Append(time);
-                        }
-                        first_line.Append(" is:");
-
-                        ImGui.TextWrapped(first_line.ToString());
-
-
-                        if (spectral_key == spectral_inactive || this.Configuration.display_mode == display_full)
-                        {
-                            ImGui.Text("Start with → " + bait_dict[location]["always"]["start"]);
-                            ImGui.Text("Fisher's Intuition → " + bait_dict[location]["always"]["intuition"]);
-                        }
-
-                        if (spectral_key == spectral_active || this.Configuration.display_mode == display_full)
-                        {
-                            ImGui.Text("Spectral high points → " + bait_dict[location][time]["spectral"]);
-                            // Super rare fish only found in specific locations and times that use abnormal bait.
-                            if (this.Plugin.nested_key_exists(ref bait_dict, location, time, special))
-                                ImGui.Text("Spectral Fisher's Intuition → " + bait_dict[location][time][special]);
-                        }
-                    }
-                    if (this.Configuration.include_achievement_fish)
-                    {
-                        ImGui.Separator();
-
-                        if (this.Configuration.display_mode == display_full)
-                        {
-                            // Achievement fish are not found in every area, so we don't show them unless it's relevant.
-                            if (is_fish_available(ref bait_dict, location, time, octopodes, spectral_inactive))
-                                ImGui.Text("Octopods → " + bait_dict[location][time][octopodes][spectral_inactive]);
-
-                            if (is_fish_available(ref bait_dict, location, time, octopodes, spectral_active))
-                                ImGui.Text("Spectral Current Octopods → " + bait_dict[location][time][octopodes][spectral_active]);
-
-                            if (is_fish_available(ref bait_dict, location, time, sharks, spectral_inactive))
-                                ImGui.Text("Sharks → " + bait_dict[location][time][sharks][spectral_inactive]);
-
-                            if (is_fish_available(ref bait_dict, location, time, sharks, spectral_active))
-                                ImGui.Text("Spectral Current Sharks → " + bait_dict[location][time][sharks][spectral_active]);
-
-                            if (is_fish_available(ref bait_dict, location, time, jellyfish, spectral_inactive))
-                                ImGui.Text("Jellyfish → " + bait_dict[location][time][jellyfish][spectral_inactive]);
-
-                            if (is_fish_available(ref bait_dict, location, time, jellyfish, spectral_active))
-                                ImGui.Text("Spectral Current Jellyfish → " + bait_dict[location][time][jellyfish][spectral_active]);
-
-                            if (is_fish_available(ref bait_dict, location, time, dragons, spectral_inactive))
-                                ImGui.Text("Sea Dragons → " + bait_dict[location][time][dragons][spectral_inactive]);
-
-                            if (is_fish_available(ref bait_dict, location, time, dragons, spectral_active))
-                                ImGui.Text("Spectral Current Dragons → " + bait_dict[location][time][dragons][spectral_active]);
-
-                            if (is_fish_available(ref bait_dict, location, time, balloons, spectral_inactive))
-                                ImGui.Text("Balloons (Fugu) → " + bait_dict[location][time][balloons][spectral_inactive]);
-
-                            if (is_fish_available(ref bait_dict, location, time, balloons, spectral_active))
-                                ImGui.Text("Spectral Current Fugu → " + bait_dict[location][time][balloons][spectral_active]);
-
-                            if (is_fish_available(ref bait_dict, location, time, crabs, spectral_inactive))
-                                ImGui.Text("Crabs → " + bait_dict[location][time][crabs][spectral_inactive]);
-
-                            if (is_fish_available(ref bait_dict, location, time, crabs, spectral_active))
-                                ImGui.Text("Spectral Current Crabs → " + bait_dict[location][time][crabs][spectral_active]);
-
-                            if (is_fish_available(ref bait_dict, location, time, mantas, spectral_inactive))
-                                ImGui.Text("Mantas → " + bait_dict[location][time][mantas][spectral_inactive]);
-
-                            if (is_fish_available(ref bait_dict, location, time, mantas, spectral_active))
-                                ImGui.Text("Spectral Current Mantas → " + bait_dict[location][time][mantas][spectral_active]);
-                        }
-                        else // Standard display mode...
-                        {
-                            if (is_fish_available(ref bait_dict, location, time, octopodes, spectral_key))
-                                ImGui.Text("Octopods → " + bait_dict[location][time][octopodes][spectral_key]);
-                            if (is_fish_available(ref bait_dict, location, time, sharks, spectral_key))
-                                ImGui.Text("Sharks → " + bait_dict[location][time][sharks][spectral_key]);
-                            if (is_fish_available(ref bait_dict, location, time, jellyfish, spectral_key))
-                                ImGui.Text("Jellyfish → " + bait_dict[location][time][jellyfish][spectral_key]);
-                            if (is_fish_available(ref bait_dict, location, time, dragons, spectral_key))
-                                ImGui.Text("Sea Dragons → " + bait_dict[location][time][dragons][spectral_key]);
-                            if (is_fish_available(ref bait_dict, location, time, balloons, spectral_key))
-                                ImGui.Text("Balloons (Fugu) → " + bait_dict[location][time][balloons][spectral_key]);
-                            if (is_fish_available(ref bait_dict, location, time, crabs, spectral_key))
-                                ImGui.Text("Crabs → " + bait_dict[location][time][crabs][spectral_key]);
-                            if (is_fish_available(ref bait_dict, location, time, mantas, spectral_key))
-                                ImGui.Text("Mantas → " + bait_dict[location][time][mantas][spectral_key]);
-                        }
-                    }
-
-                }
-                else
-                {
-                    // This will show for a second when the window is open when loading into/out of the duty
-                    // and will automatically update once the location can actually be read.
-                    ImGui.Text("Just a second, I'm still getting your location!");
-                }
-            }
-            catch (KeyNotFoundException e)
-            {
-                // Now that we check if location is a key immediately, this shouldn't pop unless the json got messed up.
-                PluginLog.Error("A dictionary key was not found. Location was " + location + " and time was " + time + ":" + e.ToString(), e);
-                ImGui.Text("The plugin ran into a problem.");
-                ImGui.Text("Please contact the developer with your dalamund.log file.");
-                throw new KeyNotFoundException();
-            }
-        }
-        else
-        {
-            countdownWindow();
-        }*/
     }
 
     private void LoadingWindow()
@@ -252,7 +153,7 @@ public class MainWindow : Window, IDisposable
     {
         if (this.Plugin.IsSpectralCurrent())
         {
-            ImGui.Text("High Points: " + this.Plugin.getSpectralHighPointsBait(location, time).ToString());
+            ImGui.Text("High Points: " + Localize(this.Plugin.getSpectralHighPointsBait(location, time)));
             if (this.Plugin.getSpectralIntuitionBait(location, time) != OceanFishin.Bait.None) ImGui.Text("Fisher's Intuition Buff: " + this.Plugin.getSpectralIntuitionBait(location, time).ToString());
         }
         else
@@ -278,23 +179,23 @@ public class MainWindow : Window, IDisposable
     
     private void FullMode(OceanFishin.Location location, OceanFishin.Time time)
     {
-        ImGui.Text("Best Spectral Chance: " + this.Plugin.getSpectralChanceBait(location).ToString());
-        ImGui.Text("Fisher's Intuition Buff: " + this.Plugin.getFishersIntuitionBait(location, time).ToString());
-        ImGui.Text("Spectral Current High Points: " + this.Plugin.getSpectralHighPointsBait(location, time).ToString());
-        if (this.Plugin.getSpectralIntuitionBait(location, time) != OceanFishin.Bait.None) ImGui.Text("Spectral Intuition: " + this.Plugin.getSpectralIntuitionBait(location, time).ToString());
+        ImGui.Text("Best Spectral Chance: " + Localize(this.Plugin.getSpectralChanceBait(location)));
+        ImGui.Text("Fisher's Intuition Buff: " + Localize(this.Plugin.getFishersIntuitionBait(location, time)));
+        ImGui.Text("Spectral Current High Points: " + Localize(this.Plugin.getSpectralHighPointsBait(location, time)));
+        if (this.Plugin.getSpectralIntuitionBait(location, time) != OceanFishin.Bait.None) ImGui.Text("Spectral Intuition: " + Localize(this.Plugin.getSpectralIntuitionBait(location, time)));
         
         if (this.Configuration.include_achievement_fish)
         {
             ImGui.Separator();
             ImGui.Text("Mission Fish:");
-            ImGui.Text(string.Join('\n', this.Plugin.getMissionFishBaits(location)));
+            ImGui.Text(MissionFishDictToString(this.Plugin.getMissionFishBaits(location)));
 
             var specMissionFishHolder = this.Plugin.getSpectralMissionFishBaits(location, time);
             if (specMissionFishHolder != null)
             {
-            ImGui.Separator();
-            ImGui.Text("Spectral Current Mission Fish:");
-            ImGui.Text(string.Join('\n', specMissionFishHolder));
+                ImGui.Separator();
+                ImGui.Text("Spectral Current Mission Fish:");
+                ImGui.Text(MissionFishDictToString(specMissionFishHolder));
             }
         }
     }
@@ -364,4 +265,35 @@ public class MainWindow : Window, IDisposable
         return false;
     }
 
+
+
+    public string MissionFishDictToString(Dictionary<OceanFishin.FishTypes ,OceanFishin.Bait> dict)
+    {
+        string ret = "";
+        if (dict == null){ return ret; }
+        
+        foreach(var pair in dict)
+        {
+            ret += (Localize(pair.Key) + " -> " + Localize(pair.Value));
+            ret += "\n";
+        }
+
+        return ret;
+    }
+
+    public string Localize(OceanFishin.Bait bait)
+    {
+        if (ItemSheet != null)
+        {
+            return ItemSheet.GetRow((uint)bait).Singular.ToString();
+        }
+
+        return bait.ToString();
+    }
+
+    public string Localize(OceanFishin.FishTypes type)
+    {
+        PluginLog.Debug("client lang is " + this.Plugin.DataManager.Language.ToString());
+        return FishTypesSheet[type][this.Plugin.DataManager.Language];
+    }
 }
