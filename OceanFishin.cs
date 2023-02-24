@@ -339,7 +339,8 @@ namespace OceanFishin
         {
             if (this.Configuration.DebugMode)
             {
-                return this.Configuration.DebugTime;
+                if (this.Configuration.DebugTime > 0) { return this.Configuration.DebugTime + 8; }
+                else { return this.Configuration.DebugTime; }
             }
 
             AtkUnitBase* ptr = (AtkUnitBase*)this.fishingLogAddonPtr;
@@ -468,7 +469,7 @@ namespace OceanFishin
         public Bait GetSpectralHighPointsBait(Location location, Time time)
         {
             try { return spectralHighPointsBaitDictionary[location][time]; }
-            catch (KeyNotFoundException e) { return Bait.None; }
+            catch (KeyNotFoundException e) { PluginLog.Debug("Bait for " + location.ToString() + " at " + time.ToString() + " was not found.");  return Bait.None; }
         }
 
         //TODO this will also be used to determine what to highlight in the tacklebox
