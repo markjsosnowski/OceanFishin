@@ -94,7 +94,6 @@ namespace OceanFishin
         public Dalamud.ClientLanguage UserLanguage;
 
         public ExcelSheet<IKDSpot>? LocationSheet { get; private set; }
-        public Localizer Localizer { get; private set; }
 
         public enum Location
         {
@@ -239,10 +238,9 @@ namespace OceanFishin
 
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             this.Configuration.Initialize(this.PluginInterface);
-            this.Localizer = new Localizer(this, this.Configuration);
-            this.MainWindow = new MainWindow(this, this.Configuration, this.Localizer);
+            this.MainWindow = new MainWindow(this, this.Configuration);
             this.WindowSystem.AddWindow(this.MainWindow);
-            this.ConfigWindow = new ConfigWindow(this, this.Configuration, this.Localizer);
+            this.ConfigWindow = new ConfigWindow(this, this.Configuration);
             this.WindowSystem.AddWindow(this.ConfigWindow);
 
             var assemblyLocation = Assembly.GetExecutingAssembly().Location;
@@ -362,7 +360,7 @@ namespace OceanFishin
             string? locationString = Marshal.PtrToStringUTF8(new IntPtr(text_node->NodeText.StringPtr));
 
             #pragma warning disable CS8604 // Possible null reference argument.
-            return this.Localizer.SpotStringToLocation(locationString);
+            return SpotStringToLocation(locationString);
         }
 
         public unsafe Time GetFishingTime()
@@ -516,6 +514,19 @@ namespace OceanFishin
             return GetSpectralChanceBait(location);
         }
 
+        private OceanFishin.Location SpotStringToLocation(string location)
+        {
+            if (location == null || LocationSheet == null) { return Location.Unknown; }
+
+            for (uint i = 0; i < LocationSheet.RowCount; i++)
+            {
+                #pragma warning disable CS8602 // Dereference of a possibly null reference.
+                if (location == LocationSheet.GetRow(i).PlaceName.Value.Name.ToString()) { return (Location)i; }
+            }
+
+            return Location.Unknown;
+        }
+
         /*public unsafe void highlight_inventory_item(string bait)
         {
             // If the bait window isn't open, do nothing.
@@ -579,7 +590,7 @@ namespace OceanFishin
             return null;
         }*/
 
-        
+
         /*
         // Treated the node as an InventoryItem does not work 
         // Treating the node as a ListItemTrenderer doesn't work
@@ -612,74 +623,74 @@ namespace OceanFishin
                 PluginLog.Debug("Linked component: " + linked_comp->ToString());*/
 
 
-                /*AtkComponentList* list_component = (AtkComponentList*)bait_window_addon->UldManager.NodeList[bait_list_componentnode_index]->GetComponent();
-                var list_length = list_component->ListLength;
-                PluginLog.Debug("List length is " + list_length);
-                AtkComponentList.ListItem* item_list = list_component->ItemRendererList;
-                for(int i = 0; i<list_component->ListLength; i++)
-                {
-                    var list_item_ptr = (IntPtr*)&item_list[i].AtkComponentListItemRenderer;
-                    PluginLog.Debug("[" + i + "] Item Renderer Ptr: " + list_item_ptr->ToString("X"));
-                    PluginLog.Debug("Type of [" + i + "] is " + item_list[i].ToString());
-                    var button_node_ptr = (IntPtr*)&item_list[i].AtkComponentListItemRenderer->AtkComponentButton;
-                    var button_node = item_list[i].AtkComponentListItemRenderer->AtkComponentButton;
-                    PluginLog.Debug("[" + i + "] Button Ptr: " + button_node_ptr->ToString("X"));
-                    PluginLog.Debug("[" + i + "] Button IsEnabled: " + button_node.IsEnabled);
-                    var text_node_ptr = (IntPtr*)&item_list[i].AtkComponentListItemRenderer->AtkComponentButton.ButtonTextNode;
-                    PluginLog.Debug("[" + i + "] ButtonTextNodePtr: " + text_node_ptr->ToString("X"));
-                    PluginLog.Debug("[" + i + "] ButtonNode NodeListCount: " + button_node.AtkComponentBase.UldManager.NodeListCount);
-                    for (int j =0; j< button_node.AtkComponentBase.UldManager.NodeListCount; j++)
-                    {
-                        PluginLog.Debug("\t["+j+"] is " + button_node.AtkComponentBase.UldManager.NodeList[j]->ToString() +" at " + ((IntPtr*)button_node.AtkComponentBase.UldManager.NodeList[j])->ToString("X"));
-                    }
-
-
-                }
-
-                AtkComponentListItemRenderer* item_renderer = item_list[0].AtkComponentListItemRenderer;
-                IntPtr* item_renderer_ptr = (IntPtr*)item_renderer;
-                PluginLog.Debug("Breakpoint 2" + item_renderer_ptr->ToString("X"));
-                AtkComponentButton item_renderer_button = item_renderer->AtkComponentButton;
-                PluginLog.Debug("Breakpoint 3");
-                AtkTextNode* button_text_node = item_renderer_button.ButtonTextNode;
-                PluginLog.Debug("Breakpoint 4");
-                PluginLog.Debug(text_node_to_string(button_text_node));
-
-            }
-            catch (Exception e)
+        /*AtkComponentList* list_component = (AtkComponentList*)bait_window_addon->UldManager.NodeList[bait_list_componentnode_index]->GetComponent();
+        var list_length = list_component->ListLength;
+        PluginLog.Debug("List length is " + list_length);
+        AtkComponentList.ListItem* item_list = list_component->ItemRendererList;
+        for(int i = 0; i<list_component->ListLength; i++)
+        {
+            var list_item_ptr = (IntPtr*)&item_list[i].AtkComponentListItemRenderer;
+            PluginLog.Debug("[" + i + "] Item Renderer Ptr: " + list_item_ptr->ToString("X"));
+            PluginLog.Debug("Type of [" + i + "] is " + item_list[i].ToString());
+            var button_node_ptr = (IntPtr*)&item_list[i].AtkComponentListItemRenderer->AtkComponentButton;
+            var button_node = item_list[i].AtkComponentListItemRenderer->AtkComponentButton;
+            PluginLog.Debug("[" + i + "] Button Ptr: " + button_node_ptr->ToString("X"));
+            PluginLog.Debug("[" + i + "] Button IsEnabled: " + button_node.IsEnabled);
+            var text_node_ptr = (IntPtr*)&item_list[i].AtkComponentListItemRenderer->AtkComponentButton.ButtonTextNode;
+            PluginLog.Debug("[" + i + "] ButtonTextNodePtr: " + text_node_ptr->ToString("X"));
+            PluginLog.Debug("[" + i + "] ButtonNode NodeListCount: " + button_node.AtkComponentBase.UldManager.NodeListCount);
+            for (int j =0; j< button_node.AtkComponentBase.UldManager.NodeListCount; j++)
             {
-                PluginLog.Debug(e.ToString());
-                return null;
+                PluginLog.Debug("\t["+j+"] is " + button_node.AtkComponentBase.UldManager.NodeList[j]->ToString() +" at " + ((IntPtr*)button_node.AtkComponentBase.UldManager.NodeList[j])->ToString("X"));
             }
 
-            //AtkComponentNode* bait_list_componentnode = (AtkComponentNode*)bait_window_addon->UldManager.NodeList[bait_list_componentnode_index];
-            try
-            {
-                for (int i = 1; i < bait_list_componentnode->Component->UldManager.NodeListCount - 1; i++)
-                {
-                    PluginLog.Debug("Seaching index " + i);
-                    AtkComponentListItemRenderer* list_item_node = (AtkComponentListItemRenderer*)bait_list_componentnode->Component->UldManager.NodeList[i];
-                    
 
-                    PluginLog.Debug("Break Point 1");
-                    AtkComponentButton item_button_node = list_item_node->AtkComponentButton;
-                    PluginLog.Debug("Break Point 2");
-                    AtkTextNode* button_text_node = item_button_node.ButtonTextNode;
-                    PluginLog.Debug("Break Point 3");
-                    PluginLog.Debug("The ListItemRenderer's ComponentButton's TextNode's Text was " + Marshal.PtrToStringAnsi(new IntPtr(button_text_node->NodeText.StringPtr)));
-                    //if (baitstring_to_iconid[bait_name] == inventory_item_node->ItemID)
-                    //    return list_item_node;
-                }
-                return null;
-            }
-            catch(Exception e)
-            {
-                PluginLog.Debug(e.ToString(), e);
-                return null;
-            }
-            return null;
+        }
 
-        }*/
+        AtkComponentListItemRenderer* item_renderer = item_list[0].AtkComponentListItemRenderer;
+        IntPtr* item_renderer_ptr = (IntPtr*)item_renderer;
+        PluginLog.Debug("Breakpoint 2" + item_renderer_ptr->ToString("X"));
+        AtkComponentButton item_renderer_button = item_renderer->AtkComponentButton;
+        PluginLog.Debug("Breakpoint 3");
+        AtkTextNode* button_text_node = item_renderer_button.ButtonTextNode;
+        PluginLog.Debug("Breakpoint 4");
+        PluginLog.Debug(text_node_to_string(button_text_node));
+
+    }
+    catch (Exception e)
+    {
+        PluginLog.Debug(e.ToString());
+        return null;
+    }
+
+    //AtkComponentNode* bait_list_componentnode = (AtkComponentNode*)bait_window_addon->UldManager.NodeList[bait_list_componentnode_index];
+    try
+    {
+        for (int i = 1; i < bait_list_componentnode->Component->UldManager.NodeListCount - 1; i++)
+        {
+            PluginLog.Debug("Seaching index " + i);
+            AtkComponentListItemRenderer* list_item_node = (AtkComponentListItemRenderer*)bait_list_componentnode->Component->UldManager.NodeList[i];
+
+
+            PluginLog.Debug("Break Point 1");
+            AtkComponentButton item_button_node = list_item_node->AtkComponentButton;
+            PluginLog.Debug("Break Point 2");
+            AtkTextNode* button_text_node = item_button_node.ButtonTextNode;
+            PluginLog.Debug("Break Point 3");
+            PluginLog.Debug("The ListItemRenderer's ComponentButton's TextNode's Text was " + Marshal.PtrToStringAnsi(new IntPtr(button_text_node->NodeText.StringPtr)));
+            //if (baitstring_to_iconid[bait_name] == inventory_item_node->ItemID)
+            //    return list_item_node;
+        }
+        return null;
+    }
+    catch(Exception e)
+    {
+        PluginLog.Debug(e.ToString(), e);
+        return null;
+    }
+    return null;
+
+}*/
 
 
         /*public unsafe  void change_node_border(AtkComponentNode* node, bool higlight)

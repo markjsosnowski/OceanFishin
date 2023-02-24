@@ -16,9 +16,8 @@ namespace OceanFishin
     {
         private OceanFishin Plugin;
         private Configuration Configuration;
-        private Localizer Localizer;
 
-        public ConfigWindow(OceanFishin plugin, Configuration configuration, Localizer localizer) : base("Ocean Fishin' Configuration", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
+        public ConfigWindow(OceanFishin plugin, Configuration configuration) : base("Ocean Fishin' Configuration", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
         {
             this.SizeConstraints = new WindowSizeConstraints
             {
@@ -28,7 +27,6 @@ namespace OceanFishin
 
             this.Plugin = plugin;
             this.Configuration = configuration;
-            this.Localizer = localizer;
         }
 
         public void Dispose(){}
@@ -42,7 +40,7 @@ namespace OceanFishin
                 this.Configuration.Save();
             }
 
-            ImGui.TextWrapped(Localizer.Localize(this.Configuration.DisplayModes[1][this.Configuration.display_mode]));
+            ImGui.TextWrapped(this.Configuration.DisplayModes[1][this.Configuration.display_mode]);
 
             var include_achievement_fish = this.Configuration.IncludeAchievementFish;
             if (ImGui.Checkbox(Properties.Strings.Include_suggestions_for_mission_and_achievement_fish_, ref include_achievement_fish))
