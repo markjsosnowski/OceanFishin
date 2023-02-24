@@ -27,6 +27,7 @@ using FFXIVClientStructs.FFXIV.Client.System.String;
 using System.Text;
 using System.Globalization;
 using System.Threading;
+using System.Collections;
 
 namespace OceanFishin
 {
@@ -220,6 +221,8 @@ namespace OceanFishin
             [(Location.SouthernStraight, Time.Night)] = new Dictionary<FishTypes, Bait> { [FishTypes.Jellyfish] = Bait.Ragworm }
         };
 
+        private Dictionary<string, Location> localizedLocationStrings = new Dictionary<string, Location>();
+
         public OceanFishin(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
             [RequiredVersion("1.0")] CommandManager commandManager,            
@@ -307,7 +310,10 @@ namespace OceanFishin
                     CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en");
                     break;
             }
-            PluginLog.Debug("Client langauge is " + this.UserLanguage.ToString() + "and default thread UI culture is " + CultureInfo.DefaultThreadCurrentUICulture.ToString());
+            PluginLog.Debug("Client langauge is " + this.UserLanguage.ToString() + " and default thread UI culture is " + CultureInfo.DefaultThreadCurrentUICulture.ToString());
+
+            BuildLocationStringMap();
+            PluginLog.Debug("Location string map filled a total of " + localizedLocationStrings.Count + "/7 entries.");
         }
 
         public unsafe void Dispose()
@@ -516,15 +522,16 @@ namespace OceanFishin
 
         private OceanFishin.Location SpotStringToLocation(string location)
         {
-            if (location == null || LocationSheet == null) { return Location.Unknown; }
+            if(localizedLocationStrings.ContainsKey(location)) {  return localizedLocationStrings[location]; }
+            else { return Location.Unknown; }
+        }
 
-            for (uint i = 0; i < LocationSheet.RowCount; i++)
+        private void BuildLocationStringMap()
+        {
+            for (uint i = 1; i < LocationSheet.RowCount; ++i)
             {
-                #pragma warning disable CS8602 // Dereference of a possibly null reference.
-                if (location == LocationSheet.GetRow(i).PlaceName.Value.Name.ToString()) { return (Location)i; }
+                localizedLocationStrings[LocationSheet.GetRow(i).PlaceName.Value.Name.ToString()] = (Location)i;
             }
-
-            return Location.Unknown;
         }
 
         /*public unsafe void highlight_inventory_item(string bait)

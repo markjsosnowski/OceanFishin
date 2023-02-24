@@ -86,7 +86,7 @@ public class MainWindow : Window, IDisposable
 
     private void LoadingWindow()
     {
-        ImGui.Text("Waiting for location...");
+        ImGui.Text(Properties.Strings.Waiting_for_location___);
     }
 
     private void DefaultMode(OceanFishin.Location location, OceanFishin.Time time)

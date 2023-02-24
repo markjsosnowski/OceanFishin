@@ -124,7 +124,7 @@
     <value>Ballons</value>
   </data>
   <data name="Best spectral chance" xml:space="preserve">
-    <value />
+    <value>Meilleure possibilité de courant spectral</value>
   </data>
   <data name="Boarding is open for" xml:space="preserve">
     <value>L'embarquement est ouvert pendant</value>
@@ -157,7 +157,7 @@
     <value>Fugu</value>
   </data>
   <data name="hour" xml:space="preserve">
-    <value>heures</value>
+    <value>heure</value>
   </data>
   <data name="I suggest" xml:space="preserve">
     <value />
@@ -181,7 +181,7 @@
     <value>minutes</value>
   </data>
   <data name="Mission Fish" xml:space="preserve">
-    <value />
+    <value>Poissons de mission</value>
   </data>
   <data name="Octopodes" xml:space="preserve">
     <value>Poulpes</value>
@@ -193,13 +193,13 @@
     <value>Requins</value>
   </data>
   <data name="Spectral High Points" xml:space="preserve">
-    <value />
+    <value>Score élevé en courant spectral</value>
   </data>
   <data name="Spectral Intuition" xml:space="preserve">
     <value />
   </data>
   <data name="Spectral Mission Fish" xml:space="preserve">
-    <value />
+    <value>Poissons de mission en courant spectral</value>
   </data>
   <data name="Suggestions based on current conditions." xml:space="preserve">
     <value>Suggestions basées sur l'état actuel.</value>
@@ -211,6 +211,6 @@
     <value>Le prochain bateau part dans</value>
   </data>
   <data name="Waiting for location..." xml:space="preserve">
-    <value />
+    <value>Attendant...</value>
   </data>
 </root>
