@@ -132,6 +132,9 @@
   <data name="Comprehensive" xml:space="preserve">
     <value>包括的</value>
   </data>
+  <data name="Configuration" xml:space="preserve">
+    <value>コンフィグ</value>
+  </data>
   <data name="Consider Donating" xml:space="preserve">
     <value>寄付を検討する</value>
   </data>

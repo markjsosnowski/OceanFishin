@@ -22,7 +22,7 @@ namespace OceanFishin.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Strings {
+    public class Strings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace OceanFishin.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("OceanFishin.Properties.Strings", typeof(Strings).Assembly);
@@ -51,7 +51,7 @@ namespace OceanFishin.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,270 +61,279 @@ namespace OceanFishin.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_full_desc.
         /// </summary>
-        internal static string All_possible_area_information_at_once_ {
+        public static string All_possible_area_information_at_once_ {
             get {
                 return ResourceManager.GetString("All possible area information at once.", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_balloons.
         /// </summary>
-        internal static string Balloons {
+        public static string Balloons {
             get {
                 return ResourceManager.GetString("Balloons", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_spec_chance.
         /// </summary>
-        internal static string Best_spectral_chance {
+        public static string Best_spectral_chance {
             get {
                 return ResourceManager.GetString("Best spectral chance", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_boat_open.
         /// </summary>
-        internal static string Boarding_is_open_for {
+        public static string Boarding_is_open_for {
             get {
                 return ResourceManager.GetString("Boarding is open for", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_mode_full.
         /// </summary>
-        internal static string Comprehensive {
+        public static string Comprehensive {
             get {
                 return ResourceManager.GetString("Comprehensive", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_configuration_title.
         /// </summary>
-        internal static string Consider_Donating {
+        public static string Configuration {
+            get {
+                return ResourceManager.GetString("Configuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to string_donate_button.
+        /// </summary>
+        public static string Consider_Donating {
             get {
                 return ResourceManager.GetString("Consider Donating", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_cracbs.
         /// </summary>
-        internal static string Crabs {
+        public static string Crabs {
             get {
                 return ResourceManager.GetString("Crabs", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_mode_default.
         /// </summary>
-        internal static string Default {
+        public static string Default {
             get {
                 return ResourceManager.GetString("Default", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_min_desc.
         /// </summary>
-        internal static string Determines_the_single__best_choice_for_you_ {
+        public static string Determines_the_single__best_choice_for_you_ {
             get {
                 return ResourceManager.GetString("Determines the single, best choice for you.", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_donate_text.
         /// </summary>
-        internal static string Did_this_plugin_help_you_ {
+        public static string Did_this_plugin_help_you_ {
             get {
                 return ResourceManager.GetString("Did this plugin help you?", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_mode_title.
         /// </summary>
-        internal static string Display_Mode {
+        public static string Display_Mode {
             get {
                 return ResourceManager.GetString("Display Mode", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_fugu.
         /// </summary>
-        internal static string Fugu {
+        public static string Fugu {
             get {
                 return ResourceManager.GetString("Fugu", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string__highscore.
         /// </summary>
-        internal static string High_Points {
+        public static string High_Points {
             get {
                 return ResourceManager.GetString("High Points", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_hour.
         /// </summary>
-        internal static string hour {
+        public static string hour {
             get {
                 return ResourceManager.GetString("hour", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_min_suggestion.
         /// </summary>
-        internal static string I_suggest {
+        public static string I_suggest {
             get {
                 return ResourceManager.GetString("I suggest", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_mission_fish_option.
         /// </summary>
-        internal static string Include_suggestions_for_mission_and_achievement_fish_ {
+        public static string Include_suggestions_for_mission_and_achievement_fish_ {
             get {
                 return ResourceManager.GetString("Include suggestions for mission and achievement fish.", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_jellyfish.
         /// </summary>
-        internal static string Jellyfish {
+        public static string Jellyfish {
             get {
                 return ResourceManager.GetString("Jellyfish", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_underaminute.
         /// </summary>
-        internal static string less_than_a_minute_ {
+        public static string less_than_a_minute_ {
             get {
                 return ResourceManager.GetString("less than a minute!", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_mantas.
         /// </summary>
-        internal static string Mantas {
+        public static string Mantas {
             get {
                 return ResourceManager.GetString("Mantas", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_mode_min.
         /// </summary>
-        internal static string Minimal {
+        public static string Minimal {
             get {
                 return ResourceManager.GetString("Minimal", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_minutes.
         /// </summary>
-        internal static string minutes {
+        public static string minutes {
             get {
                 return ResourceManager.GetString("minutes", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_mission_fish.
         /// </summary>
-        internal static string Mission_Fish {
+        public static string Mission_Fish {
             get {
                 return ResourceManager.GetString("Mission Fish", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_octopus.
         /// </summary>
-        internal static string Octopodes {
+        public static string Octopodes {
             get {
                 return ResourceManager.GetString("Octopodes", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_dragons.
         /// </summary>
-        internal static string Seahorses {
+        public static string Seahorses {
             get {
                 return ResourceManager.GetString("Seahorses", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_sharks.
         /// </summary>
-        internal static string Sharks {
+        public static string Sharks {
             get {
                 return ResourceManager.GetString("Sharks", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_spec_current.
         /// </summary>
-        internal static string Spectral_Current {
+        public static string Spectral_Current {
             get {
                 return ResourceManager.GetString("Spectral Current", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_default_desc.
         /// </summary>
-        internal static string Suggestions_based_on_current_conditions_ {
+        public static string Suggestions_based_on_current_conditions_ {
             get {
                 return ResourceManager.GetString("Suggestions based on current conditions.", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_not_on_boat.
         /// </summary>
-        internal static string Suggestions_will_appear_here_during_Ocean_Fishing {
+        public static string Suggestions_will_appear_here_during_Ocean_Fishing {
             get {
                 return ResourceManager.GetString("Suggestions will appear here during Ocean Fishing", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_boat_countdown.
         /// </summary>
-        internal static string The_next_boat_leaves_in {
+        public static string The_next_boat_leaves_in {
             get {
                 return ResourceManager.GetString("The next boat leaves in", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error.
+        ///   Looks up a localized string similar to string_waiting.
         /// </summary>
-        internal static string Waiting_for_location___ {
+        public static string Waiting_for_location___ {
             get {
                 return ResourceManager.GetString("Waiting for location...", resourceCulture);
             }

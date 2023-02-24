@@ -27,7 +27,7 @@ public class MainWindow : Window, IDisposable
     
     private Lumina.Excel.ExcelSheet<Item>? itemSheet;
     private Lumina.Excel.ExcelSheet<Lumina.Excel.GeneratedSheets.Status>? statusSheet;
-    private string fishersIntutionString = "Fisher's Intuition Status String";
+    private string fishersIntutionString = "string_fishers_intuition";
 
     private const int spectral_active = 1;
     private const int spectral_inactive = 0;
@@ -48,7 +48,7 @@ public class MainWindow : Window, IDisposable
     //private int random_index;
     
 
-    public MainWindow(OceanFishin plugin, Configuration configuration) : base("Ocean Fishin'", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
+    public MainWindow(OceanFishin plugin, Configuration configuration) : base(plugin.Name, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
     {
         this.SizeConstraints = new WindowSizeConstraints
         {

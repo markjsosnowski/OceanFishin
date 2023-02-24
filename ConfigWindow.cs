@@ -17,7 +17,7 @@ namespace OceanFishin
         private OceanFishin Plugin;
         private Configuration Configuration;
 
-        public ConfigWindow(OceanFishin plugin, Configuration configuration) : base("Ocean Fishin' Configuration", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
+        public ConfigWindow(OceanFishin plugin, Configuration configuration) : base(plugin.Name + " " + Properties.Strings.Configuration, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
         {
             this.SizeConstraints = new WindowSizeConstraints
             {

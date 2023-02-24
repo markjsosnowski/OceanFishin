@@ -118,93 +118,96 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="All possible area information at once." xml:space="preserve">
-    <value>error</value>
+    <value>string_full_desc</value>
   </data>
   <data name="Balloons" xml:space="preserve">
-    <value>error</value>
+    <value>string_balloons</value>
   </data>
   <data name="Best spectral chance" xml:space="preserve">
-    <value>error</value>
+    <value>string_spec_chance</value>
   </data>
   <data name="Boarding is open for" xml:space="preserve">
-    <value>error</value>
+    <value>string_boat_open</value>
   </data>
   <data name="Comprehensive" xml:space="preserve">
-    <value>error</value>
+    <value>string_mode_full</value>
+  </data>
+  <data name="Configuration" xml:space="preserve">
+    <value>string_configuration_title</value>
   </data>
   <data name="Consider Donating" xml:space="preserve">
-    <value>error</value>
+    <value>string_donate_button</value>
   </data>
   <data name="Crabs" xml:space="preserve">
-    <value>error</value>
+    <value>string_cracbs</value>
   </data>
   <data name="Default" xml:space="preserve">
-    <value>error</value>
+    <value>string_mode_default</value>
   </data>
   <data name="Determines the single, best choice for you." xml:space="preserve">
-    <value>error</value>
+    <value>string_min_desc</value>
   </data>
   <data name="Did this plugin help you?" xml:space="preserve">
-    <value>error</value>
+    <value>string_donate_text</value>
   </data>
   <data name="Display Mode" xml:space="preserve">
-    <value>error</value>
+    <value>string_mode_title</value>
   </data>
   <data name="Fugu" xml:space="preserve">
-    <value>error</value>
+    <value>string_fugu</value>
   </data>
   <data name="High Points" xml:space="preserve">
-    <value>error</value>
+    <value>string__highscore</value>
   </data>
   <data name="hour" xml:space="preserve">
-    <value>error</value>
+    <value>string_hour</value>
   </data>
   <data name="I suggest" xml:space="preserve">
-    <value>error</value>
+    <value>string_min_suggestion</value>
   </data>
   <data name="Include suggestions for mission and achievement fish." xml:space="preserve">
-    <value>error</value>
+    <value>string_mission_fish_option</value>
   </data>
   <data name="Jellyfish" xml:space="preserve">
-    <value>error</value>
+    <value>string_jellyfish</value>
   </data>
   <data name="less than a minute!" xml:space="preserve">
-    <value>error</value>
+    <value>string_underaminute</value>
   </data>
   <data name="Mantas" xml:space="preserve">
-    <value>error</value>
+    <value>string_mantas</value>
   </data>
   <data name="Minimal" xml:space="preserve">
-    <value>error</value>
+    <value>string_mode_min</value>
   </data>
   <data name="minutes" xml:space="preserve">
-    <value>error</value>
+    <value>string_minutes</value>
   </data>
   <data name="Mission Fish" xml:space="preserve">
-    <value>error</value>
+    <value>string_mission_fish</value>
   </data>
   <data name="Octopodes" xml:space="preserve">
-    <value>error</value>
+    <value>string_octopus</value>
   </data>
   <data name="Seahorses" xml:space="preserve">
-    <value>error</value>
+    <value>string_dragons</value>
   </data>
   <data name="Sharks" xml:space="preserve">
-    <value>error</value>
+    <value>string_sharks</value>
   </data>
   <data name="Spectral Current" xml:space="preserve">
-    <value>error</value>
+    <value>string_spec_current</value>
   </data>
   <data name="Suggestions based on current conditions." xml:space="preserve">
-    <value>error</value>
+    <value>string_default_desc</value>
   </data>
   <data name="Suggestions will appear here during Ocean Fishing" xml:space="preserve">
-    <value>error</value>
+    <value>string_not_on_boat</value>
   </data>
   <data name="The next boat leaves in" xml:space="preserve">
-    <value>error</value>
+    <value>string_boat_countdown</value>
   </data>
   <data name="Waiting for location..." xml:space="preserve">
-    <value>error</value>
+    <value>string_waiting</value>
   </data>
 </root>

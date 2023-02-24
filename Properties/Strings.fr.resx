@@ -132,6 +132,9 @@
   <data name="Comprehensive" xml:space="preserve">
     <value>Complet</value>
   </data>
+  <data name="Configuration" xml:space="preserve">
+    <value>Configuration</value>
+  </data>
   <data name="Consider Donating" xml:space="preserve">
     <value>Envisagez de faire un don</value>
   </data>
