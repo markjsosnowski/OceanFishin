@@ -1,6 +1,7 @@
 ﻿using Dalamud.Configuration;
 using Dalamud.Plugin;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace OceanFishin
@@ -11,12 +12,15 @@ namespace OceanFishin
         public int Version { get; set; } = 0;
 
 
-        public bool include_achievement_fish { get; set; } = true;
-        public bool highlight_recommended_bait { get; set; } = true;
-        public bool always_show_all { get; set; } = false;
+        public bool IncludeAchievementFish { get; set; } = true;
+        public bool HighlightRecommendedBait { get; set; } = true;
 
-        public string[] display_modes = new string[] { "default", "min", "full" };
-        public string[] display_mode_desc = new string[] { "default-desc", "min-desc", "full-desc" };
+        public string[][] DisplayModes = new string[][]
+        {
+            new string[3] {Properties.Strings.Default, Properties.Strings.Minimal, Properties.Strings.Comprehensive },
+            new string[3] {Properties.Strings.Suggestions_based_on_current_conditions_, Properties.Strings.Determines_the_single__best_choice_for_you_, Properties.Strings.All_possible_area_information_at_once_ }
+        };
+
         public int display_mode { get; set; } = 0;
 
         public bool DebugMode = false;

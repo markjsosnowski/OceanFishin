@@ -151,13 +151,16 @@
     <value>Mode d'affichage</value>
   </data>
   <data name="Fisher's Intuition Buff" xml:space="preserve">
-    <value />
+    <value>heure</value>
   </data>
   <data name="Fugu" xml:space="preserve">
     <value>Fugu</value>
   </data>
-  <data name="hours" xml:space="preserve">
+  <data name="hour" xml:space="preserve">
     <value>heures</value>
+  </data>
+  <data name="I suggest" xml:space="preserve">
+    <value />
   </data>
   <data name="Include suggestions for mission and achievement fish." xml:space="preserve">
     <value>Inclure des suggestions de missions</value>

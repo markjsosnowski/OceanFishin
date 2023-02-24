@@ -14,6 +14,17 @@
         },
         "runtime": {
           "OceanFishin.dll": {}
+        },
+        "resources": {
+          "de/OceanFishin.resources.dll": {
+            "locale": "de"
+          },
+          "en/OceanFishin.resources.dll": {
+            "locale": "en"
+          },
+          "fr/OceanFishin.resources.dll": {
+            "locale": "fr"
+          }
         }
       },
       "DalamudPackager/2.1.10": {},

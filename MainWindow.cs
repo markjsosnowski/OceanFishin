@@ -14,6 +14,9 @@ using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using ImGuiNET;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Lumina.Excel.GeneratedSheets;
+using static System.Net.Mime.MediaTypeNames;
+using System.ComponentModel;
+using System.Globalization;
 
 namespace OceanFishin.Windows;
 
@@ -99,25 +102,29 @@ public class MainWindow : Window, IDisposable
     {
         if (this.Plugin.IsSpectralCurrent())
         {
-            ImGui.Text("High Points: " + Localizer.Localize(this.Plugin.GetSpectralHighPointsBait(location, time)));
-            if (this.Plugin.GetSpectralIntuitionBait(location, time) != OceanFishin.Bait.None) ImGui.Text("Fisher's Intuition Buff: " + this.Plugin.GetSpectralIntuitionBait(location, time).ToString());
+            ImGui.Text(Properties.Strings.Spectral_High_Points + ": " + Localizer.Localize(this.Plugin.GetSpectralHighPointsBait(location, time)));
+            if (this.Plugin.GetSpectralIntuitionBait(location, time) != OceanFishin.Bait.None) ImGui.Text(Properties.Strings.Spectral_Intuition + ": " + this.Plugin.GetSpectralIntuitionBait(location, time).ToString());
         }
         else
         {
-            ImGui.Text("Best Spectral Chance: " + Localizer.Localize(this.Plugin.GetSpectralChanceBait(location)));
-            ImGui.Text("Fisher's Intuition Buff: " + Localizer.Localize(this.Plugin.GetFishersIntuitionBait(location, time)));
+            ImGui.Text(Properties.Strings.Best_spectral_chance + ": " + Localizer.Localize(this.Plugin.GetSpectralChanceBait(location)));
+            ImGui.Text(Properties.Strings.Fisher_s_Intuition_Buff + ": " + Localizer.Localize(this.Plugin.GetFishersIntuitionBait(location, time)));
         }
-        if (this.Configuration.include_achievement_fish)
+        if (this.Configuration.IncludeAchievementFish)
         {
             ImGui.Separator();
-            //ImGui.Text("Your mission fish:"); //TODO filter this to only show the actual fish being asked for
             if (this.Plugin.IsSpectralCurrent() ) 
             {
                 var specMissionFishHolder = this.Plugin.GetSpectralMissionFishBaits(location, time);
-                if (specMissionFishHolder != null){ ImGui.Text(MissionFishDictToString(specMissionFishHolder)); }
+                if (specMissionFishHolder != null)
+                {
+                    ImGui.Text(Properties.Strings.Spectral_Mission_Fish);
+                    ImGui.Text(MissionFishDictToString(specMissionFishHolder)); 
+                }
             } 
             else
             {
+                ImGui.Text(Properties.Strings.Mission_Fish);
                 ImGui.Text(MissionFishDictToString(this.Plugin.GetMissionFishBaits(location)));
             }
         }
@@ -126,22 +133,22 @@ public class MainWindow : Window, IDisposable
     private void FullMode(OceanFishin.Location location, OceanFishin.Time time)
     {
         //TODO localize this stuff
-        ImGui.Text("Best Spectral Chance: " + Localizer.Localize(this.Plugin.GetSpectralChanceBait(location)));
-        ImGui.Text("Fisher's Intuition Buff: " + Localizer.Localize(this.Plugin.GetFishersIntuitionBait(location, time)));
-        ImGui.Text("Spectral Current High Points: " + Localizer.Localize(this.Plugin.GetSpectralHighPointsBait(location, time)));
-        if (this.Plugin.GetSpectralIntuitionBait(location, time) != OceanFishin.Bait.None) ImGui.Text("Spectral Intuition: " + Localizer.Localize(this.Plugin.GetSpectralIntuitionBait(location, time)));
+        ImGui.Text(Properties.Strings.Best_spectral_chance + ": " + Localizer.Localize(this.Plugin.GetSpectralChanceBait(location)));
+        ImGui.Text(Properties.Strings.Fisher_s_Intuition_Buff + ": " + Localizer.Localize(this.Plugin.GetFishersIntuitionBait(location, time)));
+        ImGui.Text(Properties.Strings.Spectral_High_Points + ": " + Localizer.Localize(this.Plugin.GetSpectralHighPointsBait(location, time)));
+        if (this.Plugin.GetSpectralIntuitionBait(location, time) != OceanFishin.Bait.None) ImGui.Text(Properties.Strings.Spectral_Intuition + ": " + Localizer.Localize(this.Plugin.GetSpectralIntuitionBait(location, time)));
         
-        if (this.Configuration.include_achievement_fish)
+        if (this.Configuration.IncludeAchievementFish)
         {
             ImGui.Separator();
-            ImGui.Text("Mission Fish:"); //TODO localize this string
+            ImGui.Text(Properties.Strings.Mission_Fish);
             ImGui.Text(MissionFishDictToString(this.Plugin.GetMissionFishBaits(location)));
 
             var specMissionFishHolder = this.Plugin.GetSpectralMissionFishBaits(location, time);
             if (specMissionFishHolder != null)
             {
                 ImGui.Separator();
-                ImGui.Text("Spectral Current Mission Fish:"); //TODO localize this string
+                ImGui.Text(Properties.Strings.Spectral_Mission_Fish);
                 ImGui.Text(MissionFishDictToString(specMissionFishHolder));
             }
         }
@@ -149,19 +156,21 @@ public class MainWindow : Window, IDisposable
 
     private void CompactMode(OceanFishin.Location location, OceanFishin.Time time)
     {
+        //ImGui.Text(Properties.Strings.I_suggest);
+        //ImGui.SameLine();
         ImGui.Text(this.Plugin.GetSingleBestBait(location, time).ToString());
     }
     
     private void countdownWindow()
     {
         // This window appears if the command is issued when not part of the duty.
-        ImGui.Text(Localizer.Localize("notOnShip"));
-        ImGui.Text(time_until_next_voyage());
+        ImGui.Text(Properties.Strings.Suggestions_will_appear_here_during_Ocean_Fishing);
+        ImGui.Text(GetTimeUntilNextVoyage());
         ImGui.Separator();
         //ImGui.Text(donation_lines[this.random_index]);
-        ImGui.Text(Localizer.Localize("donateText"));
+        ImGui.Text(Properties.Strings.Did_this_plugin_help_you_);
         ImGui.SameLine();
-        if (ImGui.Button(Localizer.Localize("donateButton")))
+        if (ImGui.Button(Properties.Strings.Consider_Donating))
         {
             System.Diagnostics.Process.Start(new ProcessStartInfo
             {
@@ -171,7 +180,7 @@ public class MainWindow : Window, IDisposable
         }
     }
 
-    private string time_until_next_voyage()
+    private string GetTimeUntilNextVoyage()
     {
         DateTime now = DateTime.UtcNow;
         int hour = now.Hour;
@@ -181,9 +190,11 @@ public class MainWindow : Window, IDisposable
             switch (minutes)
             {
                 case < 15:
-                    return Localizer.Localize("currentShip") + (15 - minutes) + Localizer.Localize("minutes");
+                    return Properties.Strings.Boarding_is_open_for + " " + (15 - minutes) + " " + Properties.Strings.minutes;
+                case 15:
+                    return Properties.Strings.Boarding_is_open_for + " " + Properties.Strings.less_than_a_minute_;
                 default:
-                    return Localizer.Localize("countdown") + "1 " + Localizer.Localize("hours") + ", " + (60 - minutes) + " " + Localizer.Localize("minutes");
+                    return Properties.Strings.The_next_boat_leaves_in + " 1 " + Properties.Strings.hour + ", " + (60-minutes) +  " " + Properties.Strings.minutes;
             }
         }
         else
@@ -191,9 +202,9 @@ public class MainWindow : Window, IDisposable
             switch (minutes)
             {
                 case 59:
-                    return Localizer.Localize("countdown") + Localizer.Localize("lessThanOne");
+                    return Properties.Strings.The_next_boat_leaves_in + " " + Properties.Strings.less_than_a_minute_;
                 default:
-                    return Localizer.Localize("countdown") + (60 - minutes) + " " + Localizer.Localize("minutes");
+                    return Properties.Strings.The_next_boat_leaves_in + " " + (60 - minutes) + " " + Properties.Strings.minutes;
             }
         }
     }
@@ -205,7 +216,35 @@ public class MainWindow : Window, IDisposable
         
         foreach(var pair in dict)
         {
-            ret += (Localizer.Localize(pair.Key) + ": " + Localizer.Localize(pair.Value));
+            //ret += (Localizer.Localize(pair.Key) + ": " + Localizer.Localize(pair.Value));
+
+            switch (pair.Key)
+            {
+                case OceanFishin.FishTypes.Balloons:
+                    ret += Properties.Strings.Balloons + ": " + Localizer.Localize(pair.Value);
+                    break;
+                case OceanFishin.FishTypes.Crabs:
+                    ret += Properties.Strings.Crabs + ": " + Localizer.Localize(pair.Value);
+                    break;
+                case OceanFishin.FishTypes.Dragons:
+                    ret += Properties.Strings.Seahorses + ": " + Localizer.Localize(pair.Value);
+                    break;
+                case OceanFishin.FishTypes.Jellyfish:
+                    ret += Properties.Strings.Jellyfish + ": " + Localizer.Localize(pair.Value);
+                    break;
+                case OceanFishin.FishTypes.Mantas:
+                    ret += Properties.Strings.Mantas + ": " + Localizer.Localize(pair.Value);
+                    break;
+                case OceanFishin.FishTypes.Octopodes:
+                    ret += Properties.Strings.Octopodes + ": " + Localizer.Localize(pair.Value);
+                    break;
+                case OceanFishin.FishTypes.Sharks:
+                    ret += Properties.Strings.Sharks + ": " + Localizer.Localize(pair.Value);
+                    break;
+                default:
+                    PluginLog.Error("Unknown fish type: " + pair.Key);
+                    break;
+            }
             ret += "\n";
         }
 

@@ -36,18 +36,18 @@ namespace OceanFishin
         public override void Draw()
         {
             var display_mode = this.Configuration.display_mode;
-            if (ImGui.Combo(Localizer.Localize("displayMode"), ref display_mode, Localizer.Localize(this.Configuration.display_modes), 3))
+            if (ImGui.Combo(Properties.Strings.Display_Mode, ref display_mode, this.Configuration.DisplayModes[0], 3))
             {
                 this.Configuration.display_mode = display_mode;
                 this.Configuration.Save();
             }
 
-            ImGui.TextWrapped(Localizer.Localize(this.Configuration.display_mode_desc[display_mode]));
+            ImGui.TextWrapped(Localizer.Localize(this.Configuration.DisplayModes[1][this.Configuration.display_mode]));
 
-            var include_achievement_fish = this.Configuration.include_achievement_fish;
-            if (ImGui.Checkbox(Localizer.Localize("achievementFish"), ref include_achievement_fish))
+            var include_achievement_fish = this.Configuration.IncludeAchievementFish;
+            if (ImGui.Checkbox(Properties.Strings.Include_suggestions_for_mission_and_achievement_fish_, ref include_achievement_fish))
             {
-                this.Configuration.include_achievement_fish = include_achievement_fish;
+                this.Configuration.IncludeAchievementFish = include_achievement_fish;
                 this.Configuration.Save();
             }
 

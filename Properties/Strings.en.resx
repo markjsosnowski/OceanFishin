@@ -118,96 +118,103 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="All possible area information at once." xml:space="preserve">
-    <value>一度にすべての可能なエリア情報。</value>
+    <value>All possible area information at once.</value>
+    <comment>Description for comprehensive display.</comment>
   </data>
   <data name="Balloons" xml:space="preserve">
-    <value>バルーン</value>
+    <value>Balloons</value>
   </data>
   <data name="Best spectral chance" xml:space="preserve">
-    <value />
+    <value>Best spectral chance</value>
   </data>
   <data name="Boarding is open for" xml:space="preserve">
-    <value>乗船時間</value>
+    <value>Boarding is open for</value>
   </data>
   <data name="Comprehensive" xml:space="preserve">
-    <value>包括的</value>
+    <value>Comprehensive</value>
   </data>
   <data name="Consider Donating" xml:space="preserve">
-    <value>寄付を検討する</value>
+    <value>Consider Donating</value>
   </data>
   <data name="Crabs" xml:space="preserve">
-    <value>カニ</value>
+    <value>Crabs</value>
   </data>
   <data name="Default" xml:space="preserve">
-    <value>デフォルト</value>
+    <value>Default</value>
   </data>
   <data name="Determines the single, best choice for you." xml:space="preserve">
-    <value>最良の選択のみを決定します。</value>
+    <value>Determines the single, best choice for you.</value>
+    <comment>Description for minimal display.</comment>
   </data>
   <data name="Did this plugin help you?" xml:space="preserve">
-    <value>このプラグインは役に立ちましたか?</value>
+    <value>Did this plugin help you?</value>
   </data>
   <data name="Display Mode" xml:space="preserve">
-    <value>ディスプレイモード</value>
+    <value>Display Mode</value>
   </data>
   <data name="Fisher's Intuition Buff" xml:space="preserve">
-    <value />
+    <value>Fisher's Intuition Buff</value>
+    <comment>Use sheets for this?</comment>
   </data>
   <data name="Fugu" xml:space="preserve">
-    <value>フグ</value>
+    <value>Fugu</value>
   </data>
-  <data name="hours" xml:space="preserve">
-    <value>時間</value>
+  <data name="hour" xml:space="preserve">
+    <value>hour</value>
+  </data>
+  <data name="I suggest" xml:space="preserve">
+    <value>I suggest</value>
   </data>
   <data name="Include suggestions for mission and achievement fish." xml:space="preserve">
-    <value>ミッションの推奨事項を含める。</value>
+    <value>Include suggestions for mission and achievement fish.</value>
   </data>
   <data name="Jellyfish" xml:space="preserve">
-    <value>クラゲ</value>
+    <value>Jellyfish</value>
   </data>
   <data name="less than a minute!" xml:space="preserve">
-    <value>一分未満！</value>
+    <value>less than a minute!</value>
   </data>
   <data name="Mantas" xml:space="preserve">
-    <value>アカエイ</value>
+    <value>Mantas</value>
   </data>
   <data name="Minimal" xml:space="preserve">
-    <value>最小限の</value>
+    <value>Minimal</value>
   </data>
   <data name="minutes" xml:space="preserve">
-    <value>分</value>
+    <value>minutes</value>
   </data>
   <data name="Mission Fish" xml:space="preserve">
-    <value />
+    <value>Mission Fish</value>
   </data>
   <data name="Octopodes" xml:space="preserve">
-    <value>タコ</value>
+    <value>Octopodes</value>
   </data>
   <data name="Seahorses" xml:space="preserve">
-    <value>タツノオトシゴ</value>
+    <value>Seahorses</value>
   </data>
   <data name="Sharks" xml:space="preserve">
-    <value>サメ</value>
+    <value>Sharks</value>
   </data>
   <data name="Spectral High Points" xml:space="preserve">
-    <value />
+    <value>Spectral High Points</value>
   </data>
   <data name="Spectral Intuition" xml:space="preserve">
-    <value />
+    <value>Spectral Intuition</value>
   </data>
   <data name="Spectral Mission Fish" xml:space="preserve">
-    <value />
+    <value>Spectral Mission Fish</value>
   </data>
   <data name="Suggestions based on current conditions." xml:space="preserve">
-    <value>現状を踏まえたご提案。</value>
+    <value>Suggestions based on current conditions.</value>
+    <comment>Description for default display.</comment>
   </data>
   <data name="Suggestions will appear here during Ocean Fishing" xml:space="preserve">
-    <value>「オーシャンフィッシング」の提案がここに表示されます</value>
+    <value>Suggestions will appear here during Ocean Fishing</value>
   </data>
   <data name="The next boat leaves in" xml:space="preserve">
-    <value>次の船が出ます</value>
+    <value>The next boat leaves in</value>
   </data>
   <data name="Waiting for location..." xml:space="preserve">
-    <value />
+    <value>Waiting for location...</value>
   </data>
 </root>

@@ -25,6 +25,8 @@ using Lumina.Excel.GeneratedSheets;
 using Lumina.Excel;
 using FFXIVClientStructs.FFXIV.Client.System.String;
 using System.Text;
+using System.Globalization;
+using System.Threading;
 
 namespace OceanFishin
 {
@@ -89,19 +91,10 @@ namespace OceanFishin
         private string last_location_string = "";
         private unsafe AtkComponentNode* last_highlighted_bait_node = null;
 
-        public Language UserLanguage;
+        public Dalamud.ClientLanguage UserLanguage;
 
         public ExcelSheet<IKDSpot>? LocationSheet { get; private set; }
         public Localizer Localizer { get; private set; }
-
-        //Enums 
-        public enum Language
-        {
-            en,
-            fr,
-            de,
-            jp
-        }
 
         public enum Location
         {
@@ -154,35 +147,6 @@ namespace OceanFishin
         //Krill 27023
         //PlumpWorm 27015
         //Ragworm 27004
-
-        // Localization Tables
-
-
-        public Dictionary<Language, Dictionary<string, Location>> StringToLocation = new Dictionary<Language, Dictionary<string, Location>>
-        {
-            [Language.en] = new Dictionary<string, Location>
-            {
-                ["Unknown"] = Location.Unknown,
-                ["The Bloodbrine Sea"] = Location.BloodbrineSea,
-                ["The Cieldalaes"] = Location.Cieldales,
-                ["Galadion Bay"] = Location.GaladionBay,
-                ["The Northern Strait of Merlthor"] = Location.NorthernStrait,
-                ["Rhotano Sea"] = Location.RhotanoSea,
-                ["The Rothlyt Sound"] = Location.RothlytSound,
-                ["The Southern Strait of Merlthor"] = Location.NorthernStrait
-            }
-        };
-
-        public Dictionary<Language, Dictionary<string, Time>> StringToTime = new Dictionary<Language, Dictionary<string, Time>>
-        {
-            [Language.en] = new Dictionary<string, Time>
-            {
-                ["Unknown"] = Time.Unknown,
-                ["Day"] = Time.Day,
-                ["Sunset"] = Time.Sunset,
-                ["Night"] = Time.Night
-            }
-        };
 
         //Bait Dictionaries
 
@@ -324,9 +288,28 @@ namespace OceanFishin
             this.PluginInterface.UiBuilder.Draw += DrawUI;
             this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
 
-            this.UserLanguage = Language.en;
             LocationSheet = this.DataManager.GetExcelSheet<IKDSpot>();
 
+            this.UserLanguage = DataManager.Language;
+            switch (this.UserLanguage)
+            {
+                case Dalamud.ClientLanguage.English:
+                    CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en");
+                    break;
+                case Dalamud.ClientLanguage.French:
+                    CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("fr");
+                    break;
+                case Dalamud.ClientLanguage.German:
+                    CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("de");
+                    break;
+                case Dalamud.ClientLanguage.Japanese:
+                    CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("jp");
+                    break;
+                default:
+                    CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en");
+                    break;
+            }
+            PluginLog.Debug("Client langauge is " + this.UserLanguage.ToString() + "and default thread UI culture is " + CultureInfo.DefaultThreadCurrentUICulture.ToString());
         }
 
         public unsafe void Dispose()
