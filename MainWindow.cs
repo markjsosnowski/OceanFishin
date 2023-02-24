@@ -28,13 +28,13 @@ public class MainWindow : Window, IDisposable
     private Lumina.Excel.ExcelSheet<Item>? itemSheet;
     private Lumina.Excel.ExcelSheet<Lumina.Excel.GeneratedSheets.Status>? statusSheet;
     private string fishersIntutionString = "string_fishers_intuition";
-
-    private const int spectral_active = 1;
-    private const int spectral_inactive = 0;
-
-    private const int display_full = 2;
-    private const int display_compact = 1;
-    private const int display_standard = 0;
+    
+    private enum displayMode
+    {
+        standard,
+        compact,
+        full
+    }
 
     /*private string[] donation_lines = new string[] {    "Rack up a good score on your last voyage?",
                                                             "Finally get that shark mount?",
@@ -60,6 +60,7 @@ public class MainWindow : Window, IDisposable
         this.Configuration = configuration;
         this.itemSheet = this.Plugin.DataManager.GetExcelSheet<Item>();
         this.statusSheet = this.Plugin.DataManager.GetExcelSheet<Lumina.Excel.GeneratedSheets.Status>();
+        #pragma warning disable CS8602 // Dereference of a possibly null reference.
         if (this.statusSheet != null) { this.fishersIntutionString = this.statusSheet.GetRow(568).Name.ToString(); }
         PluginLog.Debug("Buff name was set to " + this.fishersIntutionString);
 
@@ -79,9 +80,9 @@ public class MainWindow : Window, IDisposable
 
             if (location == OceanFishin.Location.Unknown || time == OceanFishin.Time.Unknown) { LoadingWindow(); return; }
 
-            if (this.Configuration.display_mode == display_compact) { CompactMode(location, time); }
-            if (this.Configuration.display_mode == display_full) { FullMode(location, time); }
-            if (this.Configuration.display_mode == display_standard) { DefaultMode(location, time); }
+            if (this.Configuration.DisplayMode == (int)displayMode.compact) { CompactMode(location, time); }
+            if (this.Configuration.DisplayMode == (int)displayMode.full) { FullMode(location, time); }
+            if (this.Configuration.DisplayMode == (int)displayMode.standard) { DefaultMode(location, time); }
         }
         else
         {
@@ -212,35 +213,19 @@ public class MainWindow : Window, IDisposable
         
         foreach(var pair in dict)
         {
-            //ret += (Localize(pair.Key) + ": " + Localize(pair.Value));
-
             switch (pair.Key)
             {
-                case OceanFishin.FishTypes.Balloons:
-                    ret += Properties.Strings.Balloons + ": " + Localize(pair.Value);
-                    break;
-                case OceanFishin.FishTypes.Crabs:
-                    ret += Properties.Strings.Crabs + ": " + Localize(pair.Value);
-                    break;
-                case OceanFishin.FishTypes.Dragons:
-                    ret += Properties.Strings.Seahorses + ": " + Localize(pair.Value);
-                    break;
-                case OceanFishin.FishTypes.Jellyfish:
-                    ret += Properties.Strings.Jellyfish + ": " + Localize(pair.Value);
-                    break;
-                case OceanFishin.FishTypes.Mantas:
-                    ret += Properties.Strings.Mantas + ": " + Localize(pair.Value);
-                    break;
-                case OceanFishin.FishTypes.Octopodes:
-                    ret += Properties.Strings.Octopodes + ": " + Localize(pair.Value);
-                    break;
-                case OceanFishin.FishTypes.Sharks:
-                    ret += Properties.Strings.Sharks + ": " + Localize(pair.Value);
-                    break;
-                default:
-                    PluginLog.Error("Unknown fish type: " + pair.Key);
-                    break;
+
+                case OceanFishin.FishTypes.Balloons: ret += Properties.Strings.Balloons; break;
+                case OceanFishin.FishTypes.Crabs:ret += Properties.Strings.Crabs; break;
+                case OceanFishin.FishTypes.Dragons: ret += Properties.Strings.Seahorses; break;
+                case OceanFishin.FishTypes.Jellyfish: ret += Properties.Strings.Jellyfish; break;
+                case OceanFishin.FishTypes.Mantas: ret += Properties.Strings.Mantas; break;
+                case OceanFishin.FishTypes.Octopodes: ret += Properties.Strings.Octopodes; break;
+                case OceanFishin.FishTypes.Sharks: ret += Properties.Strings.Sharks; break;
+                default: PluginLog.Error("Unknown fish type: " + pair.Key); continue;
             }
+            ret += ": " + Localize(pair.Value);
             ret += "\n";
         }
 

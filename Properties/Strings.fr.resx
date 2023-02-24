@@ -120,6 +120,9 @@
   <data name="All possible area information at once." xml:space="preserve">
     <value>Toutes les informations possibles sur la région à la fois.</value>
   </data>
+  <data name="Alternate command" xml:space="preserve">
+    <value>Commande alternative</value>
+  </data>
   <data name="Balloons" xml:space="preserve">
     <value>Ballons</value>
   </data>
@@ -152,6 +155,9 @@
   </data>
   <data name="Display Mode" xml:space="preserve">
     <value>Mode d'affichage</value>
+  </data>
+  <data name="Displays bait suggestions" xml:space="preserve">
+    <value>Afficher les suggestions d'appâts</value>
   </data>
   <data name="Fugu" xml:space="preserve">
     <value>Fugu</value>

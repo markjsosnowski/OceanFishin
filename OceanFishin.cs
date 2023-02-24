@@ -35,9 +35,8 @@ namespace OceanFishin
     {
         public string Name => "Ocean Fishin'";
 
-        public const string commandName = "/oceanfishin";
-        public const string altCommandName1 = "/oceanfishing";
-        public const string altCommandName2 = "/bait";
+        public const string CommandName = "/oceanfishing";
+        public const string AltCommandName = "/bait";
 
         private DalamudPluginInterface PluginInterface { get; init; }
         private CommandManager CommandManager { get; init; }
@@ -47,50 +46,39 @@ namespace OceanFishin
         private Framework Framework { get; init; }
         private GameGui GameGui { get; init; }
         private ConfigWindow ConfigWindow { get; init; }
-        public DataManager DataManager { get; init; }
         private WindowSystem WindowSystem = new("Ocean Fishin'");
-
-        private const string default_location = "location unknown";
-        private const string default_time = "time unknown";
+        public DataManager DataManager { get; init; }
 
         // This is the TerritoryType for the entire instance and does not
         // provide any information on fishing spots, routes, etc.
         private const int endevor_territory_type = 900;
 
         // NodeList indexes, known via addon inspector.
-        private const int location_textnode_index = 20;
-        private const int night_imagenode_index = 22;
-        private const int sunset_imagenode_index = 23;
-        private const int day_imagenode_index = 24;
-        private const int expected_nodelist_count = 24;
-        private const int cruising_resnode_index = 2;
-        private const int expected_bait_window_nodelist_count = 14;
-        private const int bait_list_componentnode_index = 3;
-        private const int iconid_index = 2;
-        private const int item_border_image_index = 4;
+        private const int LocationTextNodeIndex = 20;
+        private const int NightImageNodeIndex = 22;
+        private const int SunsetImageNodeIndex = 23;
+        private const int DayImageNodeIndex = 24;
+        private const int ExpectedFishingLogNodeListCount = 24;
+        private const int CruisingResNodeIndex = 2;
+        private const int ExpectedBaitNodeListCount = 14;
+        private const int BaitListComponentNodeIndex = 3;
+        private const int IconIDIndex = 2;
+        private const int ItemBorderImageNodeIndex = 4;
 
-        // Three image nodes make up the time of day indicator.
-        // They all use the same texture, so the part_id determines
-        // which part of the texture is used. Those part_ids are:
-        // Day      Active = 9  Inactive = 4
-        // Sunset   Active = 10 Inactive = 5
-        // Night    Active = 11 Inactive = 6
-        private const int day_icon_lit = 9;
-        private const int sunset_icon_lit = 10;
-        private const int night_icon_lit = 11;
-
-        private const int intuition_buff_id = 568;
+        private const int intuitionStatusID = 568;
 
         // Inventory icon texture part ids
-        private const int glowing_border_part_id = 5;
-        private const int default_border_part_id = 0;
+        private const int glowingBorderPartID = 5;
+        private const int defaultBorderPartID = 0;
+        private const string fishingLogAddonName = "IKDFishingLog";
+        private const string baitAddonName = "Bait";
 
         // Cached Values
-        private IntPtr ocean_fishing_addon_ptr;
-        private IntPtr bait_window_addon_ptr;
-        private string last_highlighted_bait = "";
-        private string last_location_string = "";
-        private unsafe AtkComponentNode* last_highlighted_bait_node = null;
+        private IntPtr fishingLogAddonPtr;
+        private IntPtr baitWindowAddonPtr;
+        //private string last_highlighted_bait = "";
+        //private string last_location_string = "";
+        //private unsafe AtkComponentNode* last_highlighted_bait_node = null;
 
         public Dalamud.ClientLanguage UserLanguage;
 
@@ -108,12 +96,18 @@ namespace OceanFishin
             RothlytSound = 7
         }
 
+        // Three image nodes make up the time of day indicator.
+        // They all use the same texture, so the part_id determines
+        // which part of the texture is used. Those part_ids are:
+        // Day      Active = 9  Inactive = 4
+        // Sunset   Active = 10 Inactive = 5
+        // Night    Active = 11 Inactive = 6
         public enum Time
         {
-            Unknown,
-            Day,
-            Sunset,
-            Night
+            Unknown = 0,
+            Day = 9,
+            Sunset = 10,
+            Night = 11
         }
 
         public enum FishTypes
@@ -142,15 +136,17 @@ namespace OceanFishin
             None = 0
         }
 
-        //private Dictionary<string, Int64> baitstring_to_iconid = new Dictionary<string, Int64>();
-        //Bait Icon ids
-        //Krill 27023
-        //PlumpWorm 27015
-        //Ragworm 27004
-
+        /*private Dictionary<Bait, Int64> baitIconID = new Dictionary<Bait, Int64>()
+        {
+            {Bait.None, 0},
+            {Bait.Krill,  27023},
+            {Bait.PlumpWorm, 27015},
+            {Bait.Ragworm, 27004}
+        };*/
+       
         //Bait Dictionaries
 
-        private Dictionary<Location, Bait> SpectralChanceBaitDictionary = new Dictionary<Location, Bait>
+        private Dictionary<Location, Bait> spectralChanceBaitDictionary = new Dictionary<Location, Bait>
         {
             [Location.BloodbrineSea] = Bait.Krill,
             [Location.Cieldales] = Bait.Ragworm,
@@ -161,7 +157,7 @@ namespace OceanFishin
             [Location.SouthernStraight] = Bait.Krill
         };
 
-        private Dictionary<Location, Bait> FishersIntutionBaitDictionary = new Dictionary<Location, Bait>
+        private Dictionary<Location, Bait> fishersIntutionBaitDictionary = new Dictionary<Location, Bait>
         {
             [Location.BloodbrineSea] = Bait.Krill,
             [Location.Cieldales] = Bait.Krill,
@@ -172,7 +168,7 @@ namespace OceanFishin
             [Location.SouthernStraight] = Bait.PlumpWorm
         };
 
-        private Dictionary<(Location,Time), Bait> SpectralIntuitionBaitDictionary = new Dictionary<(Location, Time), Bait>
+        private Dictionary<(Location,Time), Bait> spectralIntuitionBaitDictionary = new Dictionary<(Location, Time), Bait>
         {
             [(Location.BloodbrineSea, Time.Day)] =  Bait.PillBug,
             [(Location.Cieldales, Time.Night)] =  Bait.SquidStrip,
@@ -183,7 +179,7 @@ namespace OceanFishin
             [(Location.SouthernStraight, Time.Night)] = Bait.ShrimpCageFeeder
         };
 
-        private Dictionary<Location, Dictionary<Time, Bait>> SpectralHighPointsBaitDictionary = new Dictionary<Location, Dictionary<Time, Bait>>
+        private Dictionary<Location, Dictionary<Time, Bait>> spectralHighPointsBaitDictionary = new Dictionary<Location, Dictionary<Time, Bait>>
         {
             [Location.BloodbrineSea] = new Dictionary<Time, Bait>{ [Time.Day] = Bait.Ragworm, [Time.Sunset] = Bait.PlumpWorm, [Time.Night] = Bait.Krill },
             [Location.Cieldales] = new Dictionary<Time, Bait>{ [Time.Day] = Bait.Krill, [Time.Sunset] = Bait.PlumpWorm, [Time.Night] = Bait.Krill },
@@ -194,7 +190,7 @@ namespace OceanFishin
             [Location.SouthernStraight] = new Dictionary<Time, Bait> { [Time.Day] = Bait.Krill, [Time.Sunset] = Bait.Ragworm, [Time.Night] = Bait.Ragworm }
         };
 
-        private Dictionary<Location, Dictionary<FishTypes, Bait>> MissionFishBaitDictionary = new Dictionary<Location, Dictionary<FishTypes, Bait>>
+        private Dictionary<Location, Dictionary<FishTypes, Bait>> missionFishBaitDictionary = new Dictionary<Location, Dictionary<FishTypes, Bait>>
         {
             [Location.BloodbrineSea] = new Dictionary<FishTypes, Bait> { [FishTypes.Crabs] = Bait.Ragworm },
             [Location.Cieldales] = new Dictionary<FishTypes, Bait> { [FishTypes.Balloons] = Bait.Ragworm, [FishTypes.Crabs] = Bait.Krill, [FishTypes.Mantas] = Bait.PlumpWorm },
@@ -205,7 +201,7 @@ namespace OceanFishin
             [Location.SouthernStraight] = new Dictionary<FishTypes, Bait> { [FishTypes.Jellyfish] = Bait.Ragworm, [FishTypes.Dragons] = Bait.Ragworm , [FishTypes.Balloons] = Bait.Krill }
         };
 
-        private Dictionary<(Location, Time), Dictionary<FishTypes, Bait>> SpectralFishBaitDictionary = new Dictionary<(Location, Time), Dictionary<FishTypes, Bait>>
+        private Dictionary<(Location, Time), Dictionary<FishTypes, Bait>> spectralMissionFishBaitDictionary = new Dictionary<(Location, Time), Dictionary<FishTypes, Bait>>
         {
             [(Location.BloodbrineSea, Time.Day)] = new Dictionary<FishTypes, Bait> { [FishTypes.Crabs] = Bait.Ragworm, [FishTypes.Sharks] = Bait.PlumpWorm },
             [(Location.BloodbrineSea, Time.Sunset)] = new Dictionary<FishTypes, Bait> { [FishTypes.Sharks] = Bait.PlumpWorm },
@@ -262,50 +258,22 @@ namespace OceanFishin
 
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             this.Configuration.Initialize(this.PluginInterface);
+            
             this.MainWindow = new MainWindow(this, this.Configuration);
             this.WindowSystem.AddWindow(this.MainWindow);
+            
             this.ConfigWindow = new ConfigWindow(this, this.Configuration);
             this.WindowSystem.AddWindow(this.ConfigWindow);
 
             var assemblyLocation = Assembly.GetExecutingAssembly().Location;
 
-            this.CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
-            {
-                HelpMessage = "Opens a window with bait suggestions for the ocean fishing duty."
-            });
+            this.CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand){HelpMessage = Properties.Strings.Displays_bait_suggestions});
 
-            this.CommandManager.AddHandler(altCommandName1, new CommandInfo(OnCommand)
-            {
-                HelpMessage = "Alias for /oceanfishin"
-            });
-
-            this.CommandManager.AddHandler(altCommandName2, new CommandInfo(OnCommand)
-            {
-                HelpMessage = "Alias for /oceanfishin"
-            });
-            /*try
-            {
-                using (WebClient wc = new WebClient())
-                {
-                    var json = wc.DownloadString(bait_file_url);
-                    bait_dictionary = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, Dictionary<string, dynamic>>>>(json);
-                }
-            }
-            catch (WebException e)
-            {
-                PluginLog.Error("There was a problem retriving the bait list. Is GitHub down?", e);
-                bait_dictionary = null;
-            }
-            
-            // So only one dictionary of iconids needs to be maintained.
-            foreach(var pair in iconid_to_baitstring)
-            {
-                baitstring_to_iconid.Add(pair.Value, pair.Key);
-            }*/
+            this.CommandManager.AddHandler(AltCommandName, new CommandInfo(OnCommand){HelpMessage = Properties.Strings.Alternate_command});
 
             Framework.Update += UpdateAddonPtrs;
-            this.bait_window_addon_ptr = IntPtr.Zero;
-            this.ocean_fishing_addon_ptr = IntPtr.Zero;
+            this.baitWindowAddonPtr = IntPtr.Zero;
+            this.fishingLogAddonPtr = IntPtr.Zero;
 
             this.PluginInterface.UiBuilder.Draw += DrawUI;
             this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
@@ -319,9 +287,8 @@ namespace OceanFishin
         {
             Framework.Update -= UpdateAddonPtrs;
             this.MainWindow.Dispose();
-            this.CommandManager.RemoveHandler(commandName);
-            this.CommandManager.RemoveHandler(altCommandName1);
-            this.CommandManager.RemoveHandler(altCommandName2);
+            this.CommandManager.RemoveHandler(CommandName);
+            this.CommandManager.RemoveHandler(AltCommandName);
             WindowSystem.RemoveAllWindows();
             /*if (this.last_highlighted_bait_node != null)
             {
@@ -356,11 +323,11 @@ namespace OceanFishin
         {
             if (this.Configuration.DebugMode){ return this.Configuration.DebugLocation; }
 
-            AtkUnitBase* ptr = (AtkUnitBase*)this.ocean_fishing_addon_ptr;
-            if (ptr == null || ptr->UldManager.NodeListCount < expected_nodelist_count)
+            AtkUnitBase* ptr = (AtkUnitBase*)this.fishingLogAddonPtr;
+            if (ptr == null || ptr->UldManager.NodeListCount < ExpectedFishingLogNodeListCount)
                 return Location.Unknown;
 
-            AtkResNode* res_node = ptr->UldManager.NodeList[location_textnode_index];
+            AtkResNode* res_node = ptr->UldManager.NodeList[LocationTextNodeIndex];
             AtkTextNode* text_node = (AtkTextNode*)res_node;
             string? locationString = Marshal.PtrToStringUTF8(new IntPtr(text_node->NodeText.StringPtr));
 
@@ -375,22 +342,25 @@ namespace OceanFishin
                 return this.Configuration.DebugTime;
             }
 
-            AtkUnitBase* ptr = (AtkUnitBase*)this.ocean_fishing_addon_ptr;
-            if (ptr == null || ptr->UldManager.NodeListCount < expected_nodelist_count)
+            AtkUnitBase* ptr = (AtkUnitBase*)this.fishingLogAddonPtr;
+            if (ptr == null || ptr->UldManager.NodeListCount < ExpectedFishingLogNodeListCount)
                 return Time.Unknown;
-            AtkResNode* res_node = ptr->UldManager.NodeList[day_imagenode_index];
+            AtkResNode* res_node = ptr->UldManager.NodeList[DayImageNodeIndex];
             AtkImageNode* image_node = (AtkImageNode*)res_node;
-            
-            if (image_node->PartId == day_icon_lit)
+
+            if (image_node->PartId == (ushort)Time.Day)
                 return Time.Day;
-            res_node = ptr->UldManager.NodeList[sunset_imagenode_index];
+            
+            res_node = ptr->UldManager.NodeList[SunsetImageNodeIndex];
             image_node = (AtkImageNode*)res_node;
-            if (image_node->PartId == sunset_icon_lit)
+            if (image_node->PartId == (ushort)Time.Sunset)
                 return Time.Sunset;
-            res_node = ptr->UldManager.NodeList[night_imagenode_index];
+            
+            res_node = ptr->UldManager.NodeList[NightImageNodeIndex];
             image_node = (AtkImageNode*)res_node;
-            if (image_node->PartId == night_icon_lit)
+            if (image_node->PartId == (ushort)Time.Night)
                 return Time.Night;
+            
             return Time.Unknown;
         }
 
@@ -401,43 +371,38 @@ namespace OceanFishin
             
             
             AtkUnitBase* addon;
-            if (this.ocean_fishing_addon_ptr != IntPtr.Zero)
-                 addon = (AtkUnitBase*)this.ocean_fishing_addon_ptr;
+            if (this.fishingLogAddonPtr != IntPtr.Zero)
+                 addon = (AtkUnitBase*)this.fishingLogAddonPtr;
             else
                 return false;
-            if(addon->UldManager.NodeListCount < expected_nodelist_count)
+            if(addon->UldManager.NodeListCount < ExpectedFishingLogNodeListCount)
                 return false;
-            AtkResNode* crusing_resnode = (AtkResNode*)addon->UldManager.NodeList[cruising_resnode_index];
+            AtkResNode* crusing_resnode = (AtkResNode*)addon->UldManager.NodeList[CruisingResNodeIndex];
             if (crusing_resnode->IsVisible)
                 return true;
             else
                 return false;
         }
 
-        // crashes on load in to the duty, should check player_character for null and return until it's actually defined
         public unsafe bool HasIntuitionBuff()
         {
             if (this.Configuration.DebugIntution) return true;
             
-            Dalamud.Game.ClientState.Statuses.StatusList? buff_list;
-            PlayerCharacter? player_character = ClientState.LocalPlayer;
-            
-            if(player_character != null && player_character.StatusList != null)
+            Dalamud.Game.ClientState.Statuses.StatusList? statusList;
+            PlayerCharacter? playerCharacter = ClientState.LocalPlayer;
+            if (playerCharacter == null || playerCharacter.StatusList == null) { return false; }
+
+            statusList = playerCharacter.StatusList;
+            for (int i = 0; i < statusList.Length; i++)
             {
-                buff_list = player_character.StatusList;
-                for (int i = 0; i < buff_list.Length; i++)
+                #pragma warning disable CS8602 // Dereference of a possibly null reference.
+                if (this.Configuration.DebugMode && statusList[i].StatusId != 0) PluginLog.Debug("Status id " + i + " : " + statusList[i].StatusId);
+
+                if (statusList[i].StatusId == intuitionStatusID)
                 {
-
-                    #pragma warning disable CS8602 // Dereference of a possibly null reference.
-                    if (this.Configuration.DebugMode && buff_list[i].StatusId != 0) PluginLog.Debug("Status id " + i + " : " + buff_list[i].StatusId);
-
-                    if (buff_list[i].StatusId == intuition_buff_id)
-                    {
-                        if (this.Configuration.DebugMode) PluginLog.Debug("Intuition was detected!");
-                        return true;
-                    }
+                    if (this.Configuration.DebugMode) PluginLog.Debug("Intuition was detected!");
+                    return true;
                 }
-                return false;
             }
             return false;
         }
@@ -446,17 +411,17 @@ namespace OceanFishin
         {
             if (!InOceanFishingDuty())
             {
-                this.bait_window_addon_ptr = IntPtr.Zero;
-                this.ocean_fishing_addon_ptr = IntPtr.Zero;
+                this.baitWindowAddonPtr = IntPtr.Zero;
+                this.fishingLogAddonPtr = IntPtr.Zero;
                 return;
             }
             try
             {
                 // "IKDFishingLog" is the name of the blue window that appears during ocean fishing 
                 // that displays location, time, and what you caught. This is known via Addon Inspector.
-                this.ocean_fishing_addon_ptr = this.GameGui.GetAddonByName("IKDFishingLog", 1);
+                this.fishingLogAddonPtr = this.GameGui.GetAddonByName(fishingLogAddonName, 1);
                 // "Bait" is the Bait & Tackle window that fishers use to select their bait.
-                this.bait_window_addon_ptr = this.GameGui.GetAddonByName("Bait", 1);
+                this.baitWindowAddonPtr = this.GameGui.GetAddonByName(baitAddonName, 1);
             }
             catch (OperationCanceledException) { }
             catch (Exception e)
@@ -467,14 +432,14 @@ namespace OceanFishin
 
         public Bait GetSpectralChanceBait(Location location)
         {
-            //if(location == Location.GaladionBay && getWeather() == showers) { return Bait.PlumpWorm; }
-            try { return SpectralChanceBaitDictionary[location]; }
+            //if(location == Location.GaladionBay && getWeather() == Weather.showers) { return Bait.PlumpWorm; }
+            try { return spectralChanceBaitDictionary[location]; }
             catch (KeyNotFoundException e) { return Bait.None; }
         }
 
         public Bait GetFishersIntuitionBait(Location location,  Time time)
         {
-            try { return FishersIntutionBaitDictionary[location]; }
+            try { return fishersIntutionBaitDictionary[location]; }
             catch (KeyNotFoundException e) { return Bait.None; }
         }
 
@@ -482,7 +447,7 @@ namespace OceanFishin
         {
             try 
             {
-                if (SpectralIntuitionBaitDictionary.ContainsKey((location, time))) { return SpectralIntuitionBaitDictionary[(location, time)]; }
+                if (spectralIntuitionBaitDictionary.ContainsKey((location, time))) { return spectralIntuitionBaitDictionary[(location, time)]; }
                 else { return Bait.None; }
             }
             catch (KeyNotFoundException e) { return Bait.None; }
@@ -490,19 +455,19 @@ namespace OceanFishin
 
         public Dictionary<FishTypes, Bait> GetMissionFishBaits(Location location)
         {
-            return MissionFishBaitDictionary[location];
+            return missionFishBaitDictionary[location];
         }
 
         public Dictionary<FishTypes, Bait>? GetSpectralMissionFishBaits(Location location, Time time)
         {
-            if (location == Location.GaladionBay || location == Location.Cieldales) { return GetMissionFishBaits(location); }
-            else if (SpectralFishBaitDictionary.ContainsKey((location, time))){ return SpectralFishBaitDictionary[(location, time)]; }
+            if (location == Location.GaladionBay || location == Location.Cieldales) { return GetMissionFishBaits(location); } //These just happen to be identical
+            else if (spectralMissionFishBaitDictionary.ContainsKey((location, time))){ return spectralMissionFishBaitDictionary[(location, time)]; }
             else{ return null; }
         }
 
         public Bait GetSpectralHighPointsBait(Location location, Time time)
         {
-            try { return SpectralHighPointsBaitDictionary[location][time]; }
+            try { return spectralHighPointsBaitDictionary[location][time]; }
             catch (KeyNotFoundException e) { return Bait.None; }
         }
 
@@ -515,7 +480,7 @@ namespace OceanFishin
                 else return GetSpectralHighPointsBait(location, time);
             }
             if (HasIntuitionBuff()) return GetFishersIntuitionBait(location, time);
-            //if (weather == clear) return getMissionFishBait(location, time); //TODO implement weather checking
+            //if (GetWeather() == Weather.clear) return getMissionFishBait(location, time); //TODO implement weather checking
             return GetSpectralChanceBait(location);
         }
 
@@ -597,36 +562,36 @@ namespace OceanFishin
         }*/
 
 
-        /*
+
         // Treated the node as an InventoryItem does not work 
         // Treating the node as a ListItemTrenderer doesn't work
-        public unsafe AtkComponentNode* find_bait_item_node(string bait_name)
-        {
-            try
-            {
-                
-                
-
-                AtkUnitBase* bait_window_addon = (AtkUnitBase*)this.bait_window_addon_ptr;
-                AtkComponentNode* list_componentnode = (AtkComponentNode*)bait_window_addon->UldManager.NodeList[bait_list_componentnode_index]->GetComponent();
-                for(int i = 0; i < list_componentnode->Component->UldManager.NodeListCount; i++)
-                {
-                    var text_node = (InventoryItem*)list_componentnode->Component->UldManager.NodeList[i];
-                    PluginLog.Debug("["+i+"] " +text_node->ToString());
-                    PluginLog.Debug("Item ID: " + text_node->ItemID);
-                    PluginLog.Debug("Quantity: " + text_node->Quantity);
-                }
+        /* public unsafe AtkComponentNode* find_bait_item_node(string bait_name)
+         {
+             try
+             {
 
 
 
-                /*AtkComponentNode* lst_comp_node = (AtkComponentNode*)bait_window_addon->UldManager.NodeList[bait_list_componentnode_index];
-                AtkComponentNode* item_comp_node = (AtkComponentNode*)lst_comp_node->Component->UldManager.NodeList[3];
-                AtkCollisionNode* coll_node = (AtkCollisionNode*)item_comp_node->Component->UldManager.NodeList[0];
-                long* vtbl = (long*)coll_node->AtkResNode.AtkEventTarget.vtbl;
-                
-                PluginLog.Debug(vtbl->ToString());
-                var linked_comp = coll_node->LinkedComponent;
-                PluginLog.Debug("Linked component: " + linked_comp->ToString());*/
+                 AtkUnitBase* bait_window_addon = (AtkUnitBase*)this.bait_window_addon_ptr;
+                 AtkComponentNode* list_componentnode = (AtkComponentNode*)bait_window_addon->UldManager.NodeList[bait_list_componentnode_index]->GetComponent();
+                 for(int i = 0; i < list_componentnode->Component->UldManager.NodeListCount; i++)
+                 {
+                     var text_node = (InventoryItem*)list_componentnode->Component->UldManager.NodeList[i];
+                     PluginLog.Debug("["+i+"] " +text_node->ToString());
+                     PluginLog.Debug("Item ID: " + text_node->ItemID);
+                     PluginLog.Debug("Quantity: " + text_node->Quantity);
+                 }
+
+
+
+                 /*AtkComponentNode* lst_comp_node = (AtkComponentNode*)bait_window_addon->UldManager.NodeList[bait_list_componentnode_index];
+                 AtkComponentNode* item_comp_node = (AtkComponentNode*)lst_comp_node->Component->UldManager.NodeList[3];
+                 AtkCollisionNode* coll_node = (AtkCollisionNode*)item_comp_node->Component->UldManager.NodeList[0];
+                 long* vtbl = (long*)coll_node->AtkResNode.AtkEventTarget.vtbl;
+
+                 PluginLog.Debug(vtbl->ToString());
+                 var linked_comp = coll_node->LinkedComponent;
+                 PluginLog.Debug("Linked component: " + linked_comp->ToString());*/
 
 
         /*AtkComponentList* list_component = (AtkComponentList*)bait_window_addon->UldManager.NodeList[bait_list_componentnode_index]->GetComponent();

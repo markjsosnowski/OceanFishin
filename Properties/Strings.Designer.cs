@@ -70,6 +70,15 @@ namespace OceanFishin.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to string_alt_help_message.
+        /// </summary>
+        public static string Alternate_command {
+            get {
+                return ResourceManager.GetString("Alternate command", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to string_balloons.
         /// </summary>
         public static string Balloons {
@@ -169,6 +178,15 @@ namespace OceanFishin.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to string_help_message.
+        /// </summary>
+        public static string Displays_bait_suggestions {
+            get {
+                return ResourceManager.GetString("Displays bait suggestions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to string_fugu.
         /// </summary>
         public static string Fugu {
@@ -178,7 +196,7 @@ namespace OceanFishin.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to string__highscore.
+        ///   Looks up a localized string similar to string_highscore.
         /// </summary>
         public static string High_Points {
             get {

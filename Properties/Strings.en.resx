@@ -121,6 +121,9 @@
     <value>All possible area information at once.</value>
     <comment>Description for comprehensive display.</comment>
   </data>
+  <data name="Alternate command" xml:space="preserve">
+    <value>Alternative command</value>
+  </data>
   <data name="Balloons" xml:space="preserve">
     <value>Balloons</value>
   </data>
@@ -154,6 +157,9 @@
   </data>
   <data name="Display Mode" xml:space="preserve">
     <value>Display Mode</value>
+  </data>
+  <data name="Displays bait suggestions for Ocean Fishing" xml:space="preserve">
+    <value>Displays bait suggestions for Ocean Fishing</value>
   </data>
   <data name="Fugu" xml:space="preserve">
     <value>Fugu</value>
@@ -197,7 +203,7 @@
   <data name="Sharks" xml:space="preserve">
     <value>Sharks</value>
   </data>
-  <data name="Spectral Current" xml:space="preserve">
+  <data name="Spectral" xml:space="preserve">
     <value>Spectral</value>
   </data>
   <data name="Suggestions based on current conditions." xml:space="preserve">

@@ -120,6 +120,12 @@
   <data name="All possible area information at once." xml:space="preserve">
     <value>一度にすべての可能なエリア情報。</value>
   </data>
+  <data name="Alternate command" xml:space="preserve">
+    <value>代替コマンド</value>
+  </data>
+  <data name="alt_help_message" xml:space="preserve">
+    <value>代替コマンド</value>
+  </data>
   <data name="Balloons" xml:space="preserve">
     <value>バルーン</value>
   </data>
@@ -153,8 +159,14 @@
   <data name="Display Mode" xml:space="preserve">
     <value>ディスプレイモード</value>
   </data>
+  <data name="Displays bait suggestions" xml:space="preserve">
+    <value>エサの提案を見る</value>
+  </data>
   <data name="Fugu" xml:space="preserve">
     <value>フグ</value>
+  </data>
+  <data name="help_message" xml:space="preserve">
+    <value>エサの提案を見る</value>
   </data>
   <data name="High Points" xml:space="preserve">
     <value>高得点</value>

@@ -14,22 +14,19 @@ namespace OceanFishin
 
         public bool IncludeAchievementFish { get; set; } = true;
         public bool HighlightRecommendedBait { get; set; } = true;
-
-        public string[][] DisplayModes = new string[2][];
-
-        public int display_mode { get; set; } = 0;
-
+        public int DisplayMode { get; set; } = 0;
+        public string[][] DisplayModeStrings = new string[2][];
         public bool DebugMode = false;
-        public OceanFishin.Location DebugLocation = OceanFishin.Location.Unknown;
-        public OceanFishin.Time DebugTime = OceanFishin.Time.Unknown;
         public bool DebugSpectral = false;
         public bool DebugIntution = false;
+        public OceanFishin.Location DebugLocation = OceanFishin.Location.Unknown;
+        public OceanFishin.Time DebugTime = OceanFishin.Time.Unknown;
 
         public void Initialize(DalamudPluginInterface pluginInterface)
         {
             this.pluginInterface = pluginInterface;
-            DisplayModes[0] = new string[3] { Properties.Strings.Default, Properties.Strings.Minimal, Properties.Strings.Comprehensive };
-            DisplayModes[1] = new string[3] { Properties.Strings.Suggestions_based_on_current_conditions_, Properties.Strings.Determines_the_single__best_choice_for_you_, Properties.Strings.All_possible_area_information_at_once_ };
+            DisplayModeStrings[0] = new string[3] { Properties.Strings.Default, Properties.Strings.Minimal, Properties.Strings.Comprehensive };
+            DisplayModeStrings[1] = new string[3] { Properties.Strings.Suggestions_based_on_current_conditions_, Properties.Strings.Determines_the_single__best_choice_for_you_, Properties.Strings.All_possible_area_information_at_once_ };
         }
 
         public void Save()

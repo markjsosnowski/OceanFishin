@@ -120,6 +120,9 @@
   <data name="All possible area information at once." xml:space="preserve">
     <value>string_full_desc</value>
   </data>
+  <data name="Alternate command" xml:space="preserve">
+    <value>string_alt_help_message</value>
+  </data>
   <data name="Balloons" xml:space="preserve">
     <value>string_balloons</value>
   </data>
@@ -153,11 +156,14 @@
   <data name="Display Mode" xml:space="preserve">
     <value>string_mode_title</value>
   </data>
+  <data name="Displays bait suggestions" xml:space="preserve">
+    <value>string_help_message</value>
+  </data>
   <data name="Fugu" xml:space="preserve">
     <value>string_fugu</value>
   </data>
   <data name="High Points" xml:space="preserve">
-    <value>string__highscore</value>
+    <value>string_highscore</value>
   </data>
   <data name="hour" xml:space="preserve">
     <value>string_hour</value>

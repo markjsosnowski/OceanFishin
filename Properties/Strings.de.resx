@@ -120,6 +120,9 @@
   <data name="All possible area information at once." xml:space="preserve">
     <value>Alle möglichen Gebietsinformationen auf einmal.</value>
   </data>
+  <data name="Alternate command" xml:space="preserve">
+    <value>Alternativer befehl</value>
+  </data>
   <data name="Balloons" xml:space="preserve">
     <value>Ballons</value>
   </data>
@@ -153,8 +156,14 @@
   <data name="Display Mode" xml:space="preserve">
     <value>Anzeigemodus</value>
   </data>
+  <data name="Displays bait suggestions" xml:space="preserve">
+    <value>Zeigt Ködervorschläge an</value>
+  </data>
   <data name="Fugu" xml:space="preserve">
     <value>Fugu</value>
+  </data>
+  <data name="High Points" xml:space="preserve">
+    <value>Highscore</value>
   </data>
   <data name="hour" xml:space="preserve">
     <value>stunde</value>
