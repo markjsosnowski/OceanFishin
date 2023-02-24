@@ -1,6 +1,8 @@
 ﻿using Dalamud.Configuration;
 using Dalamud.Plugin;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace OceanFishin
 {
@@ -10,19 +12,21 @@ namespace OceanFishin
         public int Version { get; set; } = 0;
 
 
-        public bool include_achievement_fish { get; set; } = true;
-        public bool highlight_recommended_bait { get; set; } = true;
-        public bool always_show_all { get; set; } = false;
+        public bool IncludeAchievementFish { get; set; } = true;
+        public bool HighlightRecommendedBait { get; set; } = true;
+        public int DisplayMode { get; set; } = 0;
+        public string[][] DisplayModeStrings = new string[2][];
+        public bool DebugMode = false;
+        public bool DebugSpectral = false;
+        public bool DebugIntution = false;
+        public OceanFishin.Location DebugLocation = OceanFishin.Location.Unknown;
+        public OceanFishin.Time DebugTime = OceanFishin.Time.Unknown;
 
-        public string[] display_modes = new string[] { "Standard", "Compact", "Full" };
-        public string[] display_mode_desc = new string[] {  "Default; recommends bait based on current conditions.\nGood for average use or to learn the ropes.",
-                                                            "Only recommends one bait at a time based on current conditions.\nGood for when you don't want to think.",
-                                                            "Shows a list of all bait recommendations for the area at all times.\nGood for when you want to help your team."};
-        public int display_mode { get; set; } = 0;
-        
         public void Initialize(DalamudPluginInterface pluginInterface)
         {
             this.pluginInterface = pluginInterface;
+            DisplayModeStrings[0] = new string[3] { Properties.Strings.Default, Properties.Strings.Minimal, Properties.Strings.Comprehensive };
+            DisplayModeStrings[1] = new string[3] { Properties.Strings.Suggestions_based_on_current_conditions_, Properties.Strings.Determines_the_single__best_choice_for_you_, Properties.Strings.All_possible_area_information_at_once_ };
         }
 
         public void Save()

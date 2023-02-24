@@ -8,11 +8,25 @@
         "resolved": "2.1.10",
         "contentHash": "S6NrvvOnLgT4GDdgwuKVJjbFo+8ZEj+JsEYk9ojjOR/MMfv1dIFpT8aRJQfI24rtDcw1uF+GnSSMN4WW1yt7fw=="
       },
+      "Lumina.Excel": {
+        "type": "Direct",
+        "requested": "[6.3.2, )",
+        "resolved": "6.3.2",
+        "contentHash": "tdSIhTDV5Tnh19slA8qRDv8f1ewSY3ujrkwQteFRmIgydBq6kvZO6suC69/3uv9tHpUe7Ec+aiylW530E8nlMg==",
+        "dependencies": {
+          "Lumina": "3.10.0"
+        }
+      },
       "System.Numerics.Vectors": {
         "type": "Direct",
         "requested": "[4.5.0, )",
         "resolved": "4.5.0",
         "contentHash": "QQTlPTl06J/iiDbJCiepZ4H//BVraReU4O4EoRw1U02H5TLUIT7xn3GnDp9AXPSlJUDyFs4uWjWafNX6WrAojQ=="
+      },
+      "Lumina": {
+        "type": "Transitive",
+        "resolved": "3.10.0",
+        "contentHash": "OKDBlcz8VcapWCZjJWKoCq6iWjtooiN2WSu8ijP6hGtSTX03ksHuPFypSswur8KBCY9I6XYOYVBZ6IccFjrjnA=="
       }
     }
   }

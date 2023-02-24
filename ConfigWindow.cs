@@ -2,6 +2,7 @@
 using ImGuiNET;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -13,10 +14,10 @@ namespace OceanFishin
 
     public class ConfigWindow : Window, IDisposable
     {
-        private OceanFishin plugin;
-        private Configuration configuration;
+        private OceanFishin Plugin;
+        private Configuration Configuration;
 
-        public ConfigWindow(OceanFishin plugin, Configuration configuration) : base("Ocean Fishin' Configuration", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
+        public ConfigWindow(OceanFishin plugin, Configuration configuration) : base(plugin.Name + " " + Properties.Strings.Configuration, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
         {
             this.SizeConstraints = new WindowSizeConstraints
             {
@@ -24,28 +25,66 @@ namespace OceanFishin
                 MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
             };
 
-            this.plugin = plugin;
-            this.configuration = configuration;
+            this.Plugin = plugin;
+            this.Configuration = configuration;
         }
 
         public void Dispose(){}
 
         public override void Draw()
         {
-            var display_mode = this.configuration.display_mode;
-            if (ImGui.Combo("Display Mode", ref display_mode, this.configuration.display_modes, 3))
+            var display_mode = this.Configuration.DisplayMode;
+            if (ImGui.Combo(Properties.Strings.Display_Mode, ref display_mode, this.Configuration.DisplayModeStrings[0], 3))
             {
-                this.configuration.display_mode = display_mode;
-                this.configuration.Save();
+                this.Configuration.DisplayMode = display_mode;
+                this.Configuration.Save();
             }
 
-            ImGui.TextWrapped(this.configuration.display_mode_desc[display_mode]);
+            ImGui.TextWrapped(this.Configuration.DisplayModeStrings[1][this.Configuration.DisplayMode]);
 
-            var include_achievement_fish = this.configuration.include_achievement_fish;
-            if (ImGui.Checkbox("Recommend bait for mission/achievement fish.", ref include_achievement_fish))
+            var include_achievement_fish = this.Configuration.IncludeAchievementFish;
+            if (ImGui.Checkbox(Properties.Strings.Include_suggestions_for_mission_and_achievement_fish_, ref include_achievement_fish))
             {
-                this.configuration.include_achievement_fish = include_achievement_fish;
-                this.configuration.Save();
+                this.Configuration.IncludeAchievementFish = include_achievement_fish;
+                this.Configuration.Save();
+            }
+
+            var debugMode = this.Configuration.DebugMode;
+            if (ImGui.Checkbox("Debug Tools", ref debugMode))
+            {
+                this.Configuration.DebugMode = debugMode;
+                this.Configuration.Save();
+            }
+
+            if(this.Configuration.DebugMode)
+            {
+                int debugLocation = (int)this.Configuration.DebugLocation;
+                if(ImGui.Combo("Force Location", ref debugLocation, System.Enum.GetNames(typeof(OceanFishin.Location)), 8))
+                {
+                    this.Configuration.DebugLocation = (OceanFishin.Location)debugLocation;
+                    this.Configuration.Save();
+                }
+
+                int debugTime = (int)this.Configuration.DebugTime;
+                if (ImGui.Combo("Force Time", ref debugTime, System.Enum.GetNames(typeof(OceanFishin.Time)), 4))
+                {
+                    this.Configuration.DebugTime = (OceanFishin.Time)debugTime;
+                    this.Configuration.Save();
+                }
+                
+                bool debugSpectral = this.Configuration.DebugSpectral; 
+                if (ImGui.Checkbox("Force Spectral", ref debugSpectral))
+                {
+                    this.Configuration.DebugSpectral = debugSpectral; 
+                    this.Configuration.Save();
+                }
+
+                bool debugIntution = this.Configuration.DebugIntution;   
+                if (ImGui.Checkbox("Force Intuition", ref debugIntution))
+                {
+                    this.Configuration.DebugIntution = debugIntution;
+                    this.Configuration.Save();
+                }
             }
         }
     }
