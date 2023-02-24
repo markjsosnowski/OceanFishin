@@ -6,21 +6,55 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v7.0": {
-      "OceanFishin/2.3": {
+      "OceanFishin/2.4": {
         "dependencies": {
           "DalamudPackager": "2.1.10",
+          "Lumina.Excel": "6.3.2",
           "System.Numerics.Vectors": "4.5.0"
         },
         "runtime": {
           "OceanFishin.dll": {}
+        },
+        "resources": {
+          "de/OceanFishin.resources.dll": {
+            "locale": "de"
+          },
+          "en/OceanFishin.resources.dll": {
+            "locale": "en"
+          },
+          "fr/OceanFishin.resources.dll": {
+            "locale": "fr"
+          },
+          "ja/OceanFishin.resources.dll": {
+            "locale": "ja"
+          }
         }
       },
       "DalamudPackager/2.1.10": {},
+      "Lumina/3.10.0": {
+        "runtime": {
+          "lib/net6.0/Lumina.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.10.0.0"
+          }
+        }
+      },
+      "Lumina.Excel/6.3.2": {
+        "dependencies": {
+          "Lumina": "3.10.0"
+        },
+        "runtime": {
+          "lib/net7.0/Lumina.Excel.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.3.2.0"
+          }
+        }
+      },
       "System.Numerics.Vectors/4.5.0": {}
     }
   },
   "libraries": {
-    "OceanFishin/2.3": {
+    "OceanFishin/2.4": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
@@ -31,6 +65,20 @@
       "sha512": "sha512-S6NrvvOnLgT4GDdgwuKVJjbFo+8ZEj+JsEYk9ojjOR/MMfv1dIFpT8aRJQfI24rtDcw1uF+GnSSMN4WW1yt7fw==",
       "path": "dalamudpackager/2.1.10",
       "hashPath": "dalamudpackager.2.1.10.nupkg.sha512"
+    },
+    "Lumina/3.10.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-OKDBlcz8VcapWCZjJWKoCq6iWjtooiN2WSu8ijP6hGtSTX03ksHuPFypSswur8KBCY9I6XYOYVBZ6IccFjrjnA==",
+      "path": "lumina/3.10.0",
+      "hashPath": "lumina.3.10.0.nupkg.sha512"
+    },
+    "Lumina.Excel/6.3.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-tdSIhTDV5Tnh19slA8qRDv8f1ewSY3ujrkwQteFRmIgydBq6kvZO6suC69/3uv9tHpUe7Ec+aiylW530E8nlMg==",
+      "path": "lumina.excel/6.3.2",
+      "hashPath": "lumina.excel.6.3.2.nupkg.sha512"
     },
     "System.Numerics.Vectors/4.5.0": {
       "type": "package",
