@@ -150,9 +150,6 @@
   <data name="Display Mode" xml:space="preserve">
     <value>Anzeigemodus</value>
   </data>
-  <data name="Fisher's Intuition Buff" xml:space="preserve">
-    <value />
-  </data>
   <data name="Fugu" xml:space="preserve">
     <value>Fugu</value>
   </data>
@@ -160,7 +157,7 @@
     <value>stunde</value>
   </data>
   <data name="I suggest" xml:space="preserve">
-    <value />
+    <value>Ich schlage vor, Sie verwenden</value>
   </data>
   <data name="Include suggestions for mission and achievement fish." xml:space="preserve">
     <value>Missionsempfehlungen einschließen</value>
@@ -211,6 +208,6 @@
     <value>Das nächste Boot legt ab</value>
   </data>
   <data name="Waiting for location..." xml:space="preserve">
-    <value />
+    <value>Warten...</value>
   </data>
 </root>

@@ -25,7 +25,9 @@ public class MainWindow : Window, IDisposable
     private OceanFishin Plugin;
     private Configuration Configuration;
     
-    private Lumina.Excel.ExcelSheet<Item>? ItemSheet;
+    private Lumina.Excel.ExcelSheet<Item>? itemSheet;
+    private Lumina.Excel.ExcelSheet<Lumina.Excel.GeneratedSheets.Status>? statusSheet;
+    private string fishersIntutionString = "Fisher's Intuition Status String";
 
     private const int spectral_active = 1;
     private const int spectral_inactive = 0;
@@ -56,7 +58,10 @@ public class MainWindow : Window, IDisposable
 
         this.Plugin = plugin;
         this.Configuration = configuration;
-        this.ItemSheet = this.Plugin.DataManager.GetExcelSheet<Item>();
+        this.itemSheet = this.Plugin.DataManager.GetExcelSheet<Item>();
+        this.statusSheet = this.Plugin.DataManager.GetExcelSheet<Lumina.Excel.GeneratedSheets.Status>();
+        if (this.statusSheet != null) { this.fishersIntutionString = this.statusSheet.GetRow(568).Name.ToString(); }
+        PluginLog.Debug("Buff name was set to " + this.fishersIntutionString);
 
         //Random random = new Random();
         //this.random_index = random.Next(0, donation_lines.Length);
@@ -94,12 +99,12 @@ public class MainWindow : Window, IDisposable
         if (this.Plugin.IsSpectralCurrent())
         {
             ImGui.Text(Properties.Strings.Spectral_High_Points + ": " + Localize(this.Plugin.GetSpectralHighPointsBait(location, time)));
-            if (this.Plugin.GetSpectralIntuitionBait(location, time) != OceanFishin.Bait.None) ImGui.Text(Properties.Strings.Spectral_Intuition + ": " + this.Plugin.GetSpectralIntuitionBait(location, time).ToString());
+            if (this.Plugin.GetSpectralIntuitionBait(location, time) != OceanFishin.Bait.None) ImGui.Text(this.fishersIntutionString + ": " + this.Plugin.GetSpectralIntuitionBait(location, time).ToString());
         }
         else
         {
             ImGui.Text(Properties.Strings.Best_spectral_chance + ": " + Localize(this.Plugin.GetSpectralChanceBait(location)));
-            ImGui.Text(Properties.Strings.Fisher_s_Intuition_Buff + ": " + Localize(this.Plugin.GetFishersIntuitionBait(location, time)));
+            ImGui.Text(this.fishersIntutionString + ": " + Localize(this.Plugin.GetFishersIntuitionBait(location, time)));
         }
         if (this.Configuration.IncludeAchievementFish)
         {
@@ -125,9 +130,9 @@ public class MainWindow : Window, IDisposable
     {
         //TODO localize this stuff
         ImGui.Text(Properties.Strings.Best_spectral_chance + ": " + Localize(this.Plugin.GetSpectralChanceBait(location)));
-        ImGui.Text(Properties.Strings.Fisher_s_Intuition_Buff + ": " + Localize(this.Plugin.GetFishersIntuitionBait(location, time)));
+        ImGui.Text(this.fishersIntutionString + ": " + Localize(this.Plugin.GetFishersIntuitionBait(location, time)));
         ImGui.Text(Properties.Strings.Spectral_High_Points + ": " + Localize(this.Plugin.GetSpectralHighPointsBait(location, time)));
-        if (this.Plugin.GetSpectralIntuitionBait(location, time) != OceanFishin.Bait.None) ImGui.Text(Properties.Strings.Spectral_Intuition + ": " + Localize(this.Plugin.GetSpectralIntuitionBait(location, time)));
+        if (this.Plugin.GetSpectralIntuitionBait(location, time) != OceanFishin.Bait.None) ImGui.Text(this.fishersIntutionString + ": " + Localize(this.Plugin.GetSpectralIntuitionBait(location, time)));
         
         if (this.Configuration.IncludeAchievementFish)
         {
@@ -245,7 +250,7 @@ public class MainWindow : Window, IDisposable
     private string? Localize(OceanFishin.Bait bait)
     {
         #pragma warning disable CS8602 // Dereference of a possibly null reference.
-        if (ItemSheet != null) { return this.ItemSheet.GetRow((uint)bait).Singular.ToString(); }
+        if (itemSheet != null) { return this.itemSheet.GetRow((uint)bait).Singular.ToString(); }
         return bait.ToString();
     }
 }

@@ -152,10 +152,6 @@
   <data name="Display Mode" xml:space="preserve">
     <value>Display Mode</value>
   </data>
-  <data name="Fisher's Intuition Buff" xml:space="preserve">
-    <value>Fisher's Intuition Buff</value>
-    <comment>Use sheets for this?</comment>
-  </data>
   <data name="Fugu" xml:space="preserve">
     <value>Fugu</value>
   </data>
