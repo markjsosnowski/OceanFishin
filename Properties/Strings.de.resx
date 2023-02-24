@@ -124,7 +124,7 @@
     <value>Ballons</value>
   </data>
   <data name="Best spectral chance" xml:space="preserve">
-    <value />
+    <value>Wahrscheinlichkeit von Phantomströmung</value>
   </data>
   <data name="Boarding is open for" xml:space="preserve">
     <value>Das Boarding ist für</value>
@@ -178,7 +178,7 @@
     <value>minuten</value>
   </data>
   <data name="Mission Fish" xml:space="preserve">
-    <value />
+    <value>Fisch für die Mission</value>
   </data>
   <data name="Octopodes" xml:space="preserve">
     <value>Oktopusse</value>
@@ -189,14 +189,11 @@
   <data name="Sharks" xml:space="preserve">
     <value>Haie</value>
   </data>
+  <data name="Spectral Current" xml:space="preserve">
+    <value>Phantomströmung</value>
+  </data>
   <data name="Spectral High Points" xml:space="preserve">
-    <value />
-  </data>
-  <data name="Spectral Intuition" xml:space="preserve">
-    <value />
-  </data>
-  <data name="Spectral Mission Fish" xml:space="preserve">
-    <value />
+    <value>Highscore</value>
   </data>
   <data name="Suggestions based on current conditions." xml:space="preserve">
     <value>Vorschlag basierend auf dem aktuellen Stand.</value>

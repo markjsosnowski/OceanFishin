@@ -71,6 +71,11 @@
 		<Reference Include="System.Configuration">
 		  <Private>false</Private>
 		</Reference>
+		<Compile Update="Properties\Strings.Designer.cs">
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
+		  <DependentUpon>Strings.resx</DependentUpon>
+		</Compile>
 		<Reference Update="System">
 			<Private>false</Private>
 		</Reference>
@@ -107,27 +112,21 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Properties\Strings.en.Designer.cs">
-	    <DesignTime>True</DesignTime>
-	    <AutoGen>True</AutoGen>
-	    <DependentUpon>Strings.en.resx</DependentUpon>
-	  </Compile>
-	</ItemGroup>
-
-	<ItemGroup>
 	  <EmbeddedResource Update="Properties\Strings.de.resx">
 	    <Generator>PublicResXFileCodeGenerator</Generator>
 	  </EmbeddedResource>
 	  <EmbeddedResource Update="Properties\Strings.en.resx">
 	    <Generator>PublicResXFileCodeGenerator</Generator>
-	    <LastGenOutput>Strings.en.Designer.cs</LastGenOutput>
 	  </EmbeddedResource>
 	  <EmbeddedResource Update="Properties\Strings.fr.resx">
 	    <Generator>PublicResXFileCodeGenerator</Generator>
-	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	  </EmbeddedResource>
-	  <EmbeddedResource Update="Properties\Strings.jp.resx">
+	  <EmbeddedResource Update="Properties\Strings.ja.resx">
 	    <Generator>PublicResXFileCodeGenerator</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Update="Properties\Strings.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	    <LastGenOutput>Strings.Designer.cs</LastGenOutput>
 	  </EmbeddedResource>
 	</ItemGroup>
 	

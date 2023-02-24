@@ -118,93 +118,93 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="All possible area information at once." xml:space="preserve">
-    <value>Toutes les informations possibles sur la région à la fois.</value>
+    <value>error</value>
   </data>
   <data name="Balloons" xml:space="preserve">
-    <value>Ballons</value>
+    <value>error</value>
   </data>
   <data name="Best spectral chance" xml:space="preserve">
-    <value>Meilleure possibilité de courant spectral</value>
+    <value>error</value>
   </data>
   <data name="Boarding is open for" xml:space="preserve">
-    <value>L'embarquement est ouvert pendant</value>
+    <value>error</value>
   </data>
   <data name="Comprehensive" xml:space="preserve">
-    <value>Complet</value>
+    <value>error</value>
   </data>
   <data name="Consider Donating" xml:space="preserve">
-    <value>Envisagez de faire un don</value>
+    <value>error</value>
   </data>
   <data name="Crabs" xml:space="preserve">
-    <value>Crabes</value>
+    <value>error</value>
   </data>
   <data name="Default" xml:space="preserve">
-    <value>Défaut</value>
+    <value>error</value>
   </data>
   <data name="Determines the single, best choice for you." xml:space="preserve">
-    <value>Déterminez le meilleur choix singulier.</value>
+    <value>error</value>
   </data>
   <data name="Did this plugin help you?" xml:space="preserve">
-    <value>Ce plugin vous a-t-il aidé ?</value>
+    <value>error</value>
   </data>
   <data name="Display Mode" xml:space="preserve">
-    <value>Mode d'affichage</value>
+    <value>error</value>
   </data>
   <data name="Fugu" xml:space="preserve">
-    <value>Fugu</value>
+    <value>error</value>
   </data>
   <data name="High Points" xml:space="preserve">
-    <value>Score élevé</value>
+    <value>error</value>
   </data>
   <data name="hour" xml:space="preserve">
-    <value>heure</value>
+    <value>error</value>
   </data>
   <data name="I suggest" xml:space="preserve">
-    <value>Je recommande</value>
+    <value>error</value>
   </data>
   <data name="Include suggestions for mission and achievement fish." xml:space="preserve">
-    <value>Inclure des suggestions de missions</value>
+    <value>error</value>
   </data>
   <data name="Jellyfish" xml:space="preserve">
-    <value>Méduse</value>
+    <value>error</value>
   </data>
   <data name="less than a minute!" xml:space="preserve">
-    <value>moins d'une minute!</value>
+    <value>error</value>
   </data>
   <data name="Mantas" xml:space="preserve">
-    <value>Raies</value>
+    <value>error</value>
   </data>
   <data name="Minimal" xml:space="preserve">
-    <value>Minimal</value>
+    <value>error</value>
   </data>
   <data name="minutes" xml:space="preserve">
-    <value>minutes</value>
+    <value>error</value>
   </data>
   <data name="Mission Fish" xml:space="preserve">
-    <value>Poissons de mission</value>
+    <value>error</value>
   </data>
   <data name="Octopodes" xml:space="preserve">
-    <value>Poulpes</value>
+    <value>error</value>
   </data>
   <data name="Seahorses" xml:space="preserve">
-    <value>Hippocampes</value>
+    <value>error</value>
   </data>
   <data name="Sharks" xml:space="preserve">
-    <value>Requins</value>
+    <value>error</value>
   </data>
   <data name="Spectral Current" xml:space="preserve">
-    <value>Courant spectral</value>
+    <value>error</value>
   </data>
   <data name="Suggestions based on current conditions." xml:space="preserve">
-    <value>Suggestions basées sur l'état actuel.</value>
+    <value>error</value>
   </data>
   <data name="Suggestions will appear here during Ocean Fishing" xml:space="preserve">
-    <value>Des suggestions apparaîtront ici pendant Pêche en mer</value>
+    <value>error</value>
   </data>
   <data name="The next boat leaves in" xml:space="preserve">
-    <value>Le prochain bateau part dans</value>
+    <value>error</value>
   </data>
   <data name="Waiting for location..." xml:space="preserve">
-    <value>Attendant...</value>
+    <value>error</value>
   </data>
 </root>

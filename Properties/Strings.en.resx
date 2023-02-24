@@ -155,6 +155,9 @@
   <data name="Fugu" xml:space="preserve">
     <value>Fugu</value>
   </data>
+  <data name="High Points" xml:space="preserve">
+    <value>High Points</value>
+  </data>
   <data name="hour" xml:space="preserve">
     <value>hour</value>
   </data>
@@ -191,14 +194,8 @@
   <data name="Sharks" xml:space="preserve">
     <value>Sharks</value>
   </data>
-  <data name="Spectral High Points" xml:space="preserve">
-    <value>Spectral High Points</value>
-  </data>
-  <data name="Spectral Intuition" xml:space="preserve">
-    <value>Spectral Intuition</value>
-  </data>
-  <data name="Spectral Mission Fish" xml:space="preserve">
-    <value>Spectral Mission Fish</value>
+  <data name="Spectral Current" xml:space="preserve">
+    <value>Spectral</value>
   </data>
   <data name="Suggestions based on current conditions." xml:space="preserve">
     <value>Suggestions based on current conditions.</value>

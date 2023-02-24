@@ -98,8 +98,8 @@ public class MainWindow : Window, IDisposable
     {
         if (this.Plugin.IsSpectralCurrent())
         {
-            ImGui.Text(Properties.Strings.Spectral_High_Points + ": " + Localize(this.Plugin.GetSpectralHighPointsBait(location, time)));
-            if (this.Plugin.GetSpectralIntuitionBait(location, time) != OceanFishin.Bait.None) ImGui.Text(this.fishersIntutionString + ": " + this.Plugin.GetSpectralIntuitionBait(location, time).ToString());
+            ImGui.Text(Properties.Strings.Spectral_Current + " " + Properties.Strings.High_Points + ": " + Localize(this.Plugin.GetSpectralHighPointsBait(location, time)));
+            if (this.Plugin.GetSpectralIntuitionBait(location, time) != OceanFishin.Bait.None) ImGui.Text(Properties.Strings.Spectral_Current + " " + this.fishersIntutionString + ": " + this.Plugin.GetSpectralIntuitionBait(location, time).ToString());
         }
         else
         {
@@ -114,7 +114,7 @@ public class MainWindow : Window, IDisposable
                 var specMissionFishHolder = this.Plugin.GetSpectralMissionFishBaits(location, time);
                 if (specMissionFishHolder != null)
                 {
-                    ImGui.Text(Properties.Strings.Spectral_Mission_Fish);
+                    ImGui.Text(Properties.Strings.Mission_Fish + " (" + Properties.Strings.Spectral_Current + ")");
                     ImGui.Text(MissionFishDictToString(specMissionFishHolder)); 
                 }
             } 
@@ -131,8 +131,8 @@ public class MainWindow : Window, IDisposable
         //TODO localize this stuff
         ImGui.Text(Properties.Strings.Best_spectral_chance + ": " + Localize(this.Plugin.GetSpectralChanceBait(location)));
         ImGui.Text(this.fishersIntutionString + ": " + Localize(this.Plugin.GetFishersIntuitionBait(location, time)));
-        ImGui.Text(Properties.Strings.Spectral_High_Points + ": " + Localize(this.Plugin.GetSpectralHighPointsBait(location, time)));
-        if (this.Plugin.GetSpectralIntuitionBait(location, time) != OceanFishin.Bait.None) ImGui.Text(this.fishersIntutionString + ": " + Localize(this.Plugin.GetSpectralIntuitionBait(location, time)));
+        ImGui.Text(Properties.Strings.Spectral_Current + " " + Properties.Strings.High_Points + ": " + Localize(this.Plugin.GetSpectralHighPointsBait(location, time)));
+        if (this.Plugin.GetSpectralIntuitionBait(location, time) != OceanFishin.Bait.None) ImGui.Text(Properties.Strings.Spectral_Current + " " + this.fishersIntutionString + ": " + Localize(this.Plugin.GetSpectralIntuitionBait(location, time)));
         
         if (this.Configuration.IncludeAchievementFish)
         {
@@ -144,7 +144,7 @@ public class MainWindow : Window, IDisposable
             if (specMissionFishHolder != null)
             {
                 ImGui.Separator();
-                ImGui.Text(Properties.Strings.Spectral_Mission_Fish);
+                ImGui.Text(Properties.Strings.Mission_Fish + " (" + Properties.Strings.Spectral_Current + ")");
                 ImGui.Text(MissionFishDictToString(specMissionFishHolder));
             }
         }
@@ -152,8 +152,8 @@ public class MainWindow : Window, IDisposable
 
     private void CompactMode(OceanFishin.Location location, OceanFishin.Time time)
     {
-        //ImGui.Text(Properties.Strings.I_suggest);
-        //ImGui.SameLine();
+        ImGui.Text(Properties.Strings.I_suggest + ": ");
+        ImGui.SameLine();
         ImGui.Text(Localize(this.Plugin.GetSingleBestBait(location, time)));
     }
     

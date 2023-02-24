@@ -239,6 +239,27 @@ namespace OceanFishin
             this.GameGui = gameGui;
             this.DataManager = dataManager;
 
+            this.UserLanguage = DataManager.Language;
+            switch (this.UserLanguage)
+            {
+                case Dalamud.ClientLanguage.English:
+                    CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en");
+                    break;
+                case Dalamud.ClientLanguage.French:
+                    CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("fr");
+                    break;
+                case Dalamud.ClientLanguage.German:
+                    CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("de");
+                    break;
+                case Dalamud.ClientLanguage.Japanese:
+                    CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("ja");
+                    break;
+                default:
+                    CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en");
+                    break;
+            }
+            PluginLog.Debug("Client langauge is " + this.UserLanguage.ToString() + " and default thread UI culture is " + CultureInfo.DefaultThreadCurrentUICulture.ToString());
+
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             this.Configuration.Initialize(this.PluginInterface);
             this.MainWindow = new MainWindow(this, this.Configuration);
@@ -290,28 +311,6 @@ namespace OceanFishin
             this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
 
             LocationSheet = this.DataManager.GetExcelSheet<IKDSpot>();
-
-            this.UserLanguage = DataManager.Language;
-            switch (this.UserLanguage)
-            {
-                case Dalamud.ClientLanguage.English:
-                    CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en");
-                    break;
-                case Dalamud.ClientLanguage.French:
-                    CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("fr");
-                    break;
-                case Dalamud.ClientLanguage.German:
-                    CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("de");
-                    break;
-                case Dalamud.ClientLanguage.Japanese:
-                    CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("jp");
-                    break;
-                default:
-                    CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en");
-                    break;
-            }
-            PluginLog.Debug("Client langauge is " + this.UserLanguage.ToString() + " and default thread UI culture is " + CultureInfo.DefaultThreadCurrentUICulture.ToString());
-
             BuildLocationStringMap();
             PluginLog.Debug("Location string map filled a total of " + localizedLocationStrings.Count + "/7 entries.");
         }

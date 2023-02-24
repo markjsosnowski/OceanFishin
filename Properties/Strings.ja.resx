@@ -124,7 +124,7 @@
     <value>バルーン</value>
   </data>
   <data name="Best spectral chance" xml:space="preserve">
-    <value />
+    <value>ファントム電流確率</value>
   </data>
   <data name="Boarding is open for" xml:space="preserve">
     <value>乗船時間</value>
@@ -153,11 +153,14 @@
   <data name="Fugu" xml:space="preserve">
     <value>フグ</value>
   </data>
+  <data name="High Points" xml:space="preserve">
+    <value>高得点</value>
+  </data>
   <data name="hour" xml:space="preserve">
     <value>時間</value>
   </data>
   <data name="I suggest" xml:space="preserve">
-    <value />
+    <value>私は提案します</value>
   </data>
   <data name="Include suggestions for mission and achievement fish." xml:space="preserve">
     <value>ミッションの推奨事項を含める。</value>
@@ -178,7 +181,7 @@
     <value>分</value>
   </data>
   <data name="Mission Fish" xml:space="preserve">
-    <value />
+    <value>ミッションの魚</value>
   </data>
   <data name="Octopodes" xml:space="preserve">
     <value>タコ</value>
@@ -189,14 +192,8 @@
   <data name="Sharks" xml:space="preserve">
     <value>サメ</value>
   </data>
-  <data name="Spectral High Points" xml:space="preserve">
-    <value />
-  </data>
-  <data name="Spectral Intuition" xml:space="preserve">
-    <value />
-  </data>
-  <data name="Spectral Mission Fish" xml:space="preserve">
-    <value />
+  <data name="Spectral Current" xml:space="preserve">
+    <value>幻海流</value>
   </data>
   <data name="Suggestions based on current conditions." xml:space="preserve">
     <value>現状を踏まえたご提案。</value>
@@ -208,6 +205,6 @@
     <value>次の船が出ます</value>
   </data>
   <data name="Waiting for location..." xml:space="preserve">
-    <value />
+    <value>ファントム電流確率...</value>
   </data>
 </root>

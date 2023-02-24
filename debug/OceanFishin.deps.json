@@ -24,6 +24,9 @@
           },
           "fr/OceanFishin.resources.dll": {
             "locale": "fr"
+          },
+          "ja/OceanFishin.resources.dll": {
+            "locale": "ja"
           }
         }
       },

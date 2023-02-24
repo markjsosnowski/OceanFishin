@@ -15,11 +15,7 @@ namespace OceanFishin
         public bool IncludeAchievementFish { get; set; } = true;
         public bool HighlightRecommendedBait { get; set; } = true;
 
-        public string[][] DisplayModes = new string[][]
-        {
-            new string[3] {Properties.Strings.Default, Properties.Strings.Minimal, Properties.Strings.Comprehensive },
-            new string[3] {Properties.Strings.Suggestions_based_on_current_conditions_, Properties.Strings.Determines_the_single__best_choice_for_you_, Properties.Strings.All_possible_area_information_at_once_ }
-        };
+        public string[][] DisplayModes = new string[2][];
 
         public int display_mode { get; set; } = 0;
 
@@ -32,6 +28,8 @@ namespace OceanFishin
         public void Initialize(DalamudPluginInterface pluginInterface)
         {
             this.pluginInterface = pluginInterface;
+            DisplayModes[0] = new string[3] { Properties.Strings.Default, Properties.Strings.Minimal, Properties.Strings.Comprehensive };
+            DisplayModes[1] = new string[3] { Properties.Strings.Suggestions_based_on_current_conditions_, Properties.Strings.Determines_the_single__best_choice_for_you_, Properties.Strings.All_possible_area_information_at_once_ };
         }
 
         public void Save()
