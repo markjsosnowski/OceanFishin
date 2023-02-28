@@ -2,7 +2,6 @@
 /obj
 .vs/
 *.suo
-bait.json
 *.vsidx
 debug/ 
 build/ 
