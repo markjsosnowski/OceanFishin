@@ -1,6 +1,8 @@
 /bin
 /obj
-.vs/OceanFishing
+.vs/
 *.suo
 bait.json
 *.vsidx
+debug/ 
+build/ 
