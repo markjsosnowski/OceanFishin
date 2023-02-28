@@ -1,3 +1,7 @@
+#Version 2.4
+* Updated for API 8
+* Added localization support
+
 #Version 2.1-beta1
 * Automatically detects spectral current
 * Automatically updates the bait list to show (non)spectral current suited baits 
@@ -10,8 +14,8 @@
 * Added an icon and preview images
 
 # Version 2.0-beta2
-* Bait list is now sourced from github pages [here](https://markjsosnowski.github.io/FFXIV/bait.json) 
-* Further updates to the bait list will not require downloading an update
+* ~~ Bait list is now sourced from github pages [here](https://markjsosnowski.github.io/FFXIV/bait.json) ~~
+* ~~ Further updates to the bait list will not require downloading an update ~~
 
 # Version 2.0-beta1
 * Now compatible with Dalamud 6.0
