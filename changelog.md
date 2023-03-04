@@ -1,14 +1,18 @@
-#Version 2.4
+# Version 2.4.1
+* Bait highlighting!
+* Enable this option for the ideal bait to be highlighted in your bait window.
+
+# Version 2.4
 * Updated for API 8
 * Added localization support
 
-#Version 2.1-beta1
+# Version 2.1-beta1
 * Automatically detects spectral current
 * Automatically updates the bait list to show (non)spectral current suited baits 
 * Added config option to always show the full bait list, regardless of spectral
 * Performance improvements
 
-# Version 2.0 (Current Version)
+# Version 2.0
 * Added a next voyage timer
 * Added a donation button
 * Added an icon and preview images
