@@ -58,7 +58,7 @@ public class MainWindow : Window, IDisposable
 
         this.Plugin = plugin;
         this.Configuration = configuration;
-        this.itemSheet = this.Plugin.DataManager.GetExcelSheet<Item>();
+        this.itemSheet = this.Plugin.itemSheet;
         this.statusSheet = this.Plugin.DataManager.GetExcelSheet<Lumina.Excel.GeneratedSheets.Status>();
         #pragma warning disable CS8602 // Dereference of a possibly null reference.
         if (this.statusSheet != null) { this.fishersIntutionString = this.statusSheet.GetRow(568).Name.ToString(); }

@@ -49,10 +49,20 @@ namespace OceanFishin
                 this.Configuration.Save();
             }
 
+            var highlightBait = this.Configuration.HighlightRecommendedBait;
+            if(ImGui.Checkbox(Properties.Strings.Highlight_recommended_bait_in_your_inventory, ref highlightBait))
+            {
+                this.Configuration.HighlightRecommendedBait = highlightBait;
+                if(!highlightBait) { Plugin.stopHightlighting(); }
+                this.Configuration.Save();
+            }
+    
+
             var debugMode = this.Configuration.DebugMode;
             if (ImGui.Checkbox("Debug Tools", ref debugMode))
             {
                 this.Configuration.DebugMode = debugMode;
+                if(!debugMode) { Plugin.stopHightlighting(); }
                 this.Configuration.Save();
             }
 

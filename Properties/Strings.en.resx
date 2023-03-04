@@ -158,14 +158,17 @@
   <data name="Display Mode" xml:space="preserve">
     <value>Display Mode</value>
   </data>
-  <data name="Displays bait suggestions for Ocean Fishing" xml:space="preserve">
-    <value>Displays bait suggestions for Ocean Fishing</value>
+  <data name="Displays bait suggestions" xml:space="preserve">
+    <value>Displays bait suggestions</value>
   </data>
   <data name="Fugu" xml:space="preserve">
     <value>Fugu</value>
   </data>
   <data name="High Points" xml:space="preserve">
     <value>High Points</value>
+  </data>
+  <data name="Highlight recommended bait in your inventory" xml:space="preserve">
+    <value>Highlight recommended bait in your inventory</value>
   </data>
   <data name="hour" xml:space="preserve">
     <value>hour</value>

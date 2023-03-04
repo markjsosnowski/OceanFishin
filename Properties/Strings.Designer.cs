@@ -205,6 +205,15 @@ namespace OceanFishin.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to string_config_highlight.
+        /// </summary>
+        public static string Highlight_recommended_bait_in_your_inventory {
+            get {
+                return ResourceManager.GetString("Highlight recommended bait in your inventory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to string_hour.
         /// </summary>
         public static string hour {

@@ -28,6 +28,8 @@ using System.Text;
 using System.Globalization;
 using System.Threading;
 using System.Collections;
+using System.Linq;
+using FFXIVClientStructs.FFXIV.Client.Graphics;
 
 namespace OceanFishin
 {
@@ -51,9 +53,7 @@ namespace OceanFishin
 
         // This is the TerritoryType for the entire instance and does not
         // provide any information on fishing spots, routes, etc.
-        private const int endevor_territory_type = 900;
-
-        // NodeList indexes, known via addon inspector.
+        private const int endevorTerritoryType = 900;
         private const int LocationTextNodeIndex = 20;
         private const int NightImageNodeIndex = 22;
         private const int SunsetImageNodeIndex = 23;
@@ -64,25 +64,28 @@ namespace OceanFishin
         private const int BaitListComponentNodeIndex = 3;
         private const int IconIDIndex = 2;
         private const int ItemBorderImageNodeIndex = 4;
-
         private const int intuitionStatusID = 568;
-
-        // Inventory icon texture part ids
         private const int glowingBorderPartID = 5;
         private const int defaultBorderPartID = 0;
+        private const int fishingBaitItemSortCategory = 12;
+        private const int highlightRed = 155;
+        private const int highlightGreen = 140;
+        private const int highlightBlue = 104;
+        private const int baitPageBorderNodeIndex = 1;
+        private const int baitPageTextNodeIndex = 2;
         private const string fishingLogAddonName = "IKDFishingLog";
         private const string baitAddonName = "Bait";
+       
+        private List<InventoryType> inventoryTypes = new List<InventoryType>{ InventoryType.Inventory1, InventoryType.Inventory2, InventoryType.Inventory3, InventoryType.Inventory4 };
+        private List<Item>? inventoryBaitList;
+        public ExcelSheet<IKDSpot>? LocationSheet;
+        public Lumina.Excel.ExcelSheet<Item>? itemSheet;
+        public Dalamud.ClientLanguage UserLanguage;
 
         // Cached Values
         private IntPtr fishingLogAddonPtr;
         private IntPtr baitWindowAddonPtr;
-        //private string last_highlighted_bait = "";
-        //private string last_location_string = "";
-        //private unsafe AtkComponentNode* last_highlighted_bait_node = null;
-
-        public Dalamud.ClientLanguage UserLanguage;
-
-        public ExcelSheet<IKDSpot>? LocationSheet { get; private set; }
+        private Bait lastHighlightedBait = Bait.None;
 
         public enum Location
         {
@@ -133,7 +136,8 @@ namespace OceanFishin
             RatTail = 2591,
             ShrimpCageFeeder = 2613,
             SquidStrip = 27590,
-            None = 0
+            None = 0,
+            VersatileLure = 29717
         }
 
         /*private Dictionary<Bait, Int64> baitIconID = new Dictionary<Bait, Int64>()
@@ -218,6 +222,7 @@ namespace OceanFishin
         };
 
         private Dictionary<string, Location> localizedLocationStrings = new Dictionary<string, Location>();
+        private int lastPage;
 
         public OceanFishin(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
@@ -281,6 +286,8 @@ namespace OceanFishin
             LocationSheet = this.DataManager.GetExcelSheet<IKDSpot>();
             BuildLocationStringMap();
             PluginLog.Debug("Location string map filled a total of " + localizedLocationStrings.Count + "/7 entries.");
+            this.itemSheet = DataManager.GetExcelSheet<Item>();
+            this.inventoryBaitList = updateBaitInventory();
         }
 
         public unsafe void Dispose()
@@ -290,10 +297,7 @@ namespace OceanFishin
             this.CommandManager.RemoveHandler(CommandName);
             this.CommandManager.RemoveHandler(AltCommandName);
             WindowSystem.RemoveAllWindows();
-            /*if (this.last_highlighted_bait_node != null)
-            {
-                change_node_border(this.last_highlighted_bait_node, false);
-            }*/
+            stopHightlighting();
         }
         private void OnCommand(string command, string args)
         {
@@ -307,13 +311,69 @@ namespace OceanFishin
 
         private void DrawUI()
         {
+            if (InOceanFishingDuty() && this.Configuration.HighlightRecommendedBait) {  highlightBaitInTacklebox(GetSingleBestBait(GetFishingLocation(), GetFishingTime())); }
             WindowSystem.Draw();
         }
+
+        private unsafe List<Item> updateBaitInventory()
+        {
+            InventoryManager* inventoryManager = InventoryManager.Instance();
+            inventoryBaitList = new List<Item>();
+            foreach(InventoryType inventoryType in inventoryTypes) {
+                InventoryContainer* inventoryContainer = inventoryManager->GetInventoryContainer(inventoryType);
+                for (int i = 0; i < inventoryContainer->Size; i++)
+                {
+                    InventoryItem* item = inventoryContainer->GetInventorySlot(i);
+                    Item LuminaItem = itemSheet.GetRow(item->ItemID);
+                    if (LuminaItem.ItemSortCategory.Row == fishingBaitItemSortCategory) 
+                    {
+                        inventoryBaitList.Add(itemSheet.GetRow(item->ItemID)); 
+                    }
+                }
+            }
+            this.inventoryBaitList = gameLikeSort(ref inventoryBaitList);
+            return inventoryBaitList;
+        }
+
+        private int getBaitIndex(Bait bait)
+        {
+            if (inventoryBaitList == null) { PluginLog.Debug("Inventory bait list was null?"); return -1; }
+            return inventoryBaitList.IndexOf(itemSheet.GetRow((uint)bait));
+        }
+
+        //Inventory is first sorted by Category, but this list is already filtered to only be fishing tackle
+        //Then it is sorted by highest LevelItem then then finally by ItemID
+        private List<Item> gameLikeSort(ref List<Item> unsortedList)
+        {
+            return unsortedList
+                //.OrderBy(i => i.ItemUICategory.Row)
+                .OrderByDescending(i => i.LevelItem.Row)
+                .ThenBy(getAdjustedItemId)
+                .ToList();
+        }
+
+        //Versatile lure is always sorted before the other ocean fishing baits for some reason
+        private uint getAdjustedItemId(Item i)
+        {
+            if (i.RowId == (uint)Bait.VersatileLure) { return i.RowId - 4; }
+            else return i.RowId;
+        }
+
+        private void printDebugList(List<Item> unsortedList)
+        {
+            string str ="";
+            for (int i = 0; i < unsortedList.Count; i++)
+            {
+                str += "[" +unsortedList[i].Name +"]";
+            }
+            PluginLog.Debug(str);
+        }
+
 
         // Since you have to be a fisher to get into the Duty, checking player job is probably unnecessary. 
         public bool InOceanFishingDuty()
         {
-            if (this.Configuration.DebugMode || (int)ClientState.TerritoryType == endevor_territory_type)
+            if (this.Configuration.DebugMode || (int)ClientState.TerritoryType == endevorTerritoryType)
                 return true;
             else
                 return false;
@@ -372,7 +432,7 @@ namespace OceanFishin
             
             
             AtkUnitBase* addon;
-            if (this.fishingLogAddonPtr != IntPtr.Zero)
+            if (addonIsOpen(this.fishingLogAddonPtr))
                  addon = (AtkUnitBase*)this.fishingLogAddonPtr;
             else
                 return false;
@@ -423,6 +483,7 @@ namespace OceanFishin
                 this.fishingLogAddonPtr = this.GameGui.GetAddonByName(fishingLogAddonName, 1);
                 // "Bait" is the Bait & Tackle window that fishers use to select their bait.
                 this.baitWindowAddonPtr = this.GameGui.GetAddonByName(baitAddonName, 1);
+                this.inventoryBaitList = updateBaitInventory();
             }
             catch (OperationCanceledException) { }
             catch (Exception e)
@@ -499,183 +560,112 @@ namespace OceanFishin
             }
         }
 
-        /*public unsafe void highlight_inventory_item(string bait)
+        public unsafe void highlightBaitInTacklebox(Bait bait)
         {
-            // If the bait window isn't open, do nothing.
-            if (!addon_is_open(this.bait_window_addon_ptr))
+            if (lastHighlightedBait != Bait.None) 
             {
-                return;
+                AtkResNode* lastBaitNode = findBaitNode(lastHighlightedBait);
+                highlightBaitAndPage((AtkComponentNode*)lastBaitNode, lastPage, false);
             }
-            try
-            {
-                if(bait != this.last_highlighted_bait)
-                {
-                    if(this.last_highlighted_bait_node != null)
-                        change_node_border(this.last_highlighted_bait_node, false);
-                    this.last_highlighted_bait = bait;
-                }
-                AtkComponentNode* bait_node;
-                bait_node = find_bait_item_node(bait);
-                if (bait_node != null)
-                {
-                    this.last_highlighted_bait_node = bait_node;
-                    change_node_border(bait_node, true);
-                }
-                    
-            }
-            catch(NullReferenceException e)
-            {
-                PluginLog.Debug("[Ocean Fishin'] The bait window was probably closed while it was being used. " + e, e);
-                return;
-            }
-        }*/
-
-        /* Problem: Searching by icon doesn't work because multiple baits use the same icon.
-         * Ideas:
-         * Search from the back: ocean baits are always at the end of the list, but will have the same problemfor special intuition baits.
-         * The bait list is based on ItemID numbers, not inventory order or alphabetically. Figure out how the bait list is populated, but that's a lot of work.
-         * Find some sort of static, unique identifier in each node. There's plenty of different pointers in each node, but nothing yet found that's static.
-         * Skip the first search result and use the second. Won't work if the player only has one of the other bait.
-         * The bait has to know it's name somehow when it is hovered over for the tooltip, so figure out how the tooltip is being generated without having to hover.
-         */
-        /*public unsafe AtkComponentNode* find_bait_item_node(string bait)
+            if(bait == Bait.None) { return; }
+            (int _, int page) = getAdjsutedIndexAndPage(bait);
+            AtkResNode*  baitNode = findBaitNode(bait);
+            highlightBaitAndPage((AtkComponentNode*)baitNode, page, true);
+            lastHighlightedBait = bait;
+            lastPage = page;
+        }
+        
+        public void stopHightlighting()
         {
-            if (!addon_is_open(this.bait_window_addon_ptr))
-                return null;
-            PluginLog.Debug("Attempting to find the icon for " + bait);
-            //TODO a crash still happens right around here. maybe check expected count?
-            AtkUnitBase* bait_window_addon = (AtkUnitBase*)this.bait_window_addon_ptr;
-            AtkComponentNode* bait_list_componentnode = (AtkComponentNode*)bait_window_addon->UldManager.NodeList[bait_list_componentnode_index];
-            //TODO this is only a temporary solution, searching for the back. have to find a solution that is more consistent
-            for (int i = bait_list_componentnode->Component->UldManager.NodeListCount - 1; i > 0 ; i--)
-            {
-                AtkComponentNode* list_item_node = (AtkComponentNode*)bait_list_componentnode->Component->UldManager.NodeList[i];
-                AtkComponentNode* icon_component_node = (AtkComponentNode*)list_item_node->Component->UldManager.NodeList[iconid_index];
-                AtkComponentIcon* icon_node = (AtkComponentIcon*)icon_component_node->Component;
-                if(baitstring_to_iconid[bait] == icon_node->IconId)
-                {
-                    //PluginLog.Debug("Found " + bait + " at index " + i + " with IconID " + icon_node->IconId);
-                    return list_item_node;
-                }
-            }
-            PluginLog.Debug("Could not find the node for " + bait);
-            return null;
-        }*/
-
-
-
-        // Treated the node as an InventoryItem does not work 
-        // Treating the node as a ListItemTrenderer doesn't work
-        /* public unsafe AtkComponentNode* find_bait_item_node(string bait_name)
-         {
-             try
-             {
-
-
-
-                 AtkUnitBase* bait_window_addon = (AtkUnitBase*)this.bait_window_addon_ptr;
-                 AtkComponentNode* list_componentnode = (AtkComponentNode*)bait_window_addon->UldManager.NodeList[bait_list_componentnode_index]->GetComponent();
-                 for(int i = 0; i < list_componentnode->Component->UldManager.NodeListCount; i++)
-                 {
-                     var text_node = (InventoryItem*)list_componentnode->Component->UldManager.NodeList[i];
-                     PluginLog.Debug("["+i+"] " +text_node->ToString());
-                     PluginLog.Debug("Item ID: " + text_node->ItemID);
-                     PluginLog.Debug("Quantity: " + text_node->Quantity);
-                 }
-
-
-
-                 /*AtkComponentNode* lst_comp_node = (AtkComponentNode*)bait_window_addon->UldManager.NodeList[bait_list_componentnode_index];
-                 AtkComponentNode* item_comp_node = (AtkComponentNode*)lst_comp_node->Component->UldManager.NodeList[3];
-                 AtkCollisionNode* coll_node = (AtkCollisionNode*)item_comp_node->Component->UldManager.NodeList[0];
-                 long* vtbl = (long*)coll_node->AtkResNode.AtkEventTarget.vtbl;
-
-                 PluginLog.Debug(vtbl->ToString());
-                 var linked_comp = coll_node->LinkedComponent;
-                 PluginLog.Debug("Linked component: " + linked_comp->ToString());*/
-
-
-        /*AtkComponentList* list_component = (AtkComponentList*)bait_window_addon->UldManager.NodeList[bait_list_componentnode_index]->GetComponent();
-        var list_length = list_component->ListLength;
-        PluginLog.Debug("List length is " + list_length);
-        AtkComponentList.ListItem* item_list = list_component->ItemRendererList;
-        for(int i = 0; i<list_component->ListLength; i++)
-        {
-            var list_item_ptr = (IntPtr*)&item_list[i].AtkComponentListItemRenderer;
-            PluginLog.Debug("[" + i + "] Item Renderer Ptr: " + list_item_ptr->ToString("X"));
-            PluginLog.Debug("Type of [" + i + "] is " + item_list[i].ToString());
-            var button_node_ptr = (IntPtr*)&item_list[i].AtkComponentListItemRenderer->AtkComponentButton;
-            var button_node = item_list[i].AtkComponentListItemRenderer->AtkComponentButton;
-            PluginLog.Debug("[" + i + "] Button Ptr: " + button_node_ptr->ToString("X"));
-            PluginLog.Debug("[" + i + "] Button IsEnabled: " + button_node.IsEnabled);
-            var text_node_ptr = (IntPtr*)&item_list[i].AtkComponentListItemRenderer->AtkComponentButton.ButtonTextNode;
-            PluginLog.Debug("[" + i + "] ButtonTextNodePtr: " + text_node_ptr->ToString("X"));
-            PluginLog.Debug("[" + i + "] ButtonNode NodeListCount: " + button_node.AtkComponentBase.UldManager.NodeListCount);
-            for (int j =0; j< button_node.AtkComponentBase.UldManager.NodeListCount; j++)
-            {
-                PluginLog.Debug("\t["+j+"] is " + button_node.AtkComponentBase.UldManager.NodeList[j]->ToString() +" at " + ((IntPtr*)button_node.AtkComponentBase.UldManager.NodeList[j])->ToString("X"));
-            }
-
-
+            highlightBaitInTacklebox(Bait.None);
         }
 
-        AtkComponentListItemRenderer* item_renderer = item_list[0].AtkComponentListItemRenderer;
-        IntPtr* item_renderer_ptr = (IntPtr*)item_renderer;
-        PluginLog.Debug("Breakpoint 2" + item_renderer_ptr->ToString("X"));
-        AtkComponentButton item_renderer_button = item_renderer->AtkComponentButton;
-        PluginLog.Debug("Breakpoint 3");
-        AtkTextNode* button_text_node = item_renderer_button.ButtonTextNode;
-        PluginLog.Debug("Breakpoint 4");
-        PluginLog.Debug(text_node_to_string(button_text_node));
-
-    }
-    catch (Exception e)
-    {
-        PluginLog.Debug(e.ToString());
-        return null;
-    }
-
-    //AtkComponentNode* bait_list_componentnode = (AtkComponentNode*)bait_window_addon->UldManager.NodeList[bait_list_componentnode_index];
-    try
-    {
-        for (int i = 1; i < bait_list_componentnode->Component->UldManager.NodeListCount - 1; i++)
+        public unsafe void highlightBaitAndPage(AtkComponentNode* node, int page, bool active)
         {
-            PluginLog.Debug("Seaching index " + i);
-            AtkComponentListItemRenderer* list_item_node = (AtkComponentListItemRenderer*)bait_list_componentnode->Component->UldManager.NodeList[i];
-
-
-            PluginLog.Debug("Break Point 1");
-            AtkComponentButton item_button_node = list_item_node->AtkComponentButton;
-            PluginLog.Debug("Break Point 2");
-            AtkTextNode* button_text_node = item_button_node.ButtonTextNode;
-            PluginLog.Debug("Break Point 3");
-            PluginLog.Debug("The ListItemRenderer's ComponentButton's TextNode's Text was " + Marshal.PtrToStringAnsi(new IntPtr(button_text_node->NodeText.StringPtr)));
-            //if (baitstring_to_iconid[bait_name] == inventory_item_node->ItemID)
-            //    return list_item_node;
+            highlightBaitPageNumber(page, active);
+            if (!active) { changeNodeBorder(node, active); }
+            if (active && onBaitPage(page)) {  changeNodeBorder(node, active); }
         }
-        return null;
-    }
-    catch(Exception e)
-    {
-        PluginLog.Debug(e.ToString(), e);
-        return null;
-    }
-    return null;
-
-}*/
-
-
-        /*public unsafe  void change_node_border(AtkComponentNode* node, bool higlight)
+ 
+        private unsafe AtkResNode* findBaitNode(Bait bait)
         {
-            AtkComponentNode* icon_component_node = (AtkComponentNode*)node->Component->UldManager.NodeList[iconid_index];
-            AtkImageNode* frame_node = (AtkImageNode*)icon_component_node->Component->UldManager.NodeList[item_border_image_index];
-            if(higlight)
-                frame_node->PartId = glowing_border_part_id;
+            if(!addonIsOpen(this.baitWindowAddonPtr)){  return null; }
+            AtkUnitBase* baitWindowAddon = (AtkUnitBase*)this.baitWindowAddonPtr;
+            if(baitWindowAddon->UldManager.NodeListCount < BaitListComponentNodeIndex) { return null; }
+            AtkComponentNode* baitListComponentNode = (AtkComponentNode*)baitWindowAddon->UldManager.NodeList[BaitListComponentNodeIndex];
+            (int index, int _) = getAdjsutedIndexAndPage(bait);
+            if (index < 0) { return null; }
+            return baitListComponentNode->Component->UldManager.NodeList[index + 1];
+        }
+
+        private unsafe void changeNodeBorder(AtkComponentNode* node, bool active)
+        {
+            if(node == null) { PluginLog.Debug("Node to change was null");  return; }
+            AtkComponentNode* icon_component_node = (AtkComponentNode*)node->Component->UldManager.NodeList[IconIDIndex];
+            AtkImageNode* frame_node = (AtkImageNode*)icon_component_node->Component->UldManager.NodeList[ItemBorderImageNodeIndex];
+            if(active)
+                frame_node->PartId = glowingBorderPartID;
             else
-                frame_node->PartId = default_border_part_id;
+                frame_node->PartId = defaultBorderPartID;
         }
 
-        public unsafe bool addon_is_open(IntPtr addon)
+        private unsafe void highlightBaitPageNumber(int page, bool active)
+        {
+            if (!addonIsOpen(this.baitWindowAddonPtr)) { return; }
+            if (page < 1) { return; }
+            AtkUnitBase* baitWindowAddon = (AtkUnitBase*)this.baitWindowAddonPtr;
+            AtkComponentNode* pageButtonsComponentNode = (AtkComponentNode*)getBaitPageResNode(page); //why is it in reverse order
+            if (active)
+            {
+                pageButtonsComponentNode->AtkResNode.AddRed = highlightRed;
+                pageButtonsComponentNode->AtkResNode.AddGreen = highlightGreen;
+                pageButtonsComponentNode->AtkResNode.AddBlue = highlightBlue;
+                pageButtonsComponentNode->Component->UldManager.NodeList[baitPageBorderNodeIndex]->ToggleVisibility(true);
+
+            }
+            if (!active)
+            {
+                pageButtonsComponentNode->AtkResNode.AddRed = 0;
+                pageButtonsComponentNode->AtkResNode.AddGreen = 0;
+                pageButtonsComponentNode->AtkResNode.AddBlue = 0;
+                if(!onBaitPage(page)) { pageButtonsComponentNode->Component->UldManager.NodeList[baitPageBorderNodeIndex]->ToggleVisibility(false); }
+            }
+        }
+
+        private unsafe bool onBaitPage(int page)
+        {
+            if (page < 1) { return false; }
+            AtkComponentNode* baitPageNode = (AtkComponentNode*)getBaitPageResNode(page);
+            AtkTextNode* baitPageTextNode = (AtkTextNode*)baitPageNode->Component->UldManager.NodeList[baitPageTextNodeIndex];
+            return compareByteColor(baitPageTextNode->TextColor, 0xFF, 0xFF, 0xFF);
+        }
+
+        private unsafe AtkResNode* getBaitPageResNode(int page)
+        {
+            if (!addonIsOpen(this.baitWindowAddonPtr)) { return null; }
+            AtkUnitBase* baitWindowAddon = (AtkUnitBase*)this.baitWindowAddonPtr;
+            return baitWindowAddon->UldManager.NodeList[15 - page]; //why is it in reverse order
+        }
+
+        private bool compareByteColor(ByteColor byteColor, byte r, byte g, byte b)
+        {
+            return (byteColor.R == r && byteColor.G == g && byteColor.B == b); 
+        }
+
+        private (int, int) getAdjsutedIndexAndPage(Bait bait)
+        {
+            int index = getBaitIndex(bait);
+            if (index < 0 ) { return (index, 0); }
+            int page = 1;
+            while (index > 25)
+            {
+                index -= 25;
+                page++;
+            }
+            return (index, page);
+        }
+
+        public unsafe bool addonIsOpen(IntPtr addon)
         {
             return (addon != IntPtr.Zero);
         }
@@ -692,6 +682,6 @@ namespace OceanFishin
                 return "Text node was null.";
             }
             
-        }*/
+        }
     }
 }
