@@ -11,7 +11,6 @@ namespace OceanFishin
         private DalamudPluginInterface? pluginInterface;
         public int Version { get; set; } = 0;
 
-
         public bool IncludeAchievementFish { get; set; } = true;
         public bool HighlightRecommendedBait { get; set; } = true;
         public int DisplayMode { get; set; } = 0;

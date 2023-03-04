@@ -84,10 +84,7 @@ public class MainWindow : Window, IDisposable
             if (this.Configuration.DisplayMode == (int)displayMode.full) { FullMode(location, time); }
             if (this.Configuration.DisplayMode == (int)displayMode.standard) { DefaultMode(location, time); }
         }
-        else
-        {
-            { countdownWindow(); }
-        }
+        else { countdownWindow(); }
     }
 
     private void LoadingWindow()
@@ -100,7 +97,11 @@ public class MainWindow : Window, IDisposable
         if (this.Plugin.IsSpectralCurrent())
         {
             ImGui.Text(Properties.Strings.Spectral_Current + " " + Properties.Strings.High_Points + ": " + Localize(this.Plugin.GetSpectralHighPointsBait(location, time)));
-            if (this.Plugin.GetSpectralIntuitionBait(location, time) != OceanFishin.Bait.None) ImGui.Text(Properties.Strings.Spectral_Current + " " + this.fishersIntutionString + ": " + this.Plugin.GetSpectralIntuitionBait(location, time).ToString());
+            var specIntuitionBait = (this.Plugin.GetSpectralIntuitionBait(location, time));
+            if (specIntuitionBait != OceanFishin.Bait.None)
+            {
+                ImGui.Text(Properties.Strings.Spectral_Current + " " + this.fishersIntutionString + ": " + Localize(specIntuitionBait));
+            }
         }
         else
         {
