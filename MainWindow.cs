@@ -185,25 +185,20 @@ public class MainWindow : Window, IDisposable
         int minutes = now.Minute;
         if (hour % 2 == 0)
         {
-            switch (minutes)
+            return minutes switch
             {
-                case < 15:
-                    return Properties.Strings.Boarding_is_open_for + " " + (15 - minutes) + " " + Properties.Strings.minutes;
-                case 15:
-                    return Properties.Strings.Boarding_is_open_for + " " + Properties.Strings.less_than_a_minute_;
-                default:
-                    return Properties.Strings.The_next_boat_leaves_in + " 1 " + Properties.Strings.hour + ", " + (60-minutes) +  " " + Properties.Strings.minutes;
-            }
+                < 15 => Properties.Strings.Boarding_is_open_for + " " + (15 - minutes) + " " + Properties.Strings.minutes,
+                15 => Properties.Strings.Boarding_is_open_for + " " + Properties.Strings.less_than_a_minute_,
+                _ => Properties.Strings.The_next_boat_leaves_in + " 1 " + Properties.Strings.hour + ", " + (60 - minutes) + " " + Properties.Strings.minutes,
+            };
         }
         else
         {
-            switch (minutes)
+            return minutes switch
             {
-                case 59:
-                    return Properties.Strings.The_next_boat_leaves_in + " " + Properties.Strings.less_than_a_minute_;
-                default:
-                    return Properties.Strings.The_next_boat_leaves_in + " " + (60 - minutes) + " " + Properties.Strings.minutes;
-            }
+                59 => Properties.Strings.The_next_boat_leaves_in + " " + Properties.Strings.less_than_a_minute_,
+                _ => Properties.Strings.The_next_boat_leaves_in + " " + (60 - minutes) + " " + Properties.Strings.minutes,
+            };
         }
     }
 

@@ -233,24 +233,15 @@ namespace OceanFishin
             this.DataManager = dataManager;
 
             this.UserLanguage = DataManager.Language;
-            switch (this.UserLanguage)
+            CultureInfo.DefaultThreadCurrentUICulture = this.UserLanguage switch
             {
-                case Dalamud.ClientLanguage.English:
-                    CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en");
-                    break;
-                case Dalamud.ClientLanguage.French:
-                    CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("fr");
-                    break;
-                case Dalamud.ClientLanguage.German:
-                    CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("de");
-                    break;
-                case Dalamud.ClientLanguage.Japanese:
-                    CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("ja");
-                    break;
-                default:
-                    CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en");
-                    break;
-            }
+                Dalamud.ClientLanguage.English => CultureInfo.GetCultureInfo("en"),
+                Dalamud.ClientLanguage.French => CultureInfo.GetCultureInfo("fr"),
+                Dalamud.ClientLanguage.German => CultureInfo.GetCultureInfo("de"),
+                Dalamud.ClientLanguage.Japanese => CultureInfo.GetCultureInfo("ja"),
+                _ => CultureInfo.GetCultureInfo("en")
+            }; 
+
             PluginLog.Debug("Client langauge is " + this.UserLanguage.ToString() + " and default thread UI culture is " + CultureInfo.DefaultThreadCurrentUICulture.ToString());
 
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
