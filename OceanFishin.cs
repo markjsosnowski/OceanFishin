@@ -473,7 +473,7 @@ namespace OceanFishin
             catch (KeyNotFoundException e) { return Bait.None; }
         }
 
-        public Bait GetFishersIntuitionBait(Location location,  Time time)
+        public Bait GetFishersIntuitionBait(Location location)
         {
             try { return fishersIntutionBaitDictionary[location]; }
             catch (KeyNotFoundException e) { return Bait.None; }
@@ -514,7 +514,7 @@ namespace OceanFishin
                 if (HasIntuitionBuff() && GetSpectralIntuitionBait(location, time) != Bait.None) return GetSpectralIntuitionBait(location, time);
                 else return GetSpectralHighPointsBait(location, time);
             }
-            if (HasIntuitionBuff()) return GetFishersIntuitionBait(location, time);
+            if (HasIntuitionBuff()) return GetFishersIntuitionBait(location);
             //if (GetWeather() == Weather.clear) return getMissionFishBait(location, time); //TODO implement weather checking
             return GetSpectralChanceBait(location);
         }

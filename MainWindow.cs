@@ -106,7 +106,7 @@ public class MainWindow : Window, IDisposable
         else
         {
             ImGui.Text(Properties.Strings.Best_spectral_chance + ": " + Localize(this.Plugin.GetSpectralChanceBait(location)));
-            ImGui.Text(this.fishersIntutionString + ": " + Localize(this.Plugin.GetFishersIntuitionBait(location, time)));
+            ImGui.Text(this.fishersIntutionString + ": " + Localize(this.Plugin.GetFishersIntuitionBait(location)));
         }
         if (this.Configuration.IncludeAchievementFish)
         {
@@ -131,7 +131,7 @@ public class MainWindow : Window, IDisposable
     private void FullMode(OceanFishin.Location location, OceanFishin.Time time)
     {
         ImGui.Text(Properties.Strings.Best_spectral_chance + ": " + Localize(this.Plugin.GetSpectralChanceBait(location)));
-        ImGui.Text(this.fishersIntutionString + ": " + Localize(this.Plugin.GetFishersIntuitionBait(location, time)));
+        ImGui.Text(this.fishersIntutionString + ": " + Localize(this.Plugin.GetFishersIntuitionBait(location)));
         ImGui.Text(Properties.Strings.Spectral_Current + " " + Properties.Strings.High_Points + ": " + Localize(this.Plugin.GetSpectralHighPointsBait(location, time)));
         var specIntuitionBait = (this.Plugin.GetSpectralIntuitionBait(location, time));
         if (specIntuitionBait != OceanFishin.Bait.None) ImGui.Text(Properties.Strings.Spectral_Current + " " + this.fishersIntutionString + ": " + Localize(specIntuitionBait));
