@@ -79,9 +79,13 @@ public class MainWindow : Window, IDisposable
 
             if (location == OceanFishin.Location.Unknown || time == OceanFishin.Time.Unknown) { LoadingWindow(); return; }
             
-            if (this.Configuration.DisplayMode == (int)displayMode.compact) { CompactMode(location, time); }
-            if (this.Configuration.DisplayMode == (int)displayMode.full) { FullMode(location, time); }
-            if (this.Configuration.DisplayMode == (int)displayMode.standard) { DefaultMode(location, time); }
+            switch((displayMode)this.Configuration.DisplayMode)
+            {
+                case displayMode.compact: CompactMode(location, time); break;
+                case displayMode.full: FullMode(location, time); break;
+                case displayMode.standard: DefaultMode(location, time); break;
+                default: DefaultMode(location, time); break;
+            }
         }
         else { countdownWindow(); }
     }
@@ -97,10 +101,7 @@ public class MainWindow : Window, IDisposable
         {
             ImGui.Text(Properties.Strings.Spectral_Current + " " + Properties.Strings.High_Points + ": " + Localize(this.Plugin.GetSpectralHighPointsBait(location, time)));
             var specIntuitionBait = (this.Plugin.GetSpectralIntuitionBait(location, time));
-            if (specIntuitionBait != OceanFishin.Bait.None)
-            {
-                ImGui.Text(Properties.Strings.Spectral_Current + " " + this.fishersIntutionString + ": " + Localize(specIntuitionBait));
-            }
+            if (specIntuitionBait != OceanFishin.Bait.None) { ImGui.Text(Properties.Strings.Spectral_Current + " " + this.fishersIntutionString + ": " + Localize(specIntuitionBait)); }
         }
         else
         {
@@ -129,11 +130,11 @@ public class MainWindow : Window, IDisposable
     
     private void FullMode(OceanFishin.Location location, OceanFishin.Time time)
     {
-        //TODO localize this stuff
         ImGui.Text(Properties.Strings.Best_spectral_chance + ": " + Localize(this.Plugin.GetSpectralChanceBait(location)));
         ImGui.Text(this.fishersIntutionString + ": " + Localize(this.Plugin.GetFishersIntuitionBait(location, time)));
         ImGui.Text(Properties.Strings.Spectral_Current + " " + Properties.Strings.High_Points + ": " + Localize(this.Plugin.GetSpectralHighPointsBait(location, time)));
-        if (this.Plugin.GetSpectralIntuitionBait(location, time) != OceanFishin.Bait.None) ImGui.Text(Properties.Strings.Spectral_Current + " " + this.fishersIntutionString + ": " + Localize(this.Plugin.GetSpectralIntuitionBait(location, time)));
+        var specIntuitionBait = (this.Plugin.GetSpectralIntuitionBait(location, time));
+        if (specIntuitionBait != OceanFishin.Bait.None) ImGui.Text(Properties.Strings.Spectral_Current + " " + this.fishersIntutionString + ": " + Localize(specIntuitionBait));
         
         if (this.Configuration.IncludeAchievementFish)
         {
@@ -206,7 +207,7 @@ public class MainWindow : Window, IDisposable
         }
     }
 
-    public string MissionFishDictToString(Dictionary<OceanFishin.FishTypes ,OceanFishin.Bait> dict)
+    public string MissionFishDictToString(Dictionary<OceanFishin.FishTypes, OceanFishin.Bait> dict)
     {
         string ret = "";
         if (dict == null){ return ret; }
