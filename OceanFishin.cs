@@ -491,8 +491,8 @@ namespace OceanFishin
         public Bait GetSpectralIntuitionBait(Location location, Time time)
         {
             try 
-            {
-                if (spectralIntuitionBaitDictionary.ContainsKey((location, time))) { return spectralIntuitionBaitDictionary[(location, time)]; }
+            {               
+                if (spectralIntuitionBaitDictionary.TryGetValue((location, time), out Bait value)) { return value; }
                 else { return Bait.None; }
             }
             catch (KeyNotFoundException e) { return Bait.None; }
@@ -506,7 +506,7 @@ namespace OceanFishin
         public Dictionary<FishTypes, Bait>? GetSpectralMissionFishBaits(Location location, Time time)
         {
             if (location == Location.GaladionBay || location == Location.Cieldales) { return GetMissionFishBaits(location); } //These just happen to be identical
-            else if (spectralMissionFishBaitDictionary.ContainsKey((location, time))){ return spectralMissionFishBaitDictionary[(location, time)]; }
+            else if (spectralMissionFishBaitDictionary.TryGetValue((location, time), out Dictionary<FishTypes, Bait> value)) { return value; }
             else{ return null; }
         }
 
@@ -530,7 +530,7 @@ namespace OceanFishin
 
         private OceanFishin.Location SpotStringToLocation(string location)
         {
-            if(localizedLocationStrings.ContainsKey(location)) { return localizedLocationStrings[location]; }
+            if(localizedLocationStrings.TryGetValue(location, out Location value)) { return value; }
             else { return Location.Unknown; }
         }
 
