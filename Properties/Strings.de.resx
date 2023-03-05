@@ -165,6 +165,9 @@
   <data name="High Points" xml:space="preserve">
     <value>Highscore</value>
   </data>
+  <data name="Highlight recommended bait in your inventory" xml:space="preserve">
+    <value>Empfehlung im Inventar hervorheben</value>
+  </data>
   <data name="hour" xml:space="preserve">
     <value>stunde</value>
   </data>

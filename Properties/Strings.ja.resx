@@ -171,6 +171,9 @@
   <data name="High Points" xml:space="preserve">
     <value>高得点</value>
   </data>
+  <data name="Highlight recommended bait in your inventory" xml:space="preserve">
+    <value>インベントリの推奨事項を強調表示する</value>
+  </data>
   <data name="hour" xml:space="preserve">
     <value>時間</value>
   </data>
