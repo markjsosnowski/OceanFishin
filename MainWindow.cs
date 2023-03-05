@@ -22,10 +22,10 @@ namespace OceanFishin.Windows;
 
 public class MainWindow : Window, IDisposable
 {
+    private const int statusSheetIntuitionRow = 568;
     private OceanFishin Plugin;
     private Configuration Configuration;
     
-    private Lumina.Excel.ExcelSheet<Item>? itemSheet;
     private Lumina.Excel.ExcelSheet<Lumina.Excel.GeneratedSheets.Status>? statusSheet;
     private string fishersIntutionString = "string_fishers_intuition";
     
@@ -58,10 +58,9 @@ public class MainWindow : Window, IDisposable
 
         this.Plugin = plugin;
         this.Configuration = configuration;
-        this.itemSheet = this.Plugin.itemSheet;
         this.statusSheet = this.Plugin.DataManager.GetExcelSheet<Lumina.Excel.GeneratedSheets.Status>();
         #pragma warning disable CS8602 // Dereference of a possibly null reference.
-        if (this.statusSheet != null) { this.fishersIntutionString = this.statusSheet.GetRow(568).Name.ToString(); }
+        if (this.statusSheet != null) { this.fishersIntutionString = this.statusSheet.GetRow(statusSheetIntuitionRow).Name.ToString(); }
         PluginLog.Debug("Buff name was set to " + this.fishersIntutionString);
 
         //Random random = new Random();
@@ -79,7 +78,7 @@ public class MainWindow : Window, IDisposable
             OceanFishin.Time time = this.Plugin.GetFishingTime();
 
             if (location == OceanFishin.Location.Unknown || time == OceanFishin.Time.Unknown) { LoadingWindow(); return; }
-
+            
             if (this.Configuration.DisplayMode == (int)displayMode.compact) { CompactMode(location, time); }
             if (this.Configuration.DisplayMode == (int)displayMode.full) { FullMode(location, time); }
             if (this.Configuration.DisplayMode == (int)displayMode.standard) { DefaultMode(location, time); }
@@ -216,7 +215,6 @@ public class MainWindow : Window, IDisposable
         {
             switch (pair.Key)
             {
-
                 case OceanFishin.FishTypes.Balloons: ret += Properties.Strings.Balloons; break;
                 case OceanFishin.FishTypes.Crabs:ret += Properties.Strings.Crabs; break;
                 case OceanFishin.FishTypes.Dragons: ret += Properties.Strings.Seahorses; break;
@@ -233,10 +231,10 @@ public class MainWindow : Window, IDisposable
         return ret;
     }
 
-    private string? Localize(OceanFishin.Bait bait)
+    private string Localize(OceanFishin.Bait bait)
     {
         #pragma warning disable CS8602 // Dereference of a possibly null reference.
-        if (itemSheet != null) { return this.itemSheet.GetRow((uint)bait).Singular.ToString(); }
-        return bait.ToString();
+        if (this.Plugin.itemSheet != null) { return this.Plugin.itemSheet.GetRow((uint)bait).Singular.ToString(); }
+        else { return bait.ToString(); }
     }
 }

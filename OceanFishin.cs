@@ -53,7 +53,7 @@ namespace OceanFishin
 
         // This is the TerritoryType for the entire instance and does not
         // provide any information on fishing spots, routes, etc.
-        private const int endevorTerritoryType = 900;
+        private const int endeavorTerritoryType = 900;
         private const int LocationTextNodeIndex = 20;
         private const int NightImageNodeIndex = 22;
         private const int SunsetImageNodeIndex = 23;
@@ -139,15 +139,7 @@ namespace OceanFishin
             None = 0,
             VersatileLure = 29717
         }
-
-        /*private Dictionary<Bait, Int64> baitIconID = new Dictionary<Bait, Int64>()
-        {
-            {Bait.None, 0},
-            {Bait.Krill,  27023},
-            {Bait.PlumpWorm, 27015},
-            {Bait.Ragworm, 27004}
-        };*/
-       
+      
         //Bait Dictionaries
 
         private Dictionary<Location, Bait> spectralChanceBaitDictionary = new Dictionary<Location, Bait>
@@ -346,17 +338,9 @@ namespace OceanFishin
         private List<Item> gameLikeSort(ref List<Item> unsortedList)
         {
             return unsortedList
-                //.OrderBy(i => i.ItemUICategory.Row)
                 .OrderByDescending(i => i.LevelItem.Row)
-                .ThenBy(getAdjustedItemId)
+                .ThenBy(i => i.RowId == (uint)Bait.VersatileLure ? i.RowId - 4 : i.RowId)
                 .ToList();
-        }
-
-        //Versatile lure is always sorted before the other ocean fishing baits for some reason
-        private uint getAdjustedItemId(Item i)
-        {
-            if (i.RowId == (uint)Bait.VersatileLure) { return i.RowId - 4; }
-            else return i.RowId;
         }
 
         private void printDebugList(List<Item> unsortedList)
@@ -369,11 +353,10 @@ namespace OceanFishin
             PluginLog.Debug(str);
         }
 
-
         // Since you have to be a fisher to get into the Duty, checking player job is probably unnecessary. 
         public bool InOceanFishingDuty()
         {
-            if (this.Configuration.DebugMode || (int)ClientState.TerritoryType == endevorTerritoryType)
+            if (this.Configuration.DebugMode || (int)ClientState.TerritoryType == endeavorTerritoryType)
                 return true;
             else
                 return false;
@@ -406,9 +389,9 @@ namespace OceanFishin
             AtkUnitBase* ptr = (AtkUnitBase*)this.fishingLogAddonPtr;
             if (ptr == null || ptr->UldManager.NodeListCount < ExpectedFishingLogNodeListCount)
                 return Time.Unknown;
+            
             AtkResNode* res_node = ptr->UldManager.NodeList[DayImageNodeIndex];
             AtkImageNode* image_node = (AtkImageNode*)res_node;
-
             if (image_node->PartId == (ushort)Time.Day)
                 return Time.Day;
             
@@ -432,7 +415,7 @@ namespace OceanFishin
             
             
             AtkUnitBase* addon;
-            if (addonIsOpen(this.fishingLogAddonPtr))
+            if (isAddonOpen(this.fishingLogAddonPtr))
                  addon = (AtkUnitBase*)this.fishingLogAddonPtr;
             else
                 return false;
@@ -457,7 +440,7 @@ namespace OceanFishin
             for (int i = 0; i < statusList.Length; i++)
             {
                 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-                if (this.Configuration.DebugMode && statusList[i].StatusId != 0) PluginLog.Debug("Status id " + i + " : " + statusList[i].StatusId);
+                //if (this.Configuration.DebugMode && statusList[i].StatusId != 0) PluginLog.Debug("Status id " + i + " : " + statusList[i].StatusId);
 
                 if (statusList[i].StatusId == intuitionStatusID)
                 {
@@ -533,7 +516,6 @@ namespace OceanFishin
             catch (KeyNotFoundException e) { PluginLog.Debug("Bait for " + location.ToString() + " at " + time.ToString() + " was not found.");  return Bait.None; }
         }
 
-        //TODO this will also be used to determine what to highlight in the tacklebox
         public Bait GetSingleBestBait(Location location, Time time)
         {
             if (IsSpectralCurrent())
@@ -548,7 +530,7 @@ namespace OceanFishin
 
         private OceanFishin.Location SpotStringToLocation(string location)
         {
-            if(localizedLocationStrings.ContainsKey(location)) {  return localizedLocationStrings[location]; }
+            if(localizedLocationStrings.ContainsKey(location)) { return localizedLocationStrings[location]; }
             else { return Location.Unknown; }
         }
 
@@ -575,21 +557,21 @@ namespace OceanFishin
             lastPage = page;
         }
         
-        public void stopHightlighting()
-        {
-            highlightBaitInTacklebox(Bait.None);
-        }
-
         public unsafe void highlightBaitAndPage(AtkComponentNode* node, int page, bool active)
         {
             highlightBaitPageNumber(page, active);
             if (!active) { changeNodeBorder(node, active); }
             if (active && onBaitPage(page)) {  changeNodeBorder(node, active); }
         }
- 
+
+        public void stopHightlighting()
+        {
+            highlightBaitInTacklebox(Bait.None);
+        }
+
         private unsafe AtkResNode* findBaitNode(Bait bait)
         {
-            if(!addonIsOpen(this.baitWindowAddonPtr)){  return null; }
+            if(!isAddonOpen(this.baitWindowAddonPtr)){  return null; }
             AtkUnitBase* baitWindowAddon = (AtkUnitBase*)this.baitWindowAddonPtr;
             if(baitWindowAddon->UldManager.NodeListCount < BaitListComponentNodeIndex) { return null; }
             AtkComponentNode* baitListComponentNode = (AtkComponentNode*)baitWindowAddon->UldManager.NodeList[BaitListComponentNodeIndex];
@@ -600,18 +582,18 @@ namespace OceanFishin
 
         private unsafe void changeNodeBorder(AtkComponentNode* node, bool active)
         {
-            if(node == null) { PluginLog.Debug("Node to change was null");  return; }
-            AtkComponentNode* icon_component_node = (AtkComponentNode*)node->Component->UldManager.NodeList[IconIDIndex];
-            AtkImageNode* frame_node = (AtkImageNode*)icon_component_node->Component->UldManager.NodeList[ItemBorderImageNodeIndex];
+            if(node == null) { return; }
+            AtkComponentNode* iconComponentNode = (AtkComponentNode*)node->Component->UldManager.NodeList[IconIDIndex];
+            AtkImageNode* frameImageNode = (AtkImageNode*)iconComponentNode->Component->UldManager.NodeList[ItemBorderImageNodeIndex];
             if(active)
-                frame_node->PartId = glowingBorderPartID;
+                frameImageNode->PartId = glowingBorderPartID;
             else
-                frame_node->PartId = defaultBorderPartID;
+                frameImageNode->PartId = defaultBorderPartID;
         }
 
         private unsafe void highlightBaitPageNumber(int page, bool active)
         {
-            if (!addonIsOpen(this.baitWindowAddonPtr)) { return; }
+            if (!isAddonOpen(this.baitWindowAddonPtr)) { return; }
             if (page < 1) { return; }
             AtkUnitBase* baitWindowAddon = (AtkUnitBase*)this.baitWindowAddonPtr;
             AtkComponentNode* pageButtonsComponentNode = (AtkComponentNode*)getBaitPageResNode(page); //why is it in reverse order
@@ -623,7 +605,7 @@ namespace OceanFishin
                 pageButtonsComponentNode->Component->UldManager.NodeList[baitPageBorderNodeIndex]->ToggleVisibility(true);
 
             }
-            if (!active)
+            else
             {
                 pageButtonsComponentNode->AtkResNode.AddRed = 0;
                 pageButtonsComponentNode->AtkResNode.AddGreen = 0;
@@ -642,7 +624,7 @@ namespace OceanFishin
 
         private unsafe AtkResNode* getBaitPageResNode(int page)
         {
-            if (!addonIsOpen(this.baitWindowAddonPtr)) { return null; }
+            if (!isAddonOpen(this.baitWindowAddonPtr)) { return null; }
             AtkUnitBase* baitWindowAddon = (AtkUnitBase*)this.baitWindowAddonPtr;
             return baitWindowAddon->UldManager.NodeList[15 - page]; //why is it in reverse order
         }
@@ -652,6 +634,7 @@ namespace OceanFishin
             return (byteColor.R == r && byteColor.G == g && byteColor.B == b); 
         }
 
+        // Each bait page is 25 spots
         private (int, int) getAdjsutedIndexAndPage(Bait bait)
         {
             int index = getBaitIndex(bait);
@@ -665,23 +648,9 @@ namespace OceanFishin
             return (index, page);
         }
 
-        public unsafe bool addonIsOpen(IntPtr addon)
+        public unsafe bool isAddonOpen(IntPtr addon)
         {
             return (addon != IntPtr.Zero);
-        }
-
-        public unsafe string? text_node_to_string(AtkTextNode* text_node)
-        {
-            try
-            {
-                return Marshal.PtrToStringAnsi(new IntPtr(text_node->NodeText.StringPtr));
-            }
-            catch(Exception e)
-            {
-                PluginLog.Debug(e.ToString());
-                return "Text node was null.";
-            }
-            
         }
     }
 }
