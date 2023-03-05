@@ -300,17 +300,16 @@ namespace OceanFishin
 
         private unsafe List<Item> updateBaitInventory()
         {
-            InventoryManager* inventoryManager = InventoryManager.Instance();
             inventoryBaitList = new List<Item>();
             foreach(InventoryType inventoryType in inventoryTypes) {
-                InventoryContainer* inventoryContainer = inventoryManager->GetInventoryContainer(inventoryType);
+                InventoryContainer* inventoryContainer = InventoryManager.Instance()->GetInventoryContainer(inventoryType);
                 for (int i = 0; i < inventoryContainer->Size; i++)
                 {
-                    InventoryItem* item = inventoryContainer->GetInventorySlot(i);
-                    Item LuminaItem = itemSheet.GetRow(item->ItemID);
-                    if (LuminaItem.ItemSortCategory.Row == fishingBaitItemSortCategory) 
+                    InventoryItem* inventoryItem = inventoryContainer->GetInventorySlot(i);
+                    Item item = itemSheet.GetRow(inventoryItem->ItemID);
+                    if (item.ItemSortCategory.Row == fishingBaitItemSortCategory) 
                     {
-                        inventoryBaitList.Add(itemSheet.GetRow(item->ItemID)); 
+                        inventoryBaitList.Add(item); 
                     }
                 }
             }
@@ -541,7 +540,7 @@ namespace OceanFishin
                 highlightBaitAndPage((AtkComponentNode*)lastBaitNode, lastPage, false);
             }
             if(bait == Bait.None) { return; }
-            (int _, int page) = getAdjsutedIndexAndPage(bait);
+            (int _, int page) = getAdjustedIndexAndPage(bait);
             AtkResNode*  baitNode = findBaitNode(bait);
             highlightBaitAndPage((AtkComponentNode*)baitNode, page, true);
             lastHighlightedBait = bait;
@@ -566,7 +565,7 @@ namespace OceanFishin
             AtkUnitBase* baitWindowAddon = (AtkUnitBase*)this.baitWindowAddonPtr;
             if(baitWindowAddon->UldManager.NodeListCount < BaitListComponentNodeIndex) { return null; }
             AtkComponentNode* baitListComponentNode = (AtkComponentNode*)baitWindowAddon->UldManager.NodeList[BaitListComponentNodeIndex];
-            (int index, int _) = getAdjsutedIndexAndPage(bait);
+            (int index, int _) = getAdjustedIndexAndPage(bait);
             if (index < 0) { return null; }
             return baitListComponentNode->Component->UldManager.NodeList[index + 1];
         }
@@ -626,7 +625,7 @@ namespace OceanFishin
         }
 
         // Each bait page is 25 spots
-        private (int, int) getAdjsutedIndexAndPage(Bait bait)
+        private (int, int) getAdjustedIndexAndPage(Bait bait)
         {
             int index = getBaitIndex(bait);
             if (index < 0 ) { return (index, 0); }
