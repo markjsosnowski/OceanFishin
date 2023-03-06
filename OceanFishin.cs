@@ -76,12 +76,12 @@ namespace OceanFishin
         private const string fishingLogAddonName = "IKDFishingLog";
         private const string baitAddonName = "Bait";
        
-        private List<InventoryType> inventoryTypes = new List<InventoryType>{ InventoryType.Inventory1, InventoryType.Inventory2, InventoryType.Inventory3, InventoryType.Inventory4 };
+        private readonly List<InventoryType> inventoryTypes = new() { InventoryType.Inventory1, InventoryType.Inventory2, InventoryType.Inventory3, InventoryType.Inventory4 };
         private List<Item>? inventoryBaitList;
         public ExcelSheet<IKDSpot>? LocationSheet;
         public Lumina.Excel.ExcelSheet<Item>? itemSheet;
         public Dalamud.ClientLanguage UserLanguage;
-        private Dictionary<string, Location> localizedLocationStrings = new Dictionary<string, Location>();
+        private Dictionary<string, Location> localizedLocationStrings = new();
 
         private IntPtr fishingLogAddonPtr;
         private IntPtr baitWindowAddonPtr;
@@ -143,7 +143,7 @@ namespace OceanFishin
       
         //Bait Dictionaries
 
-        private Dictionary<Location, Bait> spectralChanceBaitDictionary = new Dictionary<Location, Bait>
+        private readonly Dictionary<Location, Bait> spectralChanceBaitDictionary = new()
         {
             [Location.BloodbrineSea]    = Bait.Krill,
             [Location.Cieldales]        = Bait.Ragworm,
@@ -154,7 +154,7 @@ namespace OceanFishin
             [Location.SouthernStraight] = Bait.Krill
         };
 
-        private Dictionary<Location, Bait> fishersIntutionBaitDictionary = new Dictionary<Location, Bait>
+        private readonly Dictionary<Location, Bait> fishersIntutionBaitDictionary = new()
         {
             [Location.BloodbrineSea]    = Bait.Krill,
             [Location.Cieldales]        = Bait.Krill,
@@ -165,7 +165,7 @@ namespace OceanFishin
             [Location.SouthernStraight] = Bait.PlumpWorm
         };
 
-        private Dictionary<(Location,Time), Bait> spectralIntuitionBaitDictionary = new Dictionary<(Location, Time), Bait>
+        private readonly Dictionary<(Location,Time), Bait> spectralIntuitionBaitDictionary = new()
         {
             [(Location.BloodbrineSea, Time.Day)]        = Bait.PillBug,
             [(Location.Cieldales, Time.Night)]          = Bait.SquidStrip,
@@ -176,7 +176,7 @@ namespace OceanFishin
             [(Location.SouthernStraight, Time.Night)]   = Bait.ShrimpCageFeeder
         };
 
-        private Dictionary<Location, Dictionary<Time, Bait>> spectralHighPointsBaitDictionary = new Dictionary<Location, Dictionary<Time, Bait>>
+        private readonly Dictionary<Location, Dictionary<Time, Bait>> spectralHighPointsBaitDictionary = new()
         {
             [Location.BloodbrineSea] = new Dictionary<Time, Bait> {     [Time.Day] = Bait.Ragworm,      [Time.Sunset] = Bait.PlumpWorm,     [Time.Night] = Bait.Krill },
             [Location.Cieldales] = new Dictionary<Time, Bait> {         [Time.Day] = Bait.Krill,        [Time.Sunset] = Bait.PlumpWorm,     [Time.Night] = Bait.Krill },
@@ -187,7 +187,7 @@ namespace OceanFishin
             [Location.SouthernStraight] = new Dictionary<Time, Bait> {  [Time.Day] = Bait.Krill,        [Time.Sunset] = Bait.Ragworm,       [Time.Night] = Bait.Ragworm }
         };
 
-        private Dictionary<Location, Dictionary<FishTypes, Bait>> missionFishBaitDictionary = new Dictionary<Location, Dictionary<FishTypes, Bait>>
+        private readonly Dictionary<Location, Dictionary<FishTypes, Bait>> missionFishBaitDictionary = new()
         {
             [Location.BloodbrineSea] = new Dictionary<FishTypes, Bait> { [FishTypes.Crabs] = Bait.Ragworm },
             [Location.Cieldales] = new Dictionary<FishTypes, Bait> { [FishTypes.Balloons] = Bait.Ragworm, [FishTypes.Crabs] = Bait.Krill, [FishTypes.Mantas] = Bait.PlumpWorm },
@@ -198,7 +198,7 @@ namespace OceanFishin
             [Location.SouthernStraight] = new Dictionary<FishTypes, Bait> { [FishTypes.Jellyfish] = Bait.Ragworm, [FishTypes.Dragons] = Bait.Ragworm , [FishTypes.Balloons] = Bait.Krill }
         };
 
-        private Dictionary<(Location, Time), Dictionary<FishTypes, Bait>> spectralMissionFishBaitDictionary = new Dictionary<(Location, Time), Dictionary<FishTypes, Bait>>
+        private readonly Dictionary<(Location, Time), Dictionary<FishTypes, Bait>> spectralMissionFishBaitDictionary = new()
         {
             [(Location.BloodbrineSea, Time.Day)] = new Dictionary<FishTypes, Bait> { [FishTypes.Crabs] = Bait.Ragworm, [FishTypes.Sharks] = Bait.PlumpWorm },
             [(Location.BloodbrineSea, Time.Sunset)] = new Dictionary<FishTypes, Bait> { [FishTypes.Sharks] = Bait.PlumpWorm },
