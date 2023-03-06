@@ -298,16 +298,17 @@ namespace OceanFishin
             WindowSystem.Draw();
         }
 
-        private unsafe List<Item> updateBaitInventory()
+        private unsafe List<Item>? updateBaitInventory()
         {
+            if (itemSheet == null) { return null; }
             inventoryBaitList = new List<Item>();
             foreach(InventoryType inventoryType in inventoryTypes) {
                 InventoryContainer* inventoryContainer = InventoryManager.Instance()->GetInventoryContainer(inventoryType);
                 for (int i = 0; i < inventoryContainer->Size; i++)
                 {
                     InventoryItem* inventoryItem = inventoryContainer->GetInventorySlot(i);
-                    Item item = itemSheet.GetRow(inventoryItem->ItemID);
-                    if (item.ItemSortCategory.Row == fishingBaitItemSortCategory) 
+                    Item? item = itemSheet.GetRow(inventoryItem->ItemID);
+                    if (item!.ItemSortCategory.Row == fishingBaitItemSortCategory) 
                     {
                         inventoryBaitList.Add(item); 
                     }
@@ -319,8 +320,9 @@ namespace OceanFishin
 
         private int getBaitIndex(Bait bait)
         {
-            if (inventoryBaitList == null) { return -1; }
-            return inventoryBaitList.IndexOf(itemSheet.GetRow((uint)bait));
+            if (inventoryBaitList == null || itemSheet == null) { return -1; }
+            Item? item = itemSheet.GetRow((uint)bait);
+            return (item != null) ? inventoryBaitList.IndexOf(item) : -1;
         }
 
         //Inventory is first sorted by Category, but this list is already filtered to only be fishing tackle
@@ -364,8 +366,7 @@ namespace OceanFishin
             AtkTextNode* text_node = (AtkTextNode*)res_node;
             string? locationString = Marshal.PtrToStringUTF8(new IntPtr(text_node->NodeText.StringPtr));
 
-            #pragma warning disable CS8604 // Possible null reference argument.
-            return SpotStringToLocation(locationString);
+            return SpotStringToLocation(locationString!);
         }
 
         public unsafe Time GetFishingTime()
@@ -422,16 +423,14 @@ namespace OceanFishin
         {
             if (this.Configuration.DebugIntution) return true;
             
-            Dalamud.Game.ClientState.Statuses.StatusList? statusList;
             PlayerCharacter? playerCharacter = ClientState.LocalPlayer;
             if (playerCharacter == null || playerCharacter.StatusList == null) { return false; }
 
-            statusList = playerCharacter.StatusList;
+            Dalamud.Game.ClientState.Statuses.StatusList? statusList = playerCharacter.StatusList;
             for (int i = 0; i < statusList.Length; i++)
             {
-                #pragma warning disable CS8602 // Dereference of a possibly null reference.
                 //if (this.Configuration.DebugMode && statusList[i].StatusId != 0) PluginLog.Debug("Status id " + i + " : " + statusList[i].StatusId);
-                if (statusList[i].StatusId == intuitionStatusID) { return true; }
+                if (statusList[i]!.StatusId == intuitionStatusID) { return true; }
             }
             return false;
         }
@@ -491,7 +490,7 @@ namespace OceanFishin
         public Dictionary<FishTypes, Bait>? GetSpectralMissionFishBaits(Location location, Time time)
         {
             if (location == Location.GaladionBay || location == Location.Cieldales) { return GetMissionFishBaits(location); } //These just happen to be identical
-            else if (spectralMissionFishBaitDictionary.TryGetValue((location, time), out Dictionary<FishTypes, Bait> value)) { return value; }
+            else if (spectralMissionFishBaitDictionary.TryGetValue((location, time), out var value)) { return value; }
             else{ return null; }
         }
 
@@ -521,9 +520,9 @@ namespace OceanFishin
 
         private void BuildLocationStringMap()
         {
-            for (uint i = 1; i < LocationSheet.RowCount; ++i)
+            for (uint i = 1; i < LocationSheet!.RowCount; ++i)
             {
-                localizedLocationStrings[LocationSheet.GetRow(i).PlaceName.Value.Name.ToString()] = (Location)i;
+                localizedLocationStrings[LocationSheet.GetRow(i)!.PlaceName.Value!.Name.ToString()] = (Location)i;
             }
         }
 
@@ -561,8 +560,7 @@ namespace OceanFishin
             if(baitWindowAddon->UldManager.NodeListCount < BaitListComponentNodeIndex) { return null; }
             AtkComponentNode* baitListComponentNode = (AtkComponentNode*)baitWindowAddon->UldManager.NodeList[BaitListComponentNodeIndex];
             (int index, int _) = getAdjustedIndexAndPage(bait);
-            if (index < 0) { return null; }
-            return baitListComponentNode->Component->UldManager.NodeList[index + 1];
+            return (index < 0) ? null : baitListComponentNode->Component->UldManager.NodeList[index + 1];
         }
 
         private unsafe void changeNodeBorder(AtkComponentNode* node, bool active)
@@ -570,10 +568,8 @@ namespace OceanFishin
             if(node == null) { return; }
             AtkComponentNode* iconComponentNode = (AtkComponentNode*)node->Component->UldManager.NodeList[IconIDIndex];
             AtkImageNode* frameImageNode = (AtkImageNode*)iconComponentNode->Component->UldManager.NodeList[ItemBorderImageNodeIndex];
-            if(active)
-                frameImageNode->PartId = glowingBorderPartID;
-            else
-                frameImageNode->PartId = defaultBorderPartID;
+            if (active) { frameImageNode->PartId = glowingBorderPartID; }
+            else { frameImageNode->PartId = defaultBorderPartID; }
         }
 
         private unsafe void highlightBaitPageNumber(int page, bool active)
@@ -581,7 +577,7 @@ namespace OceanFishin
             if (!isAddonOpen(this.baitWindowAddonPtr)) { return; }
             if (page < 1) { return; }
             AtkUnitBase* baitWindowAddon = (AtkUnitBase*)this.baitWindowAddonPtr;
-            AtkComponentNode* pageButtonsComponentNode = (AtkComponentNode*)getBaitPageResNode(page); //why is it in reverse order
+            AtkComponentNode* pageButtonsComponentNode = (AtkComponentNode*)getBaitPageResNode(page);
             if (active)
             {
                 pageButtonsComponentNode->AtkResNode.AddRed = highlightRed;
@@ -607,16 +603,16 @@ namespace OceanFishin
             return compareByteColor(baitPageTextNode->TextColor, 0xFF, 0xFF, 0xFF);
         }
 
+        private bool compareByteColor(ByteColor byteColor, byte r, byte g, byte b)
+        {
+            return (byteColor.R == r && byteColor.G == g && byteColor.B == b); 
+        }
+        
         private unsafe AtkResNode* getBaitPageResNode(int page)
         {
             if (!isAddonOpen(this.baitWindowAddonPtr)) { return null; }
             AtkUnitBase* baitWindowAddon = (AtkUnitBase*)this.baitWindowAddonPtr;
             return baitWindowAddon->UldManager.NodeList[15 - page]; //why is it in reverse order
-        }
-
-        private bool compareByteColor(ByteColor byteColor, byte r, byte g, byte b)
-        {
-            return (byteColor.R == r && byteColor.G == g && byteColor.B == b); 
         }
 
         // Each bait page is 25 spots
