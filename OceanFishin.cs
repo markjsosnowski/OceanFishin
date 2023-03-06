@@ -79,14 +79,14 @@ namespace OceanFishin
         private readonly List<InventoryType> inventoryTypes = new() { InventoryType.Inventory1, InventoryType.Inventory2, InventoryType.Inventory3, InventoryType.Inventory4 };
         private List<Item>? inventoryBaitList;
         public ExcelSheet<IKDSpot>? LocationSheet;
-        public Lumina.Excel.ExcelSheet<Item>? itemSheet;
+        public ExcelSheet<Item>? itemSheet;
         public Dalamud.ClientLanguage UserLanguage;
         private Dictionary<string, Location> localizedLocationStrings = new();
 
         private IntPtr fishingLogAddonPtr;
         private IntPtr baitWindowAddonPtr;
         private Bait lastHighlightedBait = Bait.None;
-        private int lastHighlightedPage;
+        private int lastHighlightedPage = 0;
 
         public enum Location
         {
@@ -463,13 +463,13 @@ namespace OceanFishin
         {
             //if(location == Location.GaladionBay && getWeather() == Weather.showers) { return Bait.PlumpWorm; }
             try { return spectralChanceBaitDictionary[location]; }
-            catch (KeyNotFoundException e) { return Bait.None; }
+            catch (KeyNotFoundException) { return Bait.None; }
         }
 
         public Bait GetFishersIntuitionBait(Location location)
         {
             try { return fishersIntutionBaitDictionary[location]; }
-            catch (KeyNotFoundException e) { return Bait.None; }
+            catch (KeyNotFoundException) { return Bait.None; }
         }
 
         public Bait GetSpectralIntuitionBait(Location location, Time time)
@@ -479,7 +479,7 @@ namespace OceanFishin
                 if (spectralIntuitionBaitDictionary.TryGetValue((location, time), out Bait value)) { return value; }
                 else { return Bait.None; }
             }
-            catch (KeyNotFoundException e) { return Bait.None; }
+            catch (KeyNotFoundException) { return Bait.None; }
         }
 
         public Dictionary<FishTypes, Bait> GetMissionFishBaits(Location location)
@@ -497,7 +497,7 @@ namespace OceanFishin
         public Bait GetSpectralHighPointsBait(Location location, Time time)
         {
             try { return spectralHighPointsBaitDictionary[location][time]; }
-            catch (KeyNotFoundException e) { PluginLog.Debug("Bait for " + location.ToString() + " at " + time.ToString() + " was not found.");  return Bait.None; }
+            catch (KeyNotFoundException) { PluginLog.Debug("Bait for " + location.ToString() + " at " + time.ToString() + " was not found.");  return Bait.None; }
         }
 
         public Bait GetSingleBestBait(Location location, Time time)
