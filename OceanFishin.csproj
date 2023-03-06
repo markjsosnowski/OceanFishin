@@ -4,7 +4,7 @@
 	<PropertyGroup>
 		<PackageId>OceanFishin'</PackageId>
 		<Authors>Sl0nderman</Authors>
-		<Version>2.4</Version>
+		<Version>2.4.1</Version>
 		<Description>Suggests bait while in the Ocean Fishing duty.</Description>
 		<PackageProjectUrl>https://github.com/markjsosnowski/OceanFishin</PackageProjectUrl>
 	</PropertyGroup>
