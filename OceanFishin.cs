@@ -319,7 +319,7 @@ namespace OceanFishin
 
         private int getBaitIndex(Bait bait)
         {
-            if (inventoryBaitList == null) { PluginLog.Debug("Inventory bait list was null?"); return -1; }
+            if (inventoryBaitList == null) { return -1; }
             return inventoryBaitList.IndexOf(itemSheet.GetRow((uint)bait));
         }
 
@@ -431,12 +431,7 @@ namespace OceanFishin
             {
                 #pragma warning disable CS8602 // Dereference of a possibly null reference.
                 //if (this.Configuration.DebugMode && statusList[i].StatusId != 0) PluginLog.Debug("Status id " + i + " : " + statusList[i].StatusId);
-
-                if (statusList[i].StatusId == intuitionStatusID)
-                {
-                    if (this.Configuration.DebugMode) PluginLog.Debug("Intuition was detected!");
-                    return true;
-                }
+                if (statusList[i].StatusId == intuitionStatusID) { return true; }
             }
             return false;
         }
