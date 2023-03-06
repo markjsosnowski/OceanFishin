@@ -81,11 +81,12 @@ namespace OceanFishin
         public ExcelSheet<IKDSpot>? LocationSheet;
         public Lumina.Excel.ExcelSheet<Item>? itemSheet;
         public Dalamud.ClientLanguage UserLanguage;
+        private Dictionary<string, Location> localizedLocationStrings = new Dictionary<string, Location>();
 
-        // Cached Values
         private IntPtr fishingLogAddonPtr;
         private IntPtr baitWindowAddonPtr;
         private Bait lastHighlightedBait = Bait.None;
+        private int lastHighlightedPage;
 
         public enum Location
         {
@@ -144,46 +145,46 @@ namespace OceanFishin
 
         private Dictionary<Location, Bait> spectralChanceBaitDictionary = new Dictionary<Location, Bait>
         {
-            [Location.BloodbrineSea] = Bait.Krill,
-            [Location.Cieldales] = Bait.Ragworm,
-            [Location.GaladionBay] = Bait.Krill,
-            [Location.NorthernStrait] = Bait.Ragworm,
-            [Location.RhotanoSea] = Bait.PlumpWorm,
-            [Location.RothlytSound] = Bait.PlumpWorm,
+            [Location.BloodbrineSea]    = Bait.Krill,
+            [Location.Cieldales]        = Bait.Ragworm,
+            [Location.GaladionBay]      = Bait.Krill,
+            [Location.NorthernStrait]   = Bait.Ragworm,
+            [Location.RhotanoSea]       = Bait.PlumpWorm,
+            [Location.RothlytSound]     = Bait.PlumpWorm,
             [Location.SouthernStraight] = Bait.Krill
         };
 
         private Dictionary<Location, Bait> fishersIntutionBaitDictionary = new Dictionary<Location, Bait>
         {
-            [Location.BloodbrineSea] = Bait.Krill,
-            [Location.Cieldales] = Bait.Krill,
-            [Location.GaladionBay] = Bait.Krill,
-            [Location.NorthernStrait] = Bait.Ragworm,
-            [Location.RhotanoSea] = Bait.Krill,
-            [Location.RothlytSound] = Bait.Ragworm,
+            [Location.BloodbrineSea]    = Bait.Krill,
+            [Location.Cieldales]        = Bait.Krill,
+            [Location.GaladionBay]      = Bait.Krill,
+            [Location.NorthernStrait]   = Bait.Ragworm,
+            [Location.RhotanoSea]       = Bait.Krill,
+            [Location.RothlytSound]     = Bait.Ragworm,
             [Location.SouthernStraight] = Bait.PlumpWorm
         };
 
         private Dictionary<(Location,Time), Bait> spectralIntuitionBaitDictionary = new Dictionary<(Location, Time), Bait>
         {
-            [(Location.BloodbrineSea, Time.Day)] =  Bait.PillBug,
-            [(Location.Cieldales, Time.Night)] =  Bait.SquidStrip,
-            [(Location.GaladionBay, Time.Night)] = Bait.Glowworm,
-            [(Location.NorthernStrait, Time.Day)] = Bait.HeavySteelJig,
-            [(Location.RhotanoSea, Time.Sunset)] = Bait.RatTail,
-            [(Location.RothlytSound, Time.Sunset)] = Bait.Ragworm,
-            [(Location.SouthernStraight, Time.Night)] = Bait.ShrimpCageFeeder
+            [(Location.BloodbrineSea, Time.Day)]        = Bait.PillBug,
+            [(Location.Cieldales, Time.Night)]          = Bait.SquidStrip,
+            [(Location.GaladionBay, Time.Night)]        = Bait.Glowworm,
+            [(Location.NorthernStrait, Time.Day)]       = Bait.HeavySteelJig,
+            [(Location.RhotanoSea, Time.Sunset)]        = Bait.RatTail,
+            [(Location.RothlytSound, Time.Sunset)]      = Bait.Ragworm,
+            [(Location.SouthernStraight, Time.Night)]   = Bait.ShrimpCageFeeder
         };
 
         private Dictionary<Location, Dictionary<Time, Bait>> spectralHighPointsBaitDictionary = new Dictionary<Location, Dictionary<Time, Bait>>
         {
-            [Location.BloodbrineSea] = new Dictionary<Time, Bait>{ [Time.Day] = Bait.Ragworm, [Time.Sunset] = Bait.PlumpWorm, [Time.Night] = Bait.Krill },
-            [Location.Cieldales] = new Dictionary<Time, Bait>{ [Time.Day] = Bait.Krill, [Time.Sunset] = Bait.PlumpWorm, [Time.Night] = Bait.Krill },
-            [Location.GaladionBay] = new Dictionary<Time, Bait> { [Time.Day] = Bait.Ragworm, [Time.Sunset]= Bait.PlumpWorm, [Time.Night]=Bait.Krill },
-            [Location.NorthernStrait] = new Dictionary<Time, Bait> { [Time.Day] = Bait.PlumpWorm, [Time.Sunset] = Bait.Krill, [Time.Night] = Bait.Krill },
-            [Location.RhotanoSea] = new Dictionary<Time, Bait> { [Time.Day] = Bait.PlumpWorm, [Time.Sunset] = Bait.Ragworm, [Time.Night] = Bait.Krill },
-            [Location.RothlytSound] = new Dictionary<Time, Bait> { [Time.Day] = Bait.Krill, [Time.Sunset] = Bait.Krill, [Time.Night] = Bait.Krill },
-            [Location.SouthernStraight] = new Dictionary<Time, Bait> { [Time.Day] = Bait.Krill, [Time.Sunset] = Bait.Ragworm, [Time.Night] = Bait.Ragworm }
+            [Location.BloodbrineSea] = new Dictionary<Time, Bait> {     [Time.Day] = Bait.Ragworm,      [Time.Sunset] = Bait.PlumpWorm,     [Time.Night] = Bait.Krill },
+            [Location.Cieldales] = new Dictionary<Time, Bait> {         [Time.Day] = Bait.Krill,        [Time.Sunset] = Bait.PlumpWorm,     [Time.Night] = Bait.Krill },
+            [Location.GaladionBay] = new Dictionary<Time, Bait> {       [Time.Day] = Bait.Ragworm,      [Time.Sunset] = Bait.PlumpWorm,     [Time.Night] = Bait.Krill },
+            [Location.NorthernStrait] = new Dictionary<Time, Bait> {    [Time.Day] = Bait.PlumpWorm,    [Time.Sunset] = Bait.Krill,         [Time.Night] = Bait.Krill },
+            [Location.RhotanoSea] = new Dictionary<Time, Bait> {        [Time.Day] = Bait.PlumpWorm,    [Time.Sunset] = Bait.Ragworm,       [Time.Night] = Bait.Krill },
+            [Location.RothlytSound] = new Dictionary<Time, Bait> {      [Time.Day] = Bait.Krill,        [Time.Sunset] = Bait.Krill,         [Time.Night] = Bait.Krill },
+            [Location.SouthernStraight] = new Dictionary<Time, Bait> {  [Time.Day] = Bait.Krill,        [Time.Sunset] = Bait.Ragworm,       [Time.Night] = Bait.Ragworm }
         };
 
         private Dictionary<Location, Dictionary<FishTypes, Bait>> missionFishBaitDictionary = new Dictionary<Location, Dictionary<FishTypes, Bait>>
@@ -212,9 +213,6 @@ namespace OceanFishin
             [(Location.SouthernStraight, Time.Sunset)] = new Dictionary<FishTypes, Bait> { [FishTypes.Jellyfish] = Bait.Ragworm },
             [(Location.SouthernStraight, Time.Night)] = new Dictionary<FishTypes, Bait> { [FishTypes.Jellyfish] = Bait.Ragworm }
         };
-
-        private Dictionary<string, Location> localizedLocationStrings = new Dictionary<string, Location>();
-        private int lastPage;
 
         public OceanFishin(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
@@ -275,13 +273,14 @@ namespace OceanFishin
 
         public unsafe void Dispose()
         {
+            stopHightlighting();
             Framework.Update -= UpdateAddonPtrs;
             this.MainWindow.Dispose();
             this.CommandManager.RemoveHandler(CommandName);
             this.CommandManager.RemoveHandler(AltCommandName);
             WindowSystem.RemoveAllWindows();
-            stopHightlighting();
         }
+
         private void OnCommand(string command, string args)
         {
             MainWindow.IsOpen = true;
@@ -400,6 +399,7 @@ namespace OceanFishin
         }
 
         // When the spectral current occurs, this AtkResNode becomes visible behind the IKDFishingLog window.
+        // TODO use weather checking to do this instead
         public unsafe bool IsSpectralCurrent()
         {
             if (this.Configuration.DebugSpectral) return true;
@@ -531,14 +531,14 @@ namespace OceanFishin
             if (lastHighlightedBait != Bait.None) 
             {
                 AtkResNode* lastBaitNode = findBaitNode(lastHighlightedBait);
-                highlightBaitAndPage((AtkComponentNode*)lastBaitNode, lastPage, false);
+                highlightBaitAndPage((AtkComponentNode*)lastBaitNode, lastHighlightedPage, false);
             }
             if(bait == Bait.None) { return; }
             (int _, int page) = getAdjustedIndexAndPage(bait);
             AtkResNode*  baitNode = findBaitNode(bait);
             highlightBaitAndPage((AtkComponentNode*)baitNode, page, true);
             lastHighlightedBait = bait;
-            lastPage = page;
+            lastHighlightedPage = page;
         }
         
         public unsafe void highlightBaitAndPage(AtkComponentNode* node, int page, bool active)
@@ -612,7 +612,7 @@ namespace OceanFishin
         {
             if (!isAddonOpen(this.baitWindowAddonPtr)) { return null; }
             AtkUnitBase* baitWindowAddon = (AtkUnitBase*)this.baitWindowAddonPtr;
-            return baitWindowAddon->UldManager.NodeList[15 - page]; //why is it in reverse order
+            return baitWindowAddon->UldManager.NodeList[15 - page]; //Node list is in reverse order from top left
         }
 
         // Each bait page is 25 spots
