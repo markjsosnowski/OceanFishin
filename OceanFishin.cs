@@ -266,7 +266,7 @@ namespace OceanFishin
 
             LocationSheet = this.DataManager.GetExcelSheet<IKDSpot>();
             BuildLocationStringMap();
-            PluginLog.Debug("Location string map filled a total of " + localizedLocationStrings.Count + "/7 entries.");
+            PluginLog.Debug("Location string map filled a total of " + localizedLocationStrings!.Count + "/7 entries.");
             this.itemSheet = DataManager.GetExcelSheet<Item>();
             this.inventoryBaitList = UpdateBaitInventory();
         }
@@ -324,8 +324,8 @@ namespace OceanFishin
             return (item != null) ? inventoryBaitList.IndexOf(item) : -1;
         }
 
-        //Inventory is first sorted by Category, but this list is already filtered to only be fishing tackle
-        //Then it is sorted by highest LevelItem then then finally by ItemID
+        // Inventory is first sorted by SortCategory, but this list is already filtered to only be fishing tackle,
+        // then it is sorted by highest LevelItem then then finally by ItemID.
         private static List<Item> GameLikeSort(ref List<Item> unsortedList)
         {
             return unsortedList
@@ -399,7 +399,7 @@ namespace OceanFishin
         }
 
         // When the spectral current occurs, this AtkResNode becomes visible behind the IKDFishingLog window.
-        // TODO use weather checking to do this instead
+        // TODO Use weather checking to do this instead.
         public unsafe bool IsSpectralCurrent()
         {
             if (this.Configuration.DebugSpectral) return true;
@@ -429,7 +429,6 @@ namespace OceanFishin
             Dalamud.Game.ClientState.Statuses.StatusList? statusList = playerCharacter.StatusList;
             for (int i = 0; i < statusList.Length; i++)
             {
-                //if (this.Configuration.DebugMode && statusList[i].StatusId != 0) PluginLog.Debug("Status id " + i + " : " + statusList[i].StatusId);
                 if (statusList[i]!.StatusId == intuitionStatusID) { return true; }
             }
             return false;
@@ -461,6 +460,7 @@ namespace OceanFishin
 
         public Bait GetSpectralChanceBait(Location location)
         {
+            // The major exception for this bait choice when it's a certain weather.
             //if(location == Location.GaladionBay && getWeather() == Weather.showers) { return Bait.PlumpWorm; }
             try { return spectralChanceBaitDictionary[location]; }
             catch (KeyNotFoundException) { return Bait.None; }
@@ -489,7 +489,8 @@ namespace OceanFishin
 
         public Dictionary<FishTypes, Bait>? GetSpectralMissionFishBaits(Location location, Time time)
         {
-            if (location == Location.GaladionBay || location == Location.Cieldales) { return GetMissionFishBaits(location); } //These just happen to be identical
+            //These just happen to be identical.
+            if (location == Location.GaladionBay || location == Location.Cieldales) { return GetMissionFishBaits(location); } 
             else if (spectralMissionFishBaitDictionary.TryGetValue((location, time), out var value)) { return value; }
             else{ return null; }
         }
@@ -607,10 +608,11 @@ namespace OceanFishin
         {
             if (!IsAddonOpen(this.baitWindowAddonPtr)) { return null; }
             AtkUnitBase* baitWindowAddon = (AtkUnitBase*)this.baitWindowAddonPtr;
-            return baitWindowAddon->UldManager.NodeList[15 - page]; //Node list is in reverse order from top left
+            //Bait window page nodes start from the end, e.g. [14] is Page 1.
+            return baitWindowAddon->UldManager.NodeList[15 - page]; 
         }
 
-        // Each bait page is 25 spots
+        // Each bait page is 25 spots.
         private (int, int) GetAdjustedIndexAndPage(Bait bait)
         {
             int index = GetBaitIndex(bait);

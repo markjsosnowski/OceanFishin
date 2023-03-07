@@ -23,8 +23,8 @@ namespace OceanFishin.Windows;
 public class MainWindow : Window, IDisposable
 {
     private const int statusSheetIntuitionRow = 568;
-    private OceanFishin Plugin;
-    private Configuration Configuration;
+    private readonly OceanFishin Plugin;
+    private readonly Configuration Configuration;
     
     private Lumina.Excel.ExcelSheet<Lumina.Excel.GeneratedSheets.Status>? statusSheet;
     private string fishersIntutionString = "string_fishers_intuition";
@@ -36,7 +36,8 @@ public class MainWindow : Window, IDisposable
         full
     }
 
-    /*private string[] donation_lines = new string[] {    "Rack up a good score on your last voyage?",
+    /*
+    private string[] donation_lines = new string[] {    "Rack up a good score on your last voyage?",
                                                             "Finally get that shark mount?",
                                                             "Do women want you and fish fear you now?",
                                                             "Land a big one on your last trip?",
@@ -46,7 +47,7 @@ public class MainWindow : Window, IDisposable
     */
 
     //private int random_index;
-    
+
 
     public MainWindow(OceanFishin plugin, Configuration configuration) : base(plugin.Name, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
     {
@@ -228,8 +229,7 @@ public class MainWindow : Window, IDisposable
 
     private string Localize(OceanFishin.Bait bait)
     {
-        #pragma warning disable CS8602 // Dereference of a possibly null reference.
-        if (this.Plugin.itemSheet != null) { return this.Plugin.itemSheet.GetRow((uint)bait).Singular.ToString(); }
+        if (this.Plugin.itemSheet != null) { return this.Plugin.itemSheet.GetRow((uint)bait)!.Singular.ToString(); }
         else { return bait.ToString(); }
     }
 }
