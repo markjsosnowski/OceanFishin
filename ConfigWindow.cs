@@ -53,7 +53,7 @@ namespace OceanFishin
             if(ImGui.Checkbox(Properties.Strings.Highlight_recommended_bait_in_your_inventory, ref highlightBait))
             {
                 this.Configuration.HighlightRecommendedBait = highlightBait;
-                if(!highlightBait) { Plugin.stopHightlighting(); }
+                if(!highlightBait) { Plugin.StopHightlighting(); }
                 this.Configuration.Save();
             }
     
@@ -62,7 +62,7 @@ namespace OceanFishin
             if (ImGui.Checkbox("Debug Tools", ref debugMode))
             {
                 this.Configuration.DebugMode = debugMode;
-                if(!debugMode) { Plugin.stopHightlighting(); }
+                if(!debugMode) { Plugin.StopHightlighting(); }
                 this.Configuration.Save();
             }
 

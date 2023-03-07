@@ -29,7 +29,7 @@ public class MainWindow : Window, IDisposable
     private Lumina.Excel.ExcelSheet<Lumina.Excel.GeneratedSheets.Status>? statusSheet;
     private string fishersIntutionString = "string_fishers_intuition";
     
-    private enum displayMode
+    private enum DisplayMode
     {
         standard,
         compact,
@@ -59,8 +59,7 @@ public class MainWindow : Window, IDisposable
         this.Plugin = plugin;
         this.Configuration = configuration;
         this.statusSheet = this.Plugin.DataManager.GetExcelSheet<Lumina.Excel.GeneratedSheets.Status>();
-        #pragma warning disable CS8602 // Dereference of a possibly null reference.
-        if (this.statusSheet != null) { this.fishersIntutionString = this.statusSheet.GetRow(statusSheetIntuitionRow).Name.ToString(); }
+        if (this.statusSheet != null) { this.fishersIntutionString = this.statusSheet.GetRow(statusSheetIntuitionRow)!.Name.ToString(); }
         PluginLog.Debug("Buff name was set to " + this.fishersIntutionString);
 
         //Random random = new Random();
@@ -79,15 +78,15 @@ public class MainWindow : Window, IDisposable
 
             if (location == OceanFishin.Location.Unknown || time == OceanFishin.Time.Unknown) { LoadingWindow(); return; }
             
-            switch((displayMode)this.Configuration.DisplayMode)
+            switch((DisplayMode)this.Configuration.DisplayMode)
             {
-                case displayMode.compact: CompactMode(location, time); break;
-                case displayMode.full: FullMode(location, time); break;
-                case displayMode.standard: DefaultMode(location, time); break;
+                case DisplayMode.compact: CompactMode(location, time); break;
+                case DisplayMode.full: FullMode(location, time); break;
+                case DisplayMode.standard: DefaultMode(location, time); break;
                 default: DefaultMode(location, time); break;
             }
         }
-        else { countdownWindow(); }
+        else { CountdownWindow(); }
     }
 
     private void LoadingWindow()
@@ -159,7 +158,7 @@ public class MainWindow : Window, IDisposable
         ImGui.Text(Localize(this.Plugin.GetSingleBestBait(location, time)));
     }
     
-    private void countdownWindow()
+    private void CountdownWindow()
     {
         // This window appears if the command is issued when not part of the duty.
         ImGui.Text(Properties.Strings.Suggestions_will_appear_here_during_Ocean_Fishing);

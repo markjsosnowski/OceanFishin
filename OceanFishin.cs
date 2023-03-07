@@ -81,7 +81,7 @@ namespace OceanFishin
         public ExcelSheet<IKDSpot>? LocationSheet;
         public ExcelSheet<Item>? itemSheet;
         public Dalamud.ClientLanguage UserLanguage;
-        private Dictionary<string, Location> localizedLocationStrings = new();
+        private Dictionary<string, Location> localizedLocationStrings;
 
         private IntPtr fishingLogAddonPtr;
         private IntPtr baitWindowAddonPtr;
@@ -268,12 +268,12 @@ namespace OceanFishin
             BuildLocationStringMap();
             PluginLog.Debug("Location string map filled a total of " + localizedLocationStrings.Count + "/7 entries.");
             this.itemSheet = DataManager.GetExcelSheet<Item>();
-            this.inventoryBaitList = updateBaitInventory();
+            this.inventoryBaitList = UpdateBaitInventory();
         }
 
         public unsafe void Dispose()
         {
-            stopHightlighting();
+            StopHightlighting();
             Framework.Update -= UpdateAddonPtrs;
             this.MainWindow.Dispose();
             this.CommandManager.RemoveHandler(CommandName);
@@ -293,11 +293,11 @@ namespace OceanFishin
 
         private void DrawUI()
         {
-            if (InOceanFishingDuty() && this.Configuration.HighlightRecommendedBait) {  highlightBaitInTacklebox(GetSingleBestBait(GetFishingLocation(), GetFishingTime())); }
+            if (InOceanFishingDuty() && this.Configuration.HighlightRecommendedBait) {  HighlightBaitInTacklebox(GetSingleBestBait(GetFishingLocation(), GetFishingTime())); }
             WindowSystem.Draw();
         }
 
-        private unsafe List<Item>? updateBaitInventory()
+        private unsafe List<Item>? UpdateBaitInventory()
         {
             if (itemSheet == null) { return null; }
             inventoryBaitList = new List<Item>();
@@ -313,11 +313,11 @@ namespace OceanFishin
                     }
                 }
             }
-            this.inventoryBaitList = gameLikeSort(ref inventoryBaitList);
+            this.inventoryBaitList = GameLikeSort(ref inventoryBaitList);
             return inventoryBaitList;
         }
 
-        private int getBaitIndex(Bait bait)
+        private int GetBaitIndex(Bait bait)
         {
             if (inventoryBaitList == null || itemSheet == null) { return -1; }
             Item? item = itemSheet.GetRow((uint)bait);
@@ -326,7 +326,7 @@ namespace OceanFishin
 
         //Inventory is first sorted by Category, but this list is already filtered to only be fishing tackle
         //Then it is sorted by highest LevelItem then then finally by ItemID
-        private List<Item> gameLikeSort(ref List<Item> unsortedList)
+        private static List<Item> GameLikeSort(ref List<Item> unsortedList)
         {
             return unsortedList
                 .OrderByDescending(i => i.LevelItem.Row)
@@ -334,12 +334,12 @@ namespace OceanFishin
                 .ToList();
         }
 
-        private void printDebugList(List<Item> unsortedList)
+        private static void PrintDebugList(List<Item> list)
         {
             string str ="";
-            for (int i = 0; i < unsortedList.Count; i++)
+            for (int i = 0; i < list.Count; i++)
             {
-                str += "[" +unsortedList[i].Name +"]";
+                str += "[" +list[i].Name +"]";
             }
             PluginLog.Debug(str);
         }
@@ -406,7 +406,7 @@ namespace OceanFishin
             
             
             AtkUnitBase* addon;
-            if (isAddonOpen(this.fishingLogAddonPtr))
+            if (IsAddonOpen(this.fishingLogAddonPtr))
                  addon = (AtkUnitBase*)this.fishingLogAddonPtr;
             else
                 return false;
@@ -450,7 +450,7 @@ namespace OceanFishin
                 this.fishingLogAddonPtr = this.GameGui.GetAddonByName(fishingLogAddonName, 1);
                 // "Bait" is the Bait & Tackle window that fishers use to select their bait.
                 this.baitWindowAddonPtr = this.GameGui.GetAddonByName(baitAddonName, 1);
-                this.inventoryBaitList = updateBaitInventory();
+                this.inventoryBaitList = UpdateBaitInventory();
             }
             catch (OperationCanceledException) { }
             catch (Exception e)
@@ -520,50 +520,48 @@ namespace OceanFishin
 
         private void BuildLocationStringMap()
         {
+            this.localizedLocationStrings = new();
             for (uint i = 1; i < LocationSheet!.RowCount; ++i)
             {
                 localizedLocationStrings[LocationSheet.GetRow(i)!.PlaceName.Value!.Name.ToString()] = (Location)i;
             }
         }
 
-        public unsafe void highlightBaitInTacklebox(Bait bait)
+        public unsafe void HighlightBaitInTacklebox(Bait bait)
         {
             if (lastHighlightedBait != Bait.None) 
             {
-                AtkResNode* lastBaitNode = findBaitNode(lastHighlightedBait);
-                highlightBaitAndPage((AtkComponentNode*)lastBaitNode, lastHighlightedPage, false);
+                AtkResNode* lastBaitNode = FindBaitNode(lastHighlightedBait);
+                HighlightBaitAndPage((AtkComponentNode*)lastBaitNode, lastHighlightedPage, false);
             }
             if(bait == Bait.None) { return; }
-            (int _, int page) = getAdjustedIndexAndPage(bait);
-            AtkResNode*  baitNode = findBaitNode(bait);
-            highlightBaitAndPage((AtkComponentNode*)baitNode, page, true);
+            (int _, int page) = GetAdjustedIndexAndPage(bait);
+            AtkResNode*  baitNode = FindBaitNode(bait);
+            HighlightBaitAndPage((AtkComponentNode*)baitNode, page, true);
             lastHighlightedBait = bait;
             lastHighlightedPage = page;
         }
         
-        public unsafe void highlightBaitAndPage(AtkComponentNode* node, int page, bool active)
+        public unsafe void HighlightBaitAndPage(AtkComponentNode* node, int page, bool active)
         {
-            highlightBaitPageNumber(page, active);
-            if (!active) { changeNodeBorder(node, active); }
-            if (active && onBaitPage(page)) {  changeNodeBorder(node, active); }
+            HighlightBaitPageNumber(page, active);
+            if (!active) { ChangeNodeBorder(node, active); }
+            if (active && OnBaitPage(page)) {  ChangeNodeBorder(node, active); }
         }
 
-        public void stopHightlighting()
-        {
-            highlightBaitInTacklebox(Bait.None);
-        }
+        public void StopHightlighting() => HighlightBaitInTacklebox(Bait.None);
 
-        private unsafe AtkResNode* findBaitNode(Bait bait)
+        private unsafe AtkResNode* FindBaitNode(Bait bait)
         {
-            if(!isAddonOpen(this.baitWindowAddonPtr)){  return null; }
+            if(!IsAddonOpen(this.baitWindowAddonPtr)){  return null; }
             AtkUnitBase* baitWindowAddon = (AtkUnitBase*)this.baitWindowAddonPtr;
             if(baitWindowAddon->UldManager.NodeListCount < BaitListComponentNodeIndex) { return null; }
             AtkComponentNode* baitListComponentNode = (AtkComponentNode*)baitWindowAddon->UldManager.NodeList[BaitListComponentNodeIndex];
-            (int index, int _) = getAdjustedIndexAndPage(bait);
+            (int index, int _) = GetAdjustedIndexAndPage(bait);
             return (index < 0) ? null : baitListComponentNode->Component->UldManager.NodeList[index + 1];
         }
 
-        private unsafe void changeNodeBorder(AtkComponentNode* node, bool active)
+        private unsafe void ChangeNodeBorder(AtkComponentNode* node, bool active)
         {
             if(node == null) { return; }
             AtkComponentNode* iconComponentNode = (AtkComponentNode*)node->Component->UldManager.NodeList[IconIDIndex];
@@ -572,12 +570,12 @@ namespace OceanFishin
             else { frameImageNode->PartId = defaultBorderPartID; }
         }
 
-        private unsafe void highlightBaitPageNumber(int page, bool active)
+        private unsafe void HighlightBaitPageNumber(int page, bool active)
         {
-            if (!isAddonOpen(this.baitWindowAddonPtr)) { return; }
+            if (!IsAddonOpen(this.baitWindowAddonPtr)) { return; }
             if (page < 1) { return; }
             AtkUnitBase* baitWindowAddon = (AtkUnitBase*)this.baitWindowAddonPtr;
-            AtkComponentNode* pageButtonsComponentNode = (AtkComponentNode*)getBaitPageResNode(page);
+            AtkComponentNode* pageButtonsComponentNode = (AtkComponentNode*)GetBaitPageResNode(page);
             if (active)
             {
                 pageButtonsComponentNode->AtkResNode.AddRed = highlightRed;
@@ -591,34 +589,31 @@ namespace OceanFishin
                 pageButtonsComponentNode->AtkResNode.AddRed = 0;
                 pageButtonsComponentNode->AtkResNode.AddGreen = 0;
                 pageButtonsComponentNode->AtkResNode.AddBlue = 0;
-                if(!onBaitPage(page)) { pageButtonsComponentNode->Component->UldManager.NodeList[baitPageBorderNodeIndex]->ToggleVisibility(false); }
+                if(!OnBaitPage(page)) { pageButtonsComponentNode->Component->UldManager.NodeList[baitPageBorderNodeIndex]->ToggleVisibility(false); }
             }
         }
 
-        private unsafe bool onBaitPage(int page)
+        private unsafe bool OnBaitPage(int page)
         {
             if (page < 1) { return false; }
-            AtkComponentNode* baitPageNode = (AtkComponentNode*)getBaitPageResNode(page);
+            AtkComponentNode* baitPageNode = (AtkComponentNode*)GetBaitPageResNode(page);
             AtkTextNode* baitPageTextNode = (AtkTextNode*)baitPageNode->Component->UldManager.NodeList[baitPageTextNodeIndex];
-            return compareByteColor(baitPageTextNode->TextColor, 0xFF, 0xFF, 0xFF);
+            return CompareByteColor(baitPageTextNode->TextColor, 0xFF, 0xFF, 0xFF);
         }
 
-        private bool compareByteColor(ByteColor byteColor, byte r, byte g, byte b)
+        private static bool CompareByteColor(ByteColor byteColor, byte r, byte g, byte b) => (byteColor.R == r && byteColor.G == g && byteColor.B == b);
+
+        private unsafe AtkResNode* GetBaitPageResNode(int page)
         {
-            return (byteColor.R == r && byteColor.G == g && byteColor.B == b); 
-        }
-        
-        private unsafe AtkResNode* getBaitPageResNode(int page)
-        {
-            if (!isAddonOpen(this.baitWindowAddonPtr)) { return null; }
+            if (!IsAddonOpen(this.baitWindowAddonPtr)) { return null; }
             AtkUnitBase* baitWindowAddon = (AtkUnitBase*)this.baitWindowAddonPtr;
             return baitWindowAddon->UldManager.NodeList[15 - page]; //Node list is in reverse order from top left
         }
 
         // Each bait page is 25 spots
-        private (int, int) getAdjustedIndexAndPage(Bait bait)
+        private (int, int) GetAdjustedIndexAndPage(Bait bait)
         {
-            int index = getBaitIndex(bait);
+            int index = GetBaitIndex(bait);
             if (index < 0 ) { return (index, 0); }
             int page = 1;
             while (index > 25)
@@ -629,9 +624,6 @@ namespace OceanFishin
             return (index, page);
         }
 
-        public unsafe bool isAddonOpen(IntPtr addon)
-        {
-            return (addon != IntPtr.Zero);
-        }
+        public static unsafe bool IsAddonOpen(IntPtr addon) => (addon != IntPtr.Zero);
     }
 }
