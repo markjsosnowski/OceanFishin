@@ -8,7 +8,7 @@ This repository is for development of the plugin! If you just want to use this a
 Ocean Fishin' is currently only availble as testing plugin. See [the FAQ](https://goatcorp.github.io/faq/dalamud_troubleshooting.html#q-how-do-i-enable-plugin-test-builds) for how to install testing plugins. 
 
 ## How to Use
-`/oceanfishing` or `/bait` to open the plugin window.
+`/oceanfishing` or `/fishin` to open the plugin window.
 
 ## Features
 While in the ocean fishing duty, this plugin suggests bait to use...
