@@ -36,7 +36,7 @@ namespace OceanFishin
         public string Name => "Ocean Fishin'";
 
         public const string CommandName = "/oceanfishing";
-        public const string AltCommandName = "/bait";
+        public const string AltCommandName = "/fishin";
 
         private DalamudPluginInterface PluginInterface { get; init; }
         private CommandManager CommandManager { get; init; }
