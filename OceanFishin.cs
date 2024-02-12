@@ -427,10 +427,11 @@ namespace OceanFishin
             if (playerCharacter == null || playerCharacter.StatusList == null) { return false; }
 
             Dalamud.Game.ClientState.Statuses.StatusList? statusList = playerCharacter.StatusList;
-            for (int i = 0; i < statusList.Length; i++)
-            {
-                if (statusList[i]!.StatusId == intuitionStatusID) { return true; }
-            }
+            // TODO test this 
+            foreach (Dalamud.Game.ClientState.Statuses.Status status in statusList) 
+            { 
+                if (status.StatusId == intuitionStatusID) { return true; } 
+            }           
             return false;
         }
 
